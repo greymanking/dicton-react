@@ -1,0 +1,26 @@
+button {
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+#puzzle {
+    padding:15px;
+    border:2px dotted black;
+}
+
+#composed {
+    background-color: rgba(191, 255, 94, 0.534);
+    padding:5px
+}
+
+span {
+    display: inline-block;
+    padding: 5px;
+    font-size: 30px;
+    border: 1px solid black;
+    margin: 5px;
+    cursor: pointer;
+    width: 1em;
+}

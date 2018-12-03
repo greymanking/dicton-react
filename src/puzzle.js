@@ -1,48 +1,34 @@
 import React, { Component } from 'react';
 import shuffle from "./shuffle.js"
-
-class PuzzleSpace extends Component {
-    constructor(props){
-        super(props);
-        this.state={pos:0}
-
-        this.next=this.next.bind(this);
-    }
-
-    render(){
-        var exercise=this.props.wordsData[this.state.pos];
-        return(
-            <Puzzle word={exercise.word} meaning={exercise.meaning} go={this.next} />
-        )
-    }
-
-    next(){
-        const len=this.props.wordsData.length;
-        var curPos=this.state.pos+1;
-        this.setState({pos:curPos%len});
-    }
-}
+import './custom.css';
 
 const NOERROR = 0, SUCCESS = 1, WRONG = 2;
 
-class Puzzle extends Component {
+class PuzzleSpace extends Component {
     constructor(props) {
         super(props);
+
+        var exercise = this.props.wordsData[0];
+
         this.state = {
+            pos: 0,
             achieve: NOERROR,
             composed: "",
-            shuffled: shuffle(this.props.word, 10),
-            version: 0
         }
+
+        this.data = {
+            needRefresh: false,
+            exercise: exercise,
+            shuffled: shuffle(exercise.word, 10),
+        };
+
         this.addChar = this.addChar.bind(this);
         this.reflow = this.reflow.bind(this);
-        this.onRetry = this.onRetry.bind(this);
         this.checkComposed = this.checkComposed.bind(this);
+        this.next = this.next.bind(this);
     }
 
     addChar(chr) {
-        //setState is async and the second param is the callback function
-        //this.setState({ composed: this.state.composed + chr }, this.checkComposed);
         var composed = this.state.composed + chr;
         this.setState({
             composed: composed,
@@ -50,22 +36,22 @@ class Puzzle extends Component {
         });
     }
 
-    onRetry(e){
-        this.reflow(this.props.word);
-    }
+    reflow() {
+        const ex = this.props.wordsData[this.state.pos]
+        this.data.exercise = ex;
+        this.data.needRefresh = true;
+        this.data.shuffled = shuffle(ex.word, 10);
 
-    reflow(word) {
-        var newVer = this.state.version + 1;
         this.setState({
-            shuffled: shuffle(word, 10),
             achieve: NOERROR,
             composed: "",
-            version: newVer
-        })
+        },
+            () => { this.data.needRefresh = false }
+        )
     }
 
     checkComposed(composed) {
-        var word = this.props.word;
+        const word = this.data.exercise.word;
 
         if (composed == word) {
             return SUCCESS;
@@ -76,14 +62,13 @@ class Puzzle extends Component {
         }
     }
 
-    componentWillReceiveProps(newProps) {
-    //    if (newProps.word != this.props.word) {
-            this.reflow(newProps.word);
-    //    }
+    next() {
+        const len = this.props.wordsData.length;
+        var curPos = this.state.pos + 1;
+        this.setState({ pos: curPos % len }, this.reflow);
     }
 
     render() {
-        const buttonStyle = { padding: 10, backgroundColor: "#336699", color: "white" }
         const composedStyle = {}
 
         var achieved = this.state.achieve;
@@ -96,20 +81,20 @@ class Puzzle extends Component {
         }
 
         return (
-            <div>
-                <h3 style={composedStyle}>{this.state.composed}</h3>
+            <div id="puzzle">
+                <h2 id="composed" style={composedStyle}>{"　" + this.state.composed + "　"}</h2>
                 <div>
-                    {this.state.shuffled.map(
+                    {this.data.shuffled.map(
                         (chr, idx) => {
-                            return <PuzzleSlot version={this.state.version} char={chr} key={idx} sendChar={this.addChar} />
+                            return <PuzzleSlot refresh={this.data.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
                         }
                     )}
                 </div>
-                <h3>{this.props.meaning}</h3>
-                <button style={{display:this.state.achieve == SUCCESS?"none":"inline"}} onClick={this.onRetry}>
+                <h3>{this.data.exercise.meaning}</h3>
+                <button style={{ display: this.state.achieve == SUCCESS ? "none" : "inline" }} onClick={this.reflow}>
                     {"重 试"}
                 </button>
-                <button style={{display:this.state.achieve == SUCCESS?"inline":"none"}} onClick={this.props.go}>
+                <button style={{ display: this.state.achieve == SUCCESS ? "inline" : "none" }} onClick={this.next}>
                     {"继 续"}
                 </button>
             </div>
@@ -135,16 +120,7 @@ class PuzzleSlot extends Component {
     }
 
     render() {
-        const style = {
-            display: "inline-block",
-            padding: 5,
-            fontSize: 25,
-            borderBottom: "1px solid black",
-            margin: 5,
-            cursor: "pointer"
-        }
-
-        style.color = this.state.clicked ? "blue" : "black";
+        const style = {color:this.state.clicked ? "blue" : "black"}
 
         return (
             <span style={style} onClick={this.onClick}>{this.props.char}</span>
@@ -152,7 +128,7 @@ class PuzzleSlot extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.version != this.props.version) {
+        if (newProps.refresh) {
             this.setState({ clicked: false })
         }
     }
