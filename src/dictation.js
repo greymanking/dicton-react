@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import shuffle from "./shuffle.js"
 
 const NOERROR = 0, SUCCESS = 1, WRONG = 2;
 
-class Puzzle extends Component {
+class Dictation extends Component {
   constructor(props) {
     super(props);
 
@@ -15,20 +14,14 @@ class Puzzle extends Component {
       composed: "",
     }
 
-    this.data = {
-      needRefresh: false,
-      exercise: exercise,
-      shuffled: shuffle(exercise.word, 10),
-    };
-
-    this.addChar = this.addChar.bind(this);
+    this.onInput = this.onInput.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
   }
 
-  addChar(chr) {
-    var composed = this.state.composed + chr;
+  onInput(event) {
+    var composed = event.target.value;
     this.setState({
       composed: composed,
       achieve: this.checkComposed(composed)
@@ -40,22 +33,15 @@ class Puzzle extends Component {
   }
 
   reflow() {
-    const ex = this.props.wordsData[this.state.pos]
-    this.data.exercise = ex;
-    this.data.needRefresh = true;
-    this.data.shuffled = shuffle(ex.word, 10);
-
     this.setState({
       achieve: NOERROR,
       composed: "",
-    },
-      () => { this.data.needRefresh = false }
-    )
+    })
     this.playSound();
   }
 
   checkComposed(composed) {
-    const word = this.data.exercise.word;
+    const word = this.props.wordsData[this.state.pos].word;
 
     if (composed == word) {
       return SUCCESS;
@@ -91,18 +77,11 @@ class Puzzle extends Component {
 
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + this.data.exercise.audio} />
-        <h2 class="word-display" style={composedStyle}>{"　" + this.state.composed + "　"}</h2>
-        <div class="btn-panel">
-          {this.data.shuffled.map(
-            (chr, idx) => {
-              return <PuzzleSlot refresh={this.data.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
-            }
-          )}
-        </div>
-        <h3 class="meaning-display">{this.data.exercise.meaning}</h3>
+        <audio id="player" src={"mp3s/" + this.props.wordsData[this.state.pos].audio} />
+        <input class="word-display" value={this.state.composed} style={composedStyle} onChange={this.onInput} />
+        <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
-          {"重 试"}
+          {"清 空"}
         </button>
         <button style={{ display: success ? "inline" : "none" }} onClick={this.next}>
           {"继 续"}
@@ -112,36 +91,4 @@ class Puzzle extends Component {
   }
 }
 
-class PuzzleSlot extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      clicked: false
-    }
-
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick = function (e) {
-    if (!this.state.clicked) {
-      this.props.sendChar(this.props.char);
-    }
-    this.setState({ clicked: true })
-  }
-
-  render() {
-    const style = { color: this.state.clicked ? "grey" : "black" }
-
-    return (
-      <span style={style} onClick={this.onClick}>{this.props.char}</span>
-    );
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.refresh) {
-      this.setState({ clicked: false })
-    }
-  }
-}
-
-export default Puzzle;
+export default Dictation;

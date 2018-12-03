@@ -1,28 +1,40 @@
 body {
-    background-color:Azure;
+    background-color:#f2f2f2;
+}
+
+.App {
+    margin:20px auto;
+    width:8cm;
+    background-color:#fff; 
+    padding:15px 20px 25px 20px;
 }
 
 button {
     padding: 10px 20px;
     color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
+    background-color: #A26273;
 }
 
-#puzzle, #learn{
-    padding:15px;
+input {
+    outline:none;
+    border-width: 0 0 1px 0;
 }
 
-#composed, #word-display {
-    background-color:AliceBlue;
+.word-display {
+    /* background-color:white; */
     padding:5px
 }
 
-span {
+.btn-panel span {
     display: inline-block;
     padding: 5px;
     font-size: 30px;
-    margin: 5px;
+    margin: 4px;
     cursor: pointer;
     width: 1em;
+    background-color:#E4B2B6;
+/*     border-width:1px 3px 3px 1px;
+    border-color:gainsboro;
+    border-style: solid; */
+    border-radius:5px;
 }

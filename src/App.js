@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
 
-import PuzzleSpace from './puzzle.js'
-import LearnSpace from './learn.js'
+import Puzzle from './puzzle.js'
+import Learn from './learn.js'
+import Dictation from './dictation.js'
+
+import './custom.css';
 
 var wordsData = [
   { ID: 1, word: "after", meaning: "在……之后", audio: "after.mp3" },
@@ -15,7 +18,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <PuzzleSpace wordsData={wordsData} />
+        <Puzzle wordsData={wordsData} />
       </div>
     );
   }

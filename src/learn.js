@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './custom.css';
 
-class LearnSpace extends Component {
+
+class Learn extends Component {
   constructor(props) {
     super(props);
 
@@ -29,10 +29,10 @@ class LearnSpace extends Component {
   render() {
 
     return (
-      <div id="learn">
+      <div class="container">
         <audio id="player" src={"mp3s/" + this.props.wordsData[this.state.pos].audio} />
-        <h2 id="word-display">{this.props.wordsData[this.state.pos].word}</h2>
-        <h3>{this.props.wordsData[this.state.pos].meaning}</h3>
+        <h2 class="word-display">{this.props.wordsData[this.state.pos].word}</h2>
+        <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
         <button  onClick={this.next}>
           {"下一个"}
         </button>
@@ -41,4 +41,4 @@ class LearnSpace extends Component {
   }
 }
 
-export default LearnSpace;
+export default Learn;
