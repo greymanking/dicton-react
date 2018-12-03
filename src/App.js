@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 import './App.css';
 
 import PuzzleSpace from './puzzle.js'
+import LearnSpace from './learn.js'
 
 var wordsData = [
-  { ID:1, word: "build", meaning: "建造" },
-  { ID:2, word: "destroy", meaning: "破坏" },
+  { ID: 1, word: "after", meaning: "在……之后", audio: "after.mp3" },
+  { ID: 2, word: "afraid", meaning: "害怕，恐怕", audio: "afraid.mp3" },
+  { ID: 3, word: "active", meaning: "积极的，活跃的", audio: "active.mp3" },
 ]
 
 class App extends Component {
