@@ -28,9 +28,9 @@ class Dictation extends Component {
   }
 
   onKeyPress(event) {
-    if (event.charCode == 13) {
+    if (event.charCode === 13) {
       console.log("enter")
-      if (this.state.achieve == SUCCESS) {
+      if (this.state.achieve === SUCCESS) {
         console.log("ss");
         this.next();
       } else {
@@ -56,9 +56,9 @@ class Dictation extends Component {
   checkComposed(composed) {
     const word = this.props.taskData[this.state.pos].word;
 
-    if (composed == word) {
+    if (composed === word) {
       return SUCCESS;
-    } else if (word.indexOf(composed) == 0) {
+    } else if (word.indexOf(composed) === 0) {
       return NOERROR;
     } else {
       return WRONG;
@@ -81,7 +81,7 @@ class Dictation extends Component {
 
   render() {
     const composedStyle = {}
-    const success = this.state.achieve == SUCCESS
+    const success = this.state.achieve === SUCCESS
 
     var achieved = this.state.achieve;
 

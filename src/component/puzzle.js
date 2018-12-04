@@ -54,9 +54,9 @@ class Puzzle extends Component {
   checkComposed(composed) {
     const word = this.props.taskData[this.state.pos].word;
 
-    if (composed == word) {
+    if (composed === word) {
       return SUCCESS;
-    } else if (word.indexOf(composed) == 0) {
+    } else if (word.indexOf(composed) === 0) {
       return NOERROR;
     } else {
       return WRONG;
@@ -77,7 +77,7 @@ class Puzzle extends Component {
   }
 
   render() {
-    const success = this.state.achieve == SUCCESS
+    const success = this.state.achieve === SUCCESS
     const task = this.props.taskData[this.state.pos]
 
     return (

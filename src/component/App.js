@@ -1,29 +1,49 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
-import '../css/App.css';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
-import Ajax from '../common/ajaxPromise.js';
+import ajax from '../common/ajaxPromise.js';
 
+import '../css/App.css';
 import '../css/custom.css';
 
 const STARTER=0, LEARN=1, PUZZLE=2, DICTATION=3, ENDING=4;
-
-var taskData = [
-  { ID: 1, word: "after", meaning: "在……之后", audio: "after.mp3" },
-  { ID: 2, word: "afraid", meaning: "害怕，恐怕", audio: "afraid.mp3" },
-  { ID: 3, word: "active", meaning: "积极的，活跃的", audio: "active.mp3" },
-]
+const READY=0, LOADING=1, FAIL=2;
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state={stage:STARTER,ready:true};
+    this.state={stage:STARTER,datas:LOADING};
+    this.taskData=null;
+    this.lists={}
 
     this.next=this.next.bind(this);
+  }
+
+  fetch() {
+    ajax("/data.json").then(
+      (data)=>{this.taskData=JSON.parse(data);this.sortup();this.setState({datas:READY})},
+      (reason)=>{this.setState({datas:FAIL});console.log(reason);}
+    )
+  }
+
+  sortup(){
+    this.lists={learn:[],puzzle:[],dictation:[]}
+    for (let t of this.taskData){
+      if(t.type===0){
+        this.lists.learn.push(t);
+        this.lists.puzzle.push(t);
+        this.lists.dictation.push(t);
+      } else if (t.type<3) {
+        this.lists.puzzle.push(t);
+        this.lists.dictation.push(t);
+      } else  {
+        this.lists.dictation.push(t);
+      }
+    }
   }
 
   next() {
@@ -34,22 +54,26 @@ class App extends Component {
     this.setState({stage:curStage});
   }
 
+  componentDidMount() {
+    this.fetch();
+  }
+
   render() {
 
     var stage=null;
 
     switch(this.state.stage){
       case STARTER:
-      stage=<Starter ready={this.state.ready} start={this.next} taskData={taskData} />
+      stage=<Starter datas={this.state.datas} start={this.next} taskLists={this.lists} />
       break;
       case LEARN:
-      stage=<Learn taskData={taskData} next={this.next} />
+      stage=<Learn next={this.next} taskData={this.lists.learn} />
       break;
       case PUZZLE:
-      stage=<Puzzle taskData={taskData} next={this.next} />
+      stage=<Puzzle next={this.next} taskData={this.lists.puzzle}  />
       break;
       case DICTATION:
-      stage=<Dictation taskData={taskData} next={this.next} />
+      stage=<Dictation next={this.next}  taskData={this.lists.dictation} />
       break;
       default:
       stage=<h3>今日份练习已完成<br />休息一下吧！</h3>
@@ -61,6 +85,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default App;
