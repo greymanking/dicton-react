@@ -33,7 +33,7 @@ class Learn extends Component {
     var task=this.props.wordsData[this.state.pos];
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + task.audio} />
+        <audio id="player" src={"sounds/" + task.audio} />
         <h2 class="word-display">{task.word}</h2>
         <h3 class="meaning-display">{task.meaning}</h3>
         <button  onClick={this.next}>

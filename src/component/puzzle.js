@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shuffle from "./shuffle.js"
+import shuffle from "../common/shuffle.js"
 
 const NOERROR = "noerror", SUCCESS = "right", WRONG = "wrong";
 
@@ -82,7 +82,7 @@ class Puzzle extends Component {
 
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + task.audio} />
+        <audio id="player" src={"sounds/" + task.audio} />
         <h2 class="word-display" className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div class="btn-panel">
           {this.stateExtra.shuffled.map(

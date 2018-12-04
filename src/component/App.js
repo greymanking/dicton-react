@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
-import './App.css';
+import '../css/App.css';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
-import Ajax from './ajaxPromise.js';
+import Ajax from '../common/ajaxPromise.js';
 
-import './custom.css';
+import '../css/custom.css';
 
 const STARTER=0, LEARN=1, PUZZLE=2, DICTATION=3, ENDING=4;
 

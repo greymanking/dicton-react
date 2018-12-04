@@ -73,7 +73,7 @@ class Dictation extends Component {
 
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + this.props.wordsData[this.state.pos].audio} />
+        <audio id="player" src={"sounds/" + this.props.wordsData[this.state.pos].audio} />
         <input id="text-input" value={this.state.composed} className={this.state.achieve} onChange={this.onInput} />
         <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
