@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import shuffle from "./shuffle.js"
 
-const NOERROR = 0, SUCCESS = 1, WRONG = 2;
+const NOERROR = "noerror", SUCCESS = "right", WRONG = "wrong";
 
 class Puzzle extends Component {
   constructor(props) {
     super(props);
-
-    var exercise = this.props.wordsData[0];
 
     this.state = {
       pos: 0,
@@ -15,10 +13,9 @@ class Puzzle extends Component {
       composed: "",
     }
 
-    this.data = {
+    this.stateExtra = {
       needRefresh: false,
-      exercise: exercise,
-      shuffled: shuffle(exercise.word, 10),
+      shuffled: shuffle(this.props.wordsData[this.state.pos].word, 10),
     };
 
     this.addChar = this.addChar.bind(this);
@@ -40,22 +37,22 @@ class Puzzle extends Component {
   }
 
   reflow() {
-    const ex = this.props.wordsData[this.state.pos]
-    this.data.exercise = ex;
-    this.data.needRefresh = true;
-    this.data.shuffled = shuffle(ex.word, 10);
+    const task = this.props.wordsData[this.state.pos]
+
+    this.stateExtra.needRefresh = true;
+    this.stateExtra.shuffled = shuffle(task.word, 10);
 
     this.setState({
       achieve: NOERROR,
       composed: "",
     },
-      () => { this.data.needRefresh = false }
+      () => { this.stateExtra.needRefresh = false }
     )
     this.playSound();
   }
 
   checkComposed(composed) {
-    const word = this.data.exercise.word;
+    const word = this.props.wordsData[this.state.pos].word;
 
     if (composed == word) {
       return SUCCESS;
@@ -67,9 +64,12 @@ class Puzzle extends Component {
   }
 
   next() {
-    const len = this.props.wordsData.length;
-    var curPos = this.state.pos + 1;
-    this.setState({ pos: curPos % len }, this.reflow);
+    const nextPos = this.state.pos+1;
+    if(nextPos<this.props.wordsData.length){
+      this.setState({ pos: nextPos}, this.reflow);
+    } else {
+      this.props.next();
+    }
   }
 
   componentDidMount() {
@@ -77,30 +77,21 @@ class Puzzle extends Component {
   }
 
   render() {
-    const composedStyle = {}
     const success = this.state.achieve == SUCCESS
-
-    var achieved = this.state.achieve;
-    if (achieved == SUCCESS) {
-      composedStyle.color = "green";
-    } else if (achieved == WRONG) {
-      composedStyle.color = "red";
-    } else {
-      composedStyle.color = "black";
-    }
+    const task = this.props.wordsData[this.state.pos]
 
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + this.data.exercise.audio} />
-        <h2 class="word-display" style={composedStyle}>{"　" + this.state.composed + "　"}</h2>
+        <audio id="player" src={"mp3s/" + task.audio} />
+        <h2 class="word-display" className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div class="btn-panel">
-          {this.data.shuffled.map(
+          {this.stateExtra.shuffled.map(
             (chr, idx) => {
-              return <PuzzleSlot refresh={this.data.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
+              return <PuzzleSlot refresh={this.stateExtra.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
             }
           )}
         </div>
-        <h3 class="meaning-display">{this.data.exercise.meaning}</h3>
+        <h3 class="meaning-display">{task.meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"重 试"}
         </button>

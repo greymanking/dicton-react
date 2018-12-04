@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 
-const NOERROR = 0, SUCCESS = 1, WRONG = 2;
+const NOERROR = "noerror", SUCCESS = "right", WRONG = "wrong";
 
 class Dictation extends Component {
   constructor(props) {
     super(props);
-
-    var exercise = this.props.wordsData[0];
 
     this.state = {
       pos: 0,
@@ -38,6 +36,7 @@ class Dictation extends Component {
       composed: "",
     })
     this.playSound();
+    document.getElementById("text-input").focus();
   }
 
   checkComposed(composed) {
@@ -53,13 +52,17 @@ class Dictation extends Component {
   }
 
   next() {
-    const len = this.props.wordsData.length;
-    var curPos = this.state.pos + 1;
-    this.setState({ pos: curPos % len }, this.reflow);
+    const nextPos = this.state.pos+1;
+    if(nextPos<this.props.wordsData.length){
+      this.setState({ pos: nextPos}, this.reflow);
+    } else {
+      this.props.next();
+    }
   }
 
   componentDidMount() {
     this.playSound();
+    document.getElementById("text-input").focus();
   }
 
   render() {
@@ -67,18 +70,11 @@ class Dictation extends Component {
     const success = this.state.achieve == SUCCESS
 
     var achieved = this.state.achieve;
-    if (achieved == SUCCESS) {
-      composedStyle.color = "green";
-    } else if (achieved == WRONG) {
-      composedStyle.color = "red";
-    } else {
-      composedStyle.color = "black";
-    }
 
     return (
       <div class="container">
         <audio id="player" src={"mp3s/" + this.props.wordsData[this.state.pos].audio} />
-        <input class="word-display" value={this.state.composed} style={composedStyle} onChange={this.onInput} />
+        <input id="text-input" value={this.state.composed} className={this.state.achieve} onChange={this.onInput} />
         <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"清 空"}

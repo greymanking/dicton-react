@@ -17,9 +17,12 @@ class Learn extends Component {
   }
 
   next() {
-    const len = this.props.wordsData.length;
-    var curPos = this.state.pos + 1;
-    this.setState({ pos: curPos % len }, this.playSound);
+    const nextPos = this.state.pos+1;
+    if(nextPos<this.props.wordsData.length){
+      this.setState({ pos: nextPos}, this.playSound);
+    } else {
+      this.props.next();
+    }
   }
 
   componentDidMount() {
@@ -27,14 +30,14 @@ class Learn extends Component {
   }
 
   render() {
-
+    var task=this.props.wordsData[this.state.pos];
     return (
       <div class="container">
-        <audio id="player" src={"mp3s/" + this.props.wordsData[this.state.pos].audio} />
-        <h2 class="word-display">{this.props.wordsData[this.state.pos].word}</h2>
-        <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
+        <audio id="player" src={"mp3s/" + task.audio} />
+        <h2 class="word-display">{task.word}</h2>
+        <h3 class="meaning-display">{task.meaning}</h3>
         <button  onClick={this.next}>
-          {"下一个"}
+          {"记住了！"}
         </button>
       </div>
     );
