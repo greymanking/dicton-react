@@ -12,7 +12,7 @@ import '../css/custom.css';
 
 const STARTER=0, LEARN=1, PUZZLE=2, DICTATION=3, ENDING=4;
 
-var wordsData = [
+var taskData = [
   { ID: 1, word: "after", meaning: "在……之后", audio: "after.mp3" },
   { ID: 2, word: "afraid", meaning: "害怕，恐怕", audio: "afraid.mp3" },
   { ID: 3, word: "active", meaning: "积极的，活跃的", audio: "active.mp3" },
@@ -40,16 +40,16 @@ class App extends Component {
 
     switch(this.state.stage){
       case STARTER:
-      stage=<Starter ready={this.state.ready} start={this.next} wordsData={wordsData} />
+      stage=<Starter ready={this.state.ready} start={this.next} taskData={taskData} />
       break;
       case LEARN:
-      stage=<Learn wordsData={wordsData} next={this.next} />
+      stage=<Learn taskData={taskData} next={this.next} />
       break;
       case PUZZLE:
-      stage=<Puzzle wordsData={wordsData} next={this.next} />
+      stage=<Puzzle taskData={taskData} next={this.next} />
       break;
       case DICTATION:
-      stage=<Dictation wordsData={wordsData} next={this.next} />
+      stage=<Dictation taskData={taskData} next={this.next} />
       break;
       default:
       stage=<h3>今日份练习已完成<br />休息一下吧！</h3>

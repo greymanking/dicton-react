@@ -15,7 +15,7 @@ class Puzzle extends Component {
 
     this.stateExtra = {
       needRefresh: false,
-      shuffled: shuffle(this.props.wordsData[this.state.pos].word, 10),
+      shuffled: shuffle(this.props.taskData[this.state.pos].word, 10),
     };
 
     this.addChar = this.addChar.bind(this);
@@ -37,7 +37,7 @@ class Puzzle extends Component {
   }
 
   reflow() {
-    const task = this.props.wordsData[this.state.pos]
+    const task = this.props.taskData[this.state.pos]
 
     this.stateExtra.needRefresh = true;
     this.stateExtra.shuffled = shuffle(task.word, 10);
@@ -52,7 +52,7 @@ class Puzzle extends Component {
   }
 
   checkComposed(composed) {
-    const word = this.props.wordsData[this.state.pos].word;
+    const word = this.props.taskData[this.state.pos].word;
 
     if (composed == word) {
       return SUCCESS;
@@ -65,7 +65,7 @@ class Puzzle extends Component {
 
   next() {
     const nextPos = this.state.pos+1;
-    if(nextPos<this.props.wordsData.length){
+    if(nextPos<this.props.taskData.length){
       this.setState({ pos: nextPos}, this.reflow);
     } else {
       this.props.next();
@@ -78,20 +78,20 @@ class Puzzle extends Component {
 
   render() {
     const success = this.state.achieve == SUCCESS
-    const task = this.props.wordsData[this.state.pos]
+    const task = this.props.taskData[this.state.pos]
 
     return (
-      <div class="container">
+      <div className="container">
         <audio id="player" src={"sounds/" + task.audio} />
-        <h2 class="word-display" className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
-        <div class="btn-panel">
+        <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
+        <div className="btn-panel">
           {this.stateExtra.shuffled.map(
             (chr, idx) => {
               return <PuzzleSlot refresh={this.stateExtra.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
             }
           )}
         </div>
-        <h3 class="meaning-display">{task.meaning}</h3>
+        <h3 className="meaning-display">{task.meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"重 试"}
         </button>

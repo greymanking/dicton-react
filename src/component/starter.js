@@ -14,26 +14,31 @@ class Starter extends Component {
   }
 
   render() {
-    const loadingTip = <h3>正在载入数据……</h3>
-    const readyTip =
+    var tips=null;
+
+    if(this.props.ready){
+      tips=
       <div>
         <h4>我们今天要学习以下单词</h4>
         <ul style={{textAlign:"left"}}>
         {
-          this.props.wordsData.map(
+          this.props.taskData.map(
             (task, idx) => {
-              return <li>{task.word}</li>
+              return <li key={idx}>{task.word}</li>
             }
           )
         }
         </ul>
         <button onClick={this.start}>让我们开始吧！</button>
       </div>
+    } else {
+      tips=<h3>正在载入数据……</h3>
+    }
 
     return (
       <div>
         <h3>欢迎你，金雨璇！</h3>
-        {this.props.ready ? readyTip : loadingTip}
+        {tips}
       </div>
     );
   }

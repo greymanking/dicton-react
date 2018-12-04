@@ -16,6 +16,7 @@ class Dictation extends Component {
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   onInput(event) {
@@ -24,6 +25,19 @@ class Dictation extends Component {
       composed: composed,
       achieve: this.checkComposed(composed)
     });
+  }
+
+  onKeyPress(event) {
+    if (event.charCode == 13) {
+      console.log("enter")
+      if (this.state.achieve == SUCCESS) {
+        console.log("ss");
+        this.next();
+      } else {
+        console.log("re");
+        this.reflow();
+      }
+    }
   }
 
   playSound() {
@@ -40,7 +54,7 @@ class Dictation extends Component {
   }
 
   checkComposed(composed) {
-    const word = this.props.wordsData[this.state.pos].word;
+    const word = this.props.taskData[this.state.pos].word;
 
     if (composed == word) {
       return SUCCESS;
@@ -52,9 +66,9 @@ class Dictation extends Component {
   }
 
   next() {
-    const nextPos = this.state.pos+1;
-    if(nextPos<this.props.wordsData.length){
-      this.setState({ pos: nextPos}, this.reflow);
+    const nextPos = this.state.pos + 1;
+    if (nextPos < this.props.taskData.length) {
+      this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
     }
@@ -72,10 +86,11 @@ class Dictation extends Component {
     var achieved = this.state.achieve;
 
     return (
-      <div class="container">
-        <audio id="player" src={"sounds/" + this.props.wordsData[this.state.pos].audio} />
-        <input id="text-input" value={this.state.composed} className={this.state.achieve} onChange={this.onInput} />
-        <h3 class="meaning-display">{this.props.wordsData[this.state.pos].meaning}</h3>
+      <div className="container">
+        <audio id="player" src={"sounds/" + this.props.taskData[this.state.pos].audio} />
+        <input id="text-input" value={this.state.composed} className={this.state.achieve}
+          onChange={this.onInput} onKeyPress={this.onKeyPress} />
+        <h3 className="meaning-display">{this.props.taskData[this.state.pos].meaning}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"清 空"}
         </button>
