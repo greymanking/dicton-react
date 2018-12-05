@@ -47,7 +47,7 @@ class App extends Component {
   }
 
   next() {
-    var curStage=this.state.stage;
+    let curStage=this.state.stage;
     if (curStage<4){
       curStage++;
     }
@@ -60,7 +60,7 @@ class App extends Component {
 
   render() {
 
-    var stage=null;
+    let stage=null;
 
     switch(this.state.stage){
       case STARTER:

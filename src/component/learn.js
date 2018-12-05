@@ -30,7 +30,7 @@ class Learn extends Component {
   }
 
   render() {
-    var task=this.props.taskData[this.state.pos];
+    const task=this.props.taskData[this.state.pos];
     return (
       <div className="container">
         <audio id="player" src={"sounds/" + task.audio} />

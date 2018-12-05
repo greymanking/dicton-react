@@ -20,7 +20,7 @@ class Dictation extends Component {
   }
 
   onInput(event) {
-    var composed = event.target.value;
+    const composed = event.target.value;
     this.setState({
       composed: composed,
       achieve: this.checkComposed(composed)
@@ -80,10 +80,7 @@ class Dictation extends Component {
   }
 
   render() {
-    const composedStyle = {}
     const success = this.state.achieve === SUCCESS
-
-    var achieved = this.state.achieve;
 
     return (
       <div className="container">

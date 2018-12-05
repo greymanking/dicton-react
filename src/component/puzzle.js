@@ -25,7 +25,7 @@ class Puzzle extends Component {
   }
 
   addChar(chr) {
-    var composed = this.state.composed + chr;
+    const composed = this.state.composed + chr;
     this.setState({
       composed: composed,
       achieve: this.checkComposed(composed)

@@ -16,7 +16,7 @@ class Starter extends Component {
   }
 
   render() {
-    var info=null;
+    let info=null;
     const ds=this.props.datas;
 
     if(ds===READY){
@@ -33,7 +33,7 @@ class Starter extends Component {
       </div>
     } else if(ds===LOADING){
       info=<h3>正在载入数据……</h3>
-    } else {
+    } else if(ds===FAIL){
       info=<h3>抱歉，读取数据失败，今天无法学习了 :( </h3>
     }
 
