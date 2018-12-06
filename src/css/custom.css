@@ -23,11 +23,6 @@ input {
     text-align:center;
 }
 
-.word-display {
-    /* background-color:white; */
-    padding:5px
-}
-
 .right {
     color: green
 }
@@ -47,6 +42,7 @@ input {
     margin: 4px;
     cursor: pointer;
     width: 1em;
+    height:1.5em;
     background-color:#E4B2B6;
     border-radius:5px;
 }

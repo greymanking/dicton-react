@@ -8,18 +8,26 @@ class Learn extends Component {
     this.state = {
       pos: 0,
     }
+    
+    this.player=React.createRef();
 
     this.next = this.next.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
 
   playSound() {
-    setTimeout(() => { document.getElementById("player").play(); }, 700)
+    setTimeout(() => {
+      let pl=this.player.current;
+      if(pl){
+        pl.play(); 
+      }
+    },700)
   }
 
   next() {
-    const nextPos = this.state.pos+1;
-    if(nextPos<this.props.taskData.length){
-      this.setState({ pos: nextPos}, this.playSound);
+    const nextPos = this.state.pos + 1;
+    if (nextPos < this.props.taskData.length) {
+      this.setState({ pos: nextPos }, this.playSound);
     } else {
       this.props.next();
     }
@@ -30,13 +38,13 @@ class Learn extends Component {
   }
 
   render() {
-    const task=this.props.taskData[this.state.pos];
+    const task = this.props.taskData[this.state.pos];
     return (
       <div className="container">
-        <audio id="player" src={"sounds/" + task.audio} />
-        <h2 className="word-display">{task.word}</h2>
-        <h3 className="meaning-display">{task.meaning}</h3>
-        <button  onClick={this.next}>
+        <audio ref={this.player} src={"sounds/" + task.audio} />
+        <h2 className="keys-display">{task.keys}</h2>
+        <h3 className="info-display">{task.info}</h3>
+        <button onClick={this.next}>
           {"记住了！"}
         </button>
       </div>

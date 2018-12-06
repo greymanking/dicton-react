@@ -10,48 +10,55 @@ import ajax from '../common/ajaxPromise.js';
 import '../css/App.css';
 import '../css/custom.css';
 
-const STARTER=0, LEARN=1, PUZZLE=2, DICTATION=3, ENDING=4;
-const READY=0, LOADING=1, FAIL=2;
+const STARTER = 0, LEARN = 1, PUZZLE = 2, DICTATION = 3, ENDING = 4;
+const READY = 0, LOADING = 1, FAIL = 2;
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={stage:STARTER,datas:LOADING};
-    this.taskData=null;
-    this.lists={}
+    this.state = { stage: STARTER, datas: LOADING };
+    this.taskData = null;
+    this.initTasks();
 
-    this.next=this.next.bind(this);
+    this.next = this.next.bind(this);
   }
 
   fetch() {
     ajax("/data.json").then(
-      (data)=>{this.taskData=JSON.parse(data);this.sortup();this.setState({datas:READY})},
-      (reason)=>{this.setState({datas:FAIL});console.log(reason);}
+      (data) => { let taskData = JSON.parse(data); this.sortup(taskData); this.setState({ datas: READY }) },
+      (reason) => { this.setState({ datas: FAIL }); console.log(reason); }
     )
   }
 
-  sortup(){
-    this.lists={learn:[],puzzle:[],dictation:[]}
-    for (let t of this.taskData){
-      if(t.type===0){
-        this.lists.learn.push(t);
-        this.lists.puzzle.push(t);
-        this.lists.dictation.push(t);
-      } else if (t.type<3) {
-        this.lists.puzzle.push(t);
-        this.lists.dictation.push(t);
-      } else  {
-        this.lists.dictation.push(t);
+  initTasks() {
+    this.newTasks = [];
+    this.firstReviewTasks = [];
+    this.allTasks = [];
+  }
+
+  sortup(taskData) {
+    this.initTasks();
+
+    for (let t of taskData) {
+      if (t.type === 0) {
+        this.newTasks.push(t);
+        this.firstReviewTasks.push(t);
+        this.allTasks.push(t);
+      } else if (t.type < 3) {
+        this.firstReviewTasks.push(t);
+        this.allTasks.push(t);
+      } else {
+        this.allTasks.push(t);
       }
     }
   }
 
   next() {
-    let curStage=this.state.stage;
-    if (curStage<4){
+    let curStage = this.state.stage;
+    if (curStage < 4) {
       curStage++;
     }
-    this.setState({stage:curStage});
+    this.setState({ stage: curStage });
   }
 
   componentDidMount() {
@@ -60,23 +67,24 @@ class App extends Component {
 
   render() {
 
-    let stage=null;
+    let stage = null;
 
-    switch(this.state.stage){
+    switch (this.state.stage) {
       case STARTER:
-      stage=<Starter datas={this.state.datas} start={this.next} taskLists={this.lists} />
-      break;
+        stage = <Starter datas={this.state.datas} start={this.next}
+          newTasks={this.newTasks} allTasks={this.allTasks} />
+        break;
       case LEARN:
-      stage=<Learn next={this.next} taskData={this.lists.learn} />
-      break;
+        stage = <Learn next={this.next} taskData={this.newTasks} />
+        break;
       case PUZZLE:
-      stage=<Puzzle next={this.next} taskData={this.lists.puzzle}  />
-      break;
+        stage = <Puzzle next={this.next} taskData={this.firstReviewTasks} />
+        break;
       case DICTATION:
-      stage=<Dictation next={this.next}  taskData={this.lists.dictation} />
-      break;
+        stage = <Dictation next={this.next} taskData={this.allTasks} />
+        break;
       default:
-      stage=<h3>今日份练习已完成<br />休息一下吧！</h3>
+        stage = <h3>今日份练习已完成<br />休息一下吧！</h3>
     }
     return (
       <div className="App">

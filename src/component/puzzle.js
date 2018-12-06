@@ -15,13 +15,16 @@ class Puzzle extends Component {
 
     this.stateExtra = {
       needRefresh: false,
-      shuffled: shuffle(this.props.taskData[this.state.pos].word, 10),
+      shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
     };
+    
+    this.player=React.createRef();
 
     this.addChar = this.addChar.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
 
   addChar(chr) {
@@ -33,14 +36,19 @@ class Puzzle extends Component {
   }
 
   playSound() {
-    setTimeout(() => { document.getElementById("player").play(); }, 700)
+    setTimeout(() => {
+      let pl=this.player.current;
+      if(pl){
+        pl.play(); 
+      }
+    },700)
   }
 
   reflow() {
     const task = this.props.taskData[this.state.pos]
 
     this.stateExtra.needRefresh = true;
-    this.stateExtra.shuffled = shuffle(task.word, 10);
+    this.stateExtra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
       achieve: NOERROR,
@@ -52,11 +60,11 @@ class Puzzle extends Component {
   }
 
   checkComposed(composed) {
-    const word = this.props.taskData[this.state.pos].word;
+    const keys = this.props.taskData[this.state.pos].keys;
 
-    if (composed === word) {
+    if (composed === keys) {
       return SUCCESS;
-    } else if (word.indexOf(composed) === 0) {
+    } else if (keys.indexOf(composed) === 0) {
       return NOERROR;
     } else {
       return WRONG;
@@ -64,9 +72,9 @@ class Puzzle extends Component {
   }
 
   next() {
-    const nextPos = this.state.pos+1;
-    if(nextPos<this.props.taskData.length){
-      this.setState({ pos: nextPos}, this.reflow);
+    const nextPos = this.state.pos + 1;
+    if (nextPos < this.props.taskData.length) {
+      this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
     }
@@ -82,16 +90,17 @@ class Puzzle extends Component {
 
     return (
       <div className="container">
-        <audio id="player" src={"sounds/" + task.audio} />
+        <audio ref={this.player} src={"sounds/" + task.audio} />
         <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div className="btn-panel">
           {this.stateExtra.shuffled.map(
             (chr, idx) => {
-              return <PuzzleSlot refresh={this.stateExtra.needRefresh} char={chr} key={idx} sendChar={this.addChar} />
+              return <PuzzlePiece refresh={this.stateExtra.needRefresh}
+                char={chr} key={idx} sendChar={this.addChar} />
             }
           )}
         </div>
-        <h3 className="meaning-display">{task.meaning}</h3>
+        <h3 className="info-display">{task.info}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"重 试"}
         </button>
@@ -103,7 +112,7 @@ class Puzzle extends Component {
   }
 }
 
-class PuzzleSlot extends Component {
+class PuzzlePiece extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -124,7 +133,8 @@ class PuzzleSlot extends Component {
     const style = { color: this.state.clicked ? "grey" : "black" }
 
     return (
-      <span style={style} onClick={this.onClick}>{this.props.char}</span>
+      <span style={style} onClick={this.onClick}>
+      {this.props.char===" "?"　":this.props.char}</span>
     );
   }
 

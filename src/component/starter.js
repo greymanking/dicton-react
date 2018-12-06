@@ -20,14 +20,12 @@ class Starter extends Component {
     const ds=this.props.datas;
 
     if(ds===READY){
-      const lst=this.props.taskLists;
-
       info=
       <div>
         <h4>
-          我们今天要学习{lst.learn.length}个新单词:<br />
-          {lst.learn.map((t)=>{return t.word}).join(" / ")}<br /><br />
-          复习{lst.dictation.length-lst.learn.length}个单词。
+          我们今天要学习{this.props.newTasks.length}个新单词:<br />
+          {this.props.newTasks.map((t)=>{return t.keys}).join(" / ")}<br /><br />
+          复习{this.props.allTasks.length-this.props.newTasks.length}个单词。
         </h4>
         <button onClick={this.start}>让我们开始吧！</button>
       </div>

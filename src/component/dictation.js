@@ -11,12 +11,15 @@ class Dictation extends Component {
       achieve: NOERROR,
       composed: "",
     }
+    
+    this.player=React.createRef();
 
     this.onInput = this.onInput.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
 
   onInput(event) {
@@ -41,7 +44,12 @@ class Dictation extends Component {
   }
 
   playSound() {
-    setTimeout(() => { document.getElementById("player").play(); }, 700)
+    setTimeout(() => {
+      let pl=this.player.current;
+      if(pl){
+        pl.play(); 
+      }
+    },700)
   }
 
   reflow() {
@@ -54,11 +62,11 @@ class Dictation extends Component {
   }
 
   checkComposed(composed) {
-    const word = this.props.taskData[this.state.pos].word;
+    const keys = this.props.taskData[this.state.pos].keys;
 
-    if (composed === word) {
+    if (composed === keys) {
       return SUCCESS;
-    } else if (word.indexOf(composed) === 0) {
+    } else if (keys.indexOf(composed) === 0) {
       return NOERROR;
     } else {
       return WRONG;
@@ -84,10 +92,10 @@ class Dictation extends Component {
 
     return (
       <div className="container">
-        <audio id="player" src={"sounds/" + this.props.taskData[this.state.pos].audio} />
+        <audio ref={this.player} src={"sounds/" + this.props.taskData[this.state.pos].audio} />
         <input id="text-input" value={this.state.composed} className={this.state.achieve}
           onChange={this.onInput} onKeyPress={this.onKeyPress} />
-        <h3 className="meaning-display">{this.props.taskData[this.state.pos].meaning}</h3>
+        <h3 className="info-display">{this.props.taskData[this.state.pos].info}</h3>
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"清 空"}
         </button>

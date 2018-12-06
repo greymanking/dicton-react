@@ -1,11 +1,11 @@
 [
-  { "ID": 1, "word": "after", "meaning": "在……之后", "audio": "after.mp3","type":4},
-  { "ID": 2, "word": "afraid", "meaning": "害怕，恐怕", "audio": "afraid.mp3","type":3 },
-  { "ID": 3, "word": "active", "meaning": "积极的，活跃的", "audio": "active.mp3" ,"type":4},
-  { "ID": 4, "word": "went", "meaning": "go（去）的过去时","audio":"went.mp3" ,"type":2},
-  { "ID": 5, "word": "sit", "meaning": "坐","audio":"sit.mp3" ,"type":1},
-  { "ID": 6, "word": "ice-skate", "meaning": "滑冰","audio":"ice-skate.mp3","type":2 },
-  { "ID": 7, "word": "hear", "meaning": "听到","audio":"hear.mp3" ,"type":0},
-  { "ID": 8, "word": "become", "meaning": "成为","audio":"become.mp3" ,"type":0},
-  { "ID": 9, "word": "badminton", "meaning": "羽毛球","audio":"badminton.mp3" ,"type":0}
+  { "ID": 1, "keys": "after", "info": "在……之后", "audio": "after.mp3","type":4},
+  { "ID": 2, "keys": "afraid", "info": "害怕，恐怕", "audio": "afraid.mp3","type":3 },
+  { "ID": 3, "keys": "active", "info": "积极的，活跃的", "audio": "active.mp3" ,"type":4},
+  { "ID": 4, "keys": "went", "info": "go（去）的过去时","audio":"went.mp3" ,"type":2},
+  { "ID": 5, "keys": "sit", "info": "坐","audio":"sit.mp3" ,"type":1},
+  { "ID": 6, "keys": "ice skate", "info": "滑冰","audio":"ice-skate.mp3","type":2 },
+  { "ID": 7, "keys": "hear", "info": "听到","audio":"hear.mp3" ,"type":0},
+  { "ID": 8, "keys": "become", "info": "成为","audio":"become.mp3" ,"type":0},
+  { "ID": 9, "keys": "badminton", "info": "羽毛球","audio":"badminton.mp3" ,"type":0}
 ]
