@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import shuffle from "../common/shuffle.js"
 
-const NOERROR = "noerror", SUCCESS = "right", WRONG = "wrong";
+const audioPath="http://localhost:4000/sounds/"
+const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
 
 class Puzzle extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pos: 0,
-      achieve: NOERROR,
+      pos: 9,
+      achieve: NORMAL,
       composed: "",
     }
 
@@ -51,7 +52,7 @@ class Puzzle extends Component {
     this.stateExtra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
-      achieve: NOERROR,
+      achieve: NORMAL,
       composed: "",
     },
       () => { this.stateExtra.needRefresh = false }
@@ -65,7 +66,7 @@ class Puzzle extends Component {
     if (composed === keys) {
       return SUCCESS;
     } else if (keys.indexOf(composed) === 0) {
-      return NOERROR;
+      return NORMAL;
     } else {
       return WRONG;
     }
@@ -90,7 +91,7 @@ class Puzzle extends Component {
 
     return (
       <div className="container">
-        <audio ref={this.player} src={"sounds/" + task.audio} />
+        <audio ref={this.player} src={audioPath+ task.audio} />
         <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div className="btn-panel">
           {this.stateExtra.shuffled.map(
@@ -104,7 +105,8 @@ class Puzzle extends Component {
         <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"重 试"}
         </button>
-        <button style={{ display: success ? "inline" : "none" }} onClick={this.next}>
+        <button style={{ display: success ? "inline" : "none" }} className="forwardable"
+         onClick={this.next}>
           {"继 续"}
         </button>
       </div>

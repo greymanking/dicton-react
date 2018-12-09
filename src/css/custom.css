@@ -15,6 +15,10 @@ button {
     background-color: #A26273;
 }
 
+/* .forwardable {
+    background-color:#E7E7EB;
+} */
+
 input {
     outline:none;
     border-width: 0 0 1px 0;
@@ -31,7 +35,7 @@ input {
     color:red
 }
 
-.noerror {
+.normal {
     color:black
 }
 
@@ -45,4 +49,5 @@ input {
     height:1.5em;
     background-color:#E4B2B6;
     border-radius:5px;
+    vertical-align: bottom /*默认是baseline*/
 }

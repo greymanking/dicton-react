@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-
+const audioPath="http://localhost:4000/sounds/"
 class Learn extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pos: 0,
+      pos: 9,
     }
     
     this.player=React.createRef();
@@ -41,7 +41,7 @@ class Learn extends Component {
     const task = this.props.taskData[this.state.pos];
     return (
       <div className="container">
-        <audio ref={this.player} src={"sounds/" + task.audio} />
+        <audio ref={this.player} src={audioPath + task.audio} />
         <h2 className="keys-display">{task.keys}</h2>
         <h3 className="info-display">{task.info}</h3>
         <button onClick={this.next}>

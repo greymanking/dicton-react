@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 
-const NOERROR = "noerror", SUCCESS = "right", WRONG = "wrong";
-
+const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
+const audioPath = "http://localhost:4000/sounds/"
 class Dictation extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pos: 0,
-      achieve: NOERROR,
-      composed: "",
+      pos: 8,
+      achieve: NORMAL,
     }
-    
-    this.player=React.createRef();
 
-    this.onInput = this.onInput.bind(this);
+    this.player = React.createRef();
+    this.input = React.createRef();
+
+    this.onChange = this.onChange.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
@@ -22,43 +22,60 @@ class Dictation extends Component {
     this.playSound = this.playSound.bind(this);
   }
 
-  onInput(event) {
-    const composed = event.target.value;
-    this.setState({
-      composed: composed,
-      achieve: this.checkComposed(composed)
-    });
+  onChange(event) {
+    if (this.state.achieve !== NORMAL) {
+      this.setState({
+        achieve: NORMAL
+      });
+    }
   }
 
   onKeyPress(event) {
     if (event.charCode === 13) {
-      console.log("enter")
       if (this.state.achieve === SUCCESS) {
-        console.log("ss");
         this.next();
       } else {
-        console.log("re");
-        this.reflow();
+        this.submit();
       }
     }
   }
 
   playSound() {
     setTimeout(() => {
-      let pl=this.player.current;
-      if(pl){
-        pl.play(); 
+      let pl = this.player.current;
+      if (pl) {
+        pl.play();
       }
-    },700)
+    }, 700)
   }
 
   reflow() {
     this.setState({
-      achieve: NOERROR,
-      composed: "",
+      achieve: NORMAL
     })
     this.playSound();
-    document.getElementById("text-input").focus();
+    this.input.current.value = "";
+    this.input.current.focus();
+  }
+
+  submit() {
+    const task = this.props.taskData[this.state.pos];
+    let status = task.status;
+    const acv = this.checkComposed(this.input.current.value);
+
+    //如已尝试，则成绩不再改变
+    if (!task.tried) {
+      //为了后面操作方便，对于奇数status，取平至偶数
+      if (status % 2 !== 0) {
+        status++;
+      }
+      status += (acv === SUCCESS ? 1 : 2);
+      task.status = status;
+      task.tried = true;
+    }
+    this.setState({
+      achieve: acv
+    });
   }
 
   checkComposed(composed) {
@@ -66,8 +83,6 @@ class Dictation extends Component {
 
     if (composed === keys) {
       return SUCCESS;
-    } else if (keys.indexOf(composed) === 0) {
-      return NOERROR;
     } else {
       return WRONG;
     }
@@ -84,7 +99,7 @@ class Dictation extends Component {
 
   componentDidMount() {
     this.playSound();
-    document.getElementById("text-input").focus();
+    this.input.current.focus();
   }
 
   render() {
@@ -92,14 +107,15 @@ class Dictation extends Component {
 
     return (
       <div className="container">
-        <audio ref={this.player} src={"sounds/" + this.props.taskData[this.state.pos].audio} />
-        <input id="text-input" value={this.state.composed} className={this.state.achieve}
-          onChange={this.onInput} onKeyPress={this.onKeyPress} />
+        <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
+        <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}
+          onChange={this.onChange} />
         <h3 className="info-display">{this.props.taskData[this.state.pos].info}</h3>
-        <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
-          {"清 空"}
+        <button style={{ display: success ? "none" : "inline" }} onClick={this.submit}>
+          {"提 交"}
         </button>
-        <button style={{ display: success ? "inline" : "none" }} onClick={this.next}>
+        <button style={{ display: success ? "inline" : "none" }} onClick={this.next}
+          className="forwardable" >
           {"继 续"}
         </button>
       </div>
