@@ -6,7 +6,7 @@ class Learn extends Component {
     super(props);
 
     this.state = {
-      pos: 9,
+      pos: 0,
     }
     
     this.player=React.createRef();

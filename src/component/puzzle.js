@@ -9,7 +9,7 @@ class Puzzle extends Component {
     super(props);
 
     this.state = {
-      pos: 9,
+      pos: 0,
       achieve: NORMAL,
       composed: "",
     }

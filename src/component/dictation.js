@@ -7,7 +7,7 @@ class Dictation extends Component {
     super(props);
 
     this.state = {
-      pos: 8,
+      pos: 0,
       achieve: NORMAL,
     }
 

@@ -110,7 +110,7 @@ class App extends Component {
         console.log(this.dictationTasks);
         const dataSubmit=[]
         for (let t of this.dictationTasks){
-          dataSubmit.push({id:t.id,status:t.status})
+          dataSubmit.push({taskid:t.id,status:t.status})
         }
         ajaxPost('http://localhost:4000/submit',JSON.stringify(dataSubmit),'json').then(
           (data)=>{},
