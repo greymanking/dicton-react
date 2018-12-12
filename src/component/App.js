@@ -28,6 +28,7 @@ class App extends Component {
   fetch() {
     ajaxGet("http://localhost:4000/data.json").then(
       (data) => {
+        console.log(data)
         let taskData = JSON.parse(data);
         this.sortup(taskData);
         this.setState({ datas: READY })
@@ -110,7 +111,7 @@ class App extends Component {
         console.log(this.dictationTasks);
         const dataSubmit=[]
         for (let t of this.dictationTasks){
-          dataSubmit.push({taskid:t.id,status:t.status})
+          dataSubmit.push({taskid:t.taskid,status:t.status,lastrec:t.lastrec})
         }
         ajaxPost('http://localhost:4000/submit',JSON.stringify(dataSubmit),'json').then(
           (data)=>{},
