@@ -120,7 +120,7 @@ class App extends Component {
         for (let t of this.dictationTasks) {
           dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
         }
-        ajaxPost('http://localhost:4000/submit', JSON.stringify(dataSubmit), 'json').then(
+        ajaxPost('/submit', JSON.stringify(dataSubmit), 'json').then(
           (data) => { },
           (reason) => { }
         )
