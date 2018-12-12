@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const audioPath="http://localhost:4000/sounds/"
+const audioPath="/sounds/"
 class Learn extends Component {
   constructor(props) {
     super(props);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import shuffle from "../common/shuffle.js"
 
-const audioPath="http://localhost:4000/sounds/"
+const audioPath="/sounds/"
 const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
 
 class Puzzle extends Component {

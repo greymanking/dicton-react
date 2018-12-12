@@ -5,12 +5,12 @@ import Puzzle from './puzzle.js'
 import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
-import {ajaxGet,ajaxPost} from '../common/ajaxPromise.js';
+import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
 import '../css/App.css';
 import '../css/custom.css';
 
-const STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
+const NODATA = -2, STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
 const READY = 0, LOADING = 1, FAIL = 2;
 
 
@@ -26,10 +26,14 @@ class App extends Component {
   }
 
   fetch() {
-    ajaxGet("http://localhost:4000/data.json").then(
+    ajaxGet("/data.json").then(
       (data) => {
-        console.log(data)
+        //console.log(data)
         let taskData = JSON.parse(data);
+        if (!taskData) {
+          this.setState({ stage: NODATA })
+          return
+        }
         this.sortup(taskData);
         this.setState({ datas: READY })
       },
@@ -66,8 +70,8 @@ class App extends Component {
       }
     }
 
-    for(let t of this.dictationTasks){
-      t.tried=false;
+    for (let t of this.dictationTasks) {
+      t.tried = false;
     }
   }
 
@@ -94,6 +98,9 @@ class App extends Component {
     let stage = null;
 
     switch (this.state.stage) {
+      case NODATA:
+        stage = <h3>好像没有什么东西可学的。<br />要么就是服务不可用~~~</h3>
+        break;
       case STARTER:
         stage = <Starter datas={this.state.datas} start={this.next}
           newTasks={this.learnTasks} allTasks={this.dictationTasks} />
@@ -109,13 +116,13 @@ class App extends Component {
         break;
       default:
         console.log(this.dictationTasks);
-        const dataSubmit=[]
-        for (let t of this.dictationTasks){
-          dataSubmit.push({taskid:t.taskid,status:t.status,lastrec:t.lastrec})
+        const dataSubmit = []
+        for (let t of this.dictationTasks) {
+          dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
         }
-        ajaxPost('http://localhost:4000/submit',JSON.stringify(dataSubmit),'json').then(
-          (data)=>{},
-          (reason)=>{}
+        ajaxPost('http://localhost:4000/submit', JSON.stringify(dataSubmit), 'json').then(
+          (data) => { },
+          (reason) => { }
         )
         stage = <h3>今日份练习已完成<br />休息一下吧！</h3>
     }

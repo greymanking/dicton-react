@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
-const audioPath = "http://localhost:4000/sounds/"
+const audioPath = "/sounds/"
 class Dictation extends Component {
   constructor(props) {
     super(props);
