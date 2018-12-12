@@ -20,6 +20,7 @@ class Dictation extends Component {
     this.next = this.next.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.playSound = this.playSound.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   onChange(event) {
