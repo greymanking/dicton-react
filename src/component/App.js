@@ -5,15 +5,16 @@ import Puzzle from './puzzle.js'
 import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
+import Sign from './sign.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
 import '../css/App.css';
 import '../css/custom.css';
-import {hostPath} from '../common/consts.js'
+import { hostPath } from '../common/consts.js'
 
-const NODATA = -2, STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
+const SIGNUP = -4, SIGNIN = -3, NODATA = -2, STARTER = -1,
+  LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
 const READY = 0, LOADING = 1, FAIL = 2;
-
 
 class App extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class App extends Component {
   }
 
   fetch() {
-    ajaxGet(hostPath+'data.json').then(
+    ajaxGet(hostPath + 'data.json').then(
       (data) => {
         //console.log(data)
         let taskData = JSON.parse(data);
@@ -99,6 +100,12 @@ class App extends Component {
     let stage = null;
 
     switch (this.state.stage) {
+      case SIGNIN:
+        stage = <Sign type="signin" />
+        break;
+      case SIGNUP:
+        stage = <Sign type="signup" />
+        break;
       case NODATA:
         stage = <h3>好像没有什么东西可学的。<br />要么就是服务不可用~~~</h3>
         break;
@@ -115,13 +122,13 @@ class App extends Component {
       case DICTATION:
         stage = <Dictation next={this.next} taskData={this.dictationTasks} />
         break;
-      default:
+      case ENDING:
         console.log(this.dictationTasks);
         const dataSubmit = []
         for (let t of this.dictationTasks) {
           dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
         }
-        ajaxPost(hostPath+'submit', JSON.stringify(dataSubmit), 'json').then(
+        ajaxPost(hostPath + 'submit', JSON.stringify(dataSubmit), 'json').then(
           (data) => { },
           (reason) => { }
         )
@@ -129,6 +136,7 @@ class App extends Component {
     }
     return (
       <div className="App">
+        <div className="message">消息栏</div>
         {stage}
       </div>
     );

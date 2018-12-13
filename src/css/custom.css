@@ -13,6 +13,7 @@ button {
     padding: 10px 20px;
     color: #fff;
     background-color: #A26273;
+    width:4cm;
 }
 
 /* .forwardable {
@@ -25,6 +26,7 @@ input {
     font-size:1.5em;
     width:100%;
     text-align:center;
+    margin-top:10px
 }
 
 .right {
@@ -50,4 +52,23 @@ input {
     background-color:#E4B2B6;
     border-radius:5px;
     vertical-align: bottom /*默认是baseline*/
+}
+
+.message {
+    height:1.5em;
+    background-color: goldenrod;
+    padding:8px 12px;
+    color:whitesmoke;
+    vertical-align: center;
+    text-align:left
+}
+
+.sign_form {
+    text-align:left;
+    padding:15px 0
+}
+
+.btn_cont {
+    margin:15px;
+    text-align:center
 }

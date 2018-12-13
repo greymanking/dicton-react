@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import {audioPath} from '../common/consts.js'
-
-const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
+import {audioPath, NORMAL, SUCCESS, WRONG} from '../common/consts.js'
 
 
 class Dictation extends Component {
   constructor(props) {
     super(props);
-    console.log(window.hostPath)
 
     this.state = {
       pos: 0,
