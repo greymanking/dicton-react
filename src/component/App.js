@@ -9,6 +9,7 @@ import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
 import '../css/App.css';
 import '../css/custom.css';
+import {hostPath} from '../common/consts.js'
 
 const NODATA = -2, STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
 const READY = 0, LOADING = 1, FAIL = 2;
@@ -26,7 +27,7 @@ class App extends Component {
   }
 
   fetch() {
-    ajaxGet("/data.json").then(
+    ajaxGet(hostPath+'data.json').then(
       (data) => {
         //console.log(data)
         let taskData = JSON.parse(data);
@@ -120,7 +121,7 @@ class App extends Component {
         for (let t of this.dictationTasks) {
           dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
         }
-        ajaxPost('/submit', JSON.stringify(dataSubmit), 'json').then(
+        ajaxPost(hostPath+'submit', JSON.stringify(dataSubmit), 'json').then(
           (data) => { },
           (reason) => { }
         )

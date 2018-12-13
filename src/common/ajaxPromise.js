@@ -2,7 +2,7 @@ function ajax(url, method, body, contentType) {
     var p = new Promise(function (resolve, reject) {
 
         var xhr = new XMLHttpRequest();
-
+        xhr.timeout = 10000;
 
         xhr.open(method, url, true);
         xhr.onload = function (ev) {

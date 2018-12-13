@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import shuffle from "../common/shuffle.js"
 
-const audioPath="/sounds/"
+import {audioPath} from '../common/consts.js'
 const NORMAL = "normal", SUCCESS = "right", WRONG = "wrong";
 
 class Puzzle extends Component {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-const audioPath="/sounds/"
+import {audioPath} from '../common/consts.js'
+
 class Learn extends Component {
   constructor(props) {
     super(props);
