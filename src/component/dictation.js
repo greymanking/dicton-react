@@ -122,7 +122,7 @@ class Dictation extends Component {
     return (
       <div className='container'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
-        <div className='message' style={{ visibility: this.state.tipping ? "visible" : "hidden" }}>
+        <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden" }}>
           {this.props.taskData[this.state.pos].keys}
         </div>
         <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}

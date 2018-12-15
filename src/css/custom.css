@@ -6,14 +6,19 @@ body {
     margin:20px auto;
     width:8cm;
     background-color:#fff; 
-    padding:15px 20px 25px 20px;
+    padding:15px 20px 20px 20px;
+    border-bottom: 2px solid rgba(128, 128, 128, 0.212);
+    border-right: 2px solid rgba(128, 128, 128, 0.212);
 }
 
 button {
     padding: 10px 20px;
     color: #fff;
     background-color: #A26273;
-    margin:0 10px
+    margin:0 10px;
+    outline:none;
+    border:none;
+    border-radius:7px;
 }
 
 /* .forwardable {
@@ -23,10 +28,9 @@ button {
 input {
     outline:none;
     border-width: 0 0 1px 0;
-    font-size:1.5em;
-    width:100%;
+    font-size:1.2em;
     text-align:center;
-    margin-top:10px
+    margin:10px;
 }
 
 .right {
@@ -41,26 +45,30 @@ input {
     color:black
 }
 
-.btn-panel span {
+.small_btn {
     display: inline-block;
     padding: 5px;
-    font-size: 30px;
+    font-size: 25px;
     margin: 4px;
     cursor: pointer;
     width: 1em;
-    height:1.5em;
+    height:1.2em; 
     background-color:#E4B2B6;
     border-radius:5px;
     vertical-align: bottom /*默认是baseline*/
 }
 
 .message {
-    height:1.5em;
-    background-color: goldenrod;
-    padding:8px 12px;
-    color:whitesmoke;
+    margin:8px 0 15px 0;
     vertical-align: center;
-    text-align:left
+    text-align:left;
+    padding:5px;
+    color:red;
+    font-size:0.7em
+}
+
+.tip {
+    color:rgba(18, 130, 241, 0.8); 
 }
 
 .sign_form {

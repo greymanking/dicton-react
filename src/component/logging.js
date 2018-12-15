@@ -29,9 +29,9 @@ class Logging extends Component {
 
   alter() {
     if (this.state.type === 0) {
-      this.setState({ type: 1 })
+      this.setState({ type: 1, msgVisible: false })
     } else {
-      this.setState({ type: 0 })
+      this.setState({ type: 0, msgVisible: false })
     }
   }
 
@@ -59,21 +59,24 @@ class Logging extends Component {
   render() {
     return (
       <div>
-        <div className='message' style={{ visibility: this.state.msgVisible ? "visible" : "hidden" }}>
-          {this.extra.msg}
-        </div>
-        <span>用户名</span>
-        <input type='text' name='user_name' id='user_name' />
-        <br />
-        <span>输入密码</span>
-        <input type='password' name='pswd' id='pswd' />
-        <br />
-        {this.state.type === 1 && <React.Fragment><span>确认密码</span>
-          <input type='password' name='conf_pswd' id='pswd' /></React.Fragment>}
-        <div className='btn_cont'>
-          <button onClick={this.login}>{this.state.type === 0 ? '登  录' : '注  册'}</button>
-          <span className='scd_btn' onClick={this.alter}>{this.state.type === 0 ? '注册新用户' : '登  录'}</span>
-        </div>
+        <h4>{this.state.type === 0 ? '登　录' : '注　册'}</h4>
+        <form>
+          <span>用户名称</span>
+          <input type='text' name='user_name' id='user_name' />
+          <br />
+          <span>密　　码</span>
+          <input type='password' name='pswd' id='pswd' />
+          <br />
+          {this.state.type === 1 && <React.Fragment><span>确认密码</span>
+            <input type='password' name='conf_pswd' id='pswd' /></React.Fragment>}
+          <div className='message' style={{ display: this.state.msgVisible ? "block" : "none" }}>
+            {this.extra.msg}
+          </div>
+          <div className='btn_cont'>
+            <button onClick={this.login}>{this.state.type === 0 ? '登　录' : '注　册'}</button>
+            <span className='scd_btn' onClick={this.alter}>{this.state.type === 0 ? '注册新用户' : '登  录'}</span>
+          </div>
+        </form>
       </div>
     )
   }

@@ -134,7 +134,7 @@ class PuzzlePiece extends Component {
     const style = { color: this.state.clicked ? "grey" : "black" }
 
     return (
-      <span style={style} onClick={this.onClick}>
+      <span style={style} className='small_btn' onClick={this.onClick}>
       {this.props.char===" "?"　":this.props.char}</span>
     );
   }
