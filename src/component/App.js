@@ -1,3 +1,5 @@
+//todo: on upload unauth
+
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 
@@ -5,44 +7,90 @@ import Puzzle from './puzzle.js'
 import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
-import Sign from './sign.js'
+import Logging from './logging.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
 import '../css/App.css';
 import '../css/custom.css';
-import { hostPath } from '../common/consts.js'
+import { hostPath, MESSAGE } from '../common/consts.js'
 
-const SIGNUP = -4, SIGNIN = -3, NODATA = -2, STARTER = -1,
-  LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
-const READY = 0, LOADING = 1, FAIL = 2;
+const LOADING = -4, ABNORMAL = -3, LOGGING = -2,
+  STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, UPLOADING = 3, ENDING = 4;
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { stage: STARTER, datas: LOADING };
+    this.state = { stage: LOADING };
+    this.extra = { alert: '', userName: '', afterAuth: null }
+
     this.taskDataArray = new Array(3);
     //此句可删
     this.initTasks();
 
     this.next = this.next.bind(this);
+    this.upload = this.upload.bind(this);
+    this.fetch = this.fetch.bind(this);
+    this.dealAjaxError = this.dealAjaxError.bind(this);
+  }
+
+  dealAjaxError(reason) {
+    console.log(reason);
+    this.extra.alert = MESSAGE[reason]
+    this.setState({ stage: ABNORMAL });
   }
 
   fetch() {
+    this.extra.afterAuth = this.fetch;
+
     ajaxGet(hostPath + 'data.json').then(
       (data) => {
-        //console.log(data)
-        let taskData = JSON.parse(data);
-        if (!taskData) {
-          this.setState({ stage: NODATA })
-          return
+        if (data === 'unauth') {
+          this.extra.afterAuth=this.fetch;
+          this.setState({ stage: LOGGING })
+          return;
+        } else if (data === 'nodata') {
+          this.extra.alert = MESSAGE.nodata
+          this.setState({ stage: ABNORMAL })
+          return;
         }
-        this.sortup(taskData);
-        this.setState({ datas: READY })
+
+        //XMLHttpRequest的onerror似乎不起作用，防止其他错误的返回也有data
+        let coming = null;
+        try {
+          coming = JSON.parse(data);
+        } catch (err) {
+          this.extra.alert = MESSAGE.error;
+          this.setState({ stage: ABNORMAL });
+          return;
+        }
+        this.sortup(coming.data);
+        this.extra.userName = coming.username;
+        this.setState({ stage: STARTER })
       },
       (reason) => {
-        this.setState({ datas: FAIL });
-        console.log(reason);
+        this.dealAjaxError(reason)
       }
+    )
+  }
+
+  upload() {
+    this.extra.afterAuth = this.upload;
+
+    console.log(this.dictationTasks);
+    const dataSubmit = []
+    for (let t of this.dictationTasks) {
+      dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
+    }
+    ajaxPost(hostPath + 'submit', JSON.stringify(dataSubmit), 'json').then(
+      (data) => {
+        if (data != 'OK') {
+          this.extra.alert=MESSAGE.uploadfail;
+          this.setState({stage:ABNORMAL})
+        }else{
+          this.setState({stage:ENDING})
+        }
+      },
+      (reason) => { this.dealAjaxError(reason) }
     )
   }
 
@@ -79,12 +127,11 @@ class App extends Component {
 
   next() {
     let curStage = this.state.stage;
-    while (curStage < ENDING) {
+    while (curStage < UPLOADING) {
       curStage++;
-      if (curStage === ENDING) {
-        break
-      }
-      else if (this.taskDataArray[curStage].length > 0) {
+      if (curStage === UPLOADING) {
+        this.upload();
+      } else if (this.taskDataArray[curStage].length > 0) {
         break;
       }
     }
@@ -100,17 +147,17 @@ class App extends Component {
     let stage = null;
 
     switch (this.state.stage) {
-      case SIGNIN:
-        stage = <Sign type="signin" />
+      case LOADING:
+        stage = <h3>{MESSAGE.loading}</h3>
         break;
-      case SIGNUP:
-        stage = <Sign type="signup" />
+      case LOGGING:
+        stage = <Logging after={this.extra.afterAuth} />
         break;
-      case NODATA:
-        stage = <h3>好像没有什么东西可学的。<br />要么就是服务不可用~~~</h3>
+      case ABNORMAL:
+        stage = <h3>{this.extra.alert}</h3>
         break;
       case STARTER:
-        stage = <Starter datas={this.state.datas} start={this.next}
+        stage = <Starter start={this.next} userName={this.extra.userName}
           newTasks={this.learnTasks} allTasks={this.dictationTasks} />
         break;
       case LEARN:
@@ -122,21 +169,17 @@ class App extends Component {
       case DICTATION:
         stage = <Dictation next={this.next} taskData={this.dictationTasks} />
         break;
+      case UPLOADING:
+        stage = <h3>{MESSAGE.uploading}</h3>
+        break;
       case ENDING:
-        console.log(this.dictationTasks);
-        const dataSubmit = []
-        for (let t of this.dictationTasks) {
-          dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
-        }
-        ajaxPost(hostPath + 'submit', JSON.stringify(dataSubmit), 'json').then(
-          (data) => { },
-          (reason) => { }
-        )
-        stage = <h3>今日份练习已完成<br />休息一下吧！</h3>
+        stage = <h3>{MESSAGE.rest}</h3>
+        break;
+      default:
+        stage = <h3>我已经彻底迷茫了！！</h3>
     }
     return (
-      <div className="App">
-        <div className="message">消息栏</div>
+      <div className='App'>
         {stage}
       </div>
     );

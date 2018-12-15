@@ -8,12 +8,13 @@ function ajax(url, method, body, contentType) {
         xhr.onload = function (ev) {
             resolve(this.responseText);
         }
-        xhr.onerror = function (ev) { reject(ev.error) }
-        xhr.ontimeout = function (ev) { reject("time out") }
+        //onerror似乎不起作用
+        xhr.onerror = function (ev) { reject('error') }
+        xhr.ontimeout = function (ev) { reject('timeout') }
 
-        let ct = 'text/plain;charset=utf-8"'
-        if (contentType === 'json') { ct = 'application/json;charset=utf-8"' }
-        else if (contentType === 'xform') { ct = 'application/x-www-form-urlencoded;charset=utf-8"' }
+        let ct = 'text/plain;charset=utf-8'
+        if (contentType === 'json') { ct = 'application/json;charset=utf-8' }
+        else if (contentType === 'xform') { ct = 'application/x-www-form-urlencoded;charset=utf-8' }
         xhr.setRequestHeader('content-type', ct)
 
         xhr.send(body);

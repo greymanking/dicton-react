@@ -13,7 +13,7 @@ button {
     padding: 10px 20px;
     color: #fff;
     background-color: #A26273;
-    width:4cm;
+    margin:0 10px
 }
 
 /* .forwardable {
@@ -71,4 +71,10 @@ input {
 .btn_cont {
     margin:15px;
     text-align:center
+}
+
+.scd_btn {
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.8em
 }

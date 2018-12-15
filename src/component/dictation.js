@@ -1,5 +1,7 @@
+//todo:正确时的消息；软键盘
+
 import React, { Component } from 'react';
-import {audioPath, NORMAL, SUCCESS, WRONG} from '../common/consts.js'
+import { audioPath, NORMAL, SUCCESS, WRONG } from '../common/consts.js'
 
 
 class Dictation extends Component {
@@ -9,6 +11,7 @@ class Dictation extends Component {
     this.state = {
       pos: 0,
       achieve: NORMAL,
+      tipping: false
     }
 
     this.player = React.createRef();
@@ -21,6 +24,7 @@ class Dictation extends Component {
     this.onKeyPress = this.onKeyPress.bind(this);
     this.playSound = this.playSound.bind(this);
     this.submit = this.submit.bind(this);
+    this.tip = this.tip.bind(this);
   }
 
   onChange(event) {
@@ -50,12 +54,21 @@ class Dictation extends Component {
     }, 700)
   }
 
+  tip() {
+    //看了提示，就不能算一次性成功
+    const task = this.props.taskData[this.state.pos];
+    task.tried = true;
+
+    this.setState({ tipping: true });
+    setTimeout(() => { this.setState({ tipping: false }) }, 1500);
+  }
+
   reflow() {
     this.setState({
       achieve: NORMAL
     })
     this.playSound();
-    this.input.current.value = "";
+    this.input.current.value = '';
     this.input.current.focus();
   }
 
@@ -107,17 +120,23 @@ class Dictation extends Component {
     const success = this.state.achieve === SUCCESS
 
     return (
-      <div className="container">
+      <div className='container'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
+        <div className='message' style={{ visibility: this.state.tipping ? "visible" : "hidden" }}>
+          {this.props.taskData[this.state.pos].keys}
+        </div>
         <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}
           onChange={this.onChange} />
-        <h3 className="info-display">{this.props.taskData[this.state.pos].info}</h3>
-        <button style={{ display: success ? "none" : "inline" }} onClick={this.submit}>
-          {"提 交"}
+        <h3 className='info-display'>{this.props.taskData[this.state.pos].info}</h3>
+        <button style={{ display: success ? 'none' : 'inline' }} onClick={this.submit}>
+          提 交
         </button>
-        <button style={{ display: success ? "inline" : "none" }} onClick={this.next}
-          className="forwardable" >
-          {"继 续"}
+        <span style={{ display: success ? 'none' : 'inline' }} onClick={this.tip} className='scd_btn'>
+          提 示
+        </span>
+        <button style={{ display: success ? 'inline' : 'none' }} onClick={this.next}
+          className='forwardable' >
+          继 续
         </button>
       </div>
     );
