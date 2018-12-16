@@ -1,8 +1,6 @@
-//todo:新用户；美化；更优雅的数据处理和验证
-
 import React, { Component } from 'react';
 import { ajaxPost } from '../common/ajaxPromise.js';
-import { hostPath, MESSAGE } from '../common/consts.js';
+import { hostPath, MESSAGE, PATTERN } from '../common/consts.js';
 
 class Logging extends Component {
   constructor(props) {
@@ -22,9 +20,32 @@ class Logging extends Component {
     this.alter = this.alter.bind(this);
   }
 
+  componentDidMount() {
+    let nameField = document.forms['logging'].user_name;
+    if (this.props.curUser !== '') {
+      nameField.value = this.props.curUser;
+      nameField.readOnly = true;
+    }
+  }
+
   showMessage(msg) {
     this.extra.msg = msg;
     this.setState({ msgVisible: true });
+  }
+
+  validate(username, password, repassword) {
+
+    if (!PATTERN.username.test(username)) {
+      return MESSAGE.usernameInvalid;
+    }
+    if (!PATTERN.password.test(password)) {
+      return MESSAGE.passwordInvalid;
+    }
+    if (repassword && password !== repassword) {
+      return MESSAGE.passwordConfirmFail;
+    }
+
+    return 'OK';
   }
 
   alter() {
@@ -37,17 +58,37 @@ class Logging extends Component {
 
   login(e) {
     e.preventDefault();
-    ajaxPost(hostPath + 'login',
+
+    const f=document.forms['logging']
+
+    const username = f.user_name.value;
+    const password = f.password.value;
+
+    let res='';
+    if(this.state.type===0){
+      res=this.validate(username, password);
+    } else {
+      res = this.validate(username, password,f.confirm_password.value);
+    }
+
+    if (res !== 'OK') {
+      this.showMessage(res);
+      return;
+    }
+
+    ajaxPost(hostPath + (this.state.type === 0 ? 'login' : 'logup'),
       JSON.stringify({
-        Name: document.getElementById('user_name').value,
-        Password: document.getElementById('pswd').value
+        name: username,
+        password: password
       }),
       'json').then(
         (data) => {
-          if (data !== 'failure') {
-            this.props.after()
+          if (data === 'duplicated') {
+            this.showMessage(MESSAGE.usernameDuplicated);
+          } else if (data === 'OK') {
+            this.props.after();
           } else {
-            this.showMessage(MESSAGE.authfail)
+            this.showMessage(MESSAGE.authFail)
           }
         },
         (reason) => {
@@ -60,21 +101,22 @@ class Logging extends Component {
     return (
       <div>
         <h4>{this.state.type === 0 ? '登　录' : '注　册'}</h4>
-        <form>
+        <form name='logging'>
           <span>用户名称</span>
-          <input type='text' name='user_name' id='user_name' />
+          <input type='text' name='user_name' size='20' />
           <br />
           <span>密　　码</span>
-          <input type='password' name='pswd' id='pswd' />
+          <input type='password' name='password' size='20' />
           <br />
           {this.state.type === 1 && <React.Fragment><span>确认密码</span>
-            <input type='password' name='conf_pswd' id='pswd' /></React.Fragment>}
+            <input type='password' name='confirm_password' size='20' /></React.Fragment>}
           <div className='message' style={{ display: this.state.msgVisible ? "block" : "none" }}>
             {this.extra.msg}
           </div>
-          <div className='btn_cont'>
-            <button onClick={this.login}>{this.state.type === 0 ? '登　录' : '注　册'}</button>
-            <span className='scd_btn' onClick={this.alter}>{this.state.type === 0 ? '注册新用户' : '登  录'}</span>
+          <div className='button_group'>
+            <button className='button_primary' onClick={this.login}>{this.state.type === 0 ? '登　录' : '注　册'}</button>
+            <span className='link_button' style={{ display: this.props.curUser === '' ? "inline" : "none" }}
+              onClick={this.alter}>{this.state.type === 0 ? '注册新用户' : '登  录'}</span>
           </div>
         </form>
       </div>

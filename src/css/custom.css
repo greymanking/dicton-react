@@ -4,7 +4,7 @@ body {
 
 .App {
     margin:20px auto;
-    width:8cm;
+    width:8.5cm;
     background-color:#fff; 
     padding:15px 20px 20px 20px;
     border-bottom: 2px solid rgba(128, 128, 128, 0.212);
@@ -13,17 +13,21 @@ body {
 
 button {
     padding: 10px 20px;
-    color: #fff;
-    background-color: #A26273;
     margin:0 10px;
     outline:none;
-    border:none;
+    border:1px solid #A26273;
     border-radius:7px;
 }
 
-/* .forwardable {
-    background-color:#E7E7EB;
-} */
+.button_primary {
+    color: #fff;
+    background-color: #A26273;
+}
+
+.button_secondary {
+    color:black;
+    background-color: #E4B2B6;
+}
 
 input {
     outline:none;
@@ -45,7 +49,7 @@ input {
     color:black
 }
 
-.small_btn {
+.small_button {
     display: inline-block;
     padding: 5px;
     font-size: 25px;
@@ -76,12 +80,12 @@ input {
     padding:15px 0
 }
 
-.btn_cont {
+.button_group {
     margin:15px;
     text-align:center
 }
 
-.scd_btn {
+.link_button {
     cursor: pointer;
     text-decoration: underline;
     font-size: 0.8em

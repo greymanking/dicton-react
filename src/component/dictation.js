@@ -1,7 +1,7 @@
 //todo:正确时的消息；软键盘
 
 import React, { Component } from 'react';
-import { audioPath, NORMAL, SUCCESS, WRONG } from '../common/consts.js'
+import { audioPath, ACHIEVE } from '../common/consts.js'
 
 
 class Dictation extends Component {
@@ -10,7 +10,7 @@ class Dictation extends Component {
 
     this.state = {
       pos: 0,
-      achieve: NORMAL,
+      achieve: ACHIEVE.normal,
       tipping: false
     }
 
@@ -28,16 +28,16 @@ class Dictation extends Component {
   }
 
   onChange(event) {
-    if (this.state.achieve !== NORMAL) {
+    if (this.state.achieve !== ACHIEVE.normal) {
       this.setState({
-        achieve: NORMAL
+        achieve: ACHIEVE.normal
       });
     }
   }
 
   onKeyPress(event) {
     if (event.charCode === 13) {
-      if (this.state.achieve === SUCCESS) {
+      if (this.state.achieve === ACHIEVE.success) {
         this.next();
       } else {
         this.submit();
@@ -65,7 +65,7 @@ class Dictation extends Component {
 
   reflow() {
     this.setState({
-      achieve: NORMAL
+      achieve: ACHIEVE.normal
     })
     this.playSound();
     this.input.current.value = '';
@@ -83,7 +83,7 @@ class Dictation extends Component {
       if (status % 2 !== 0) {
         status++;
       }
-      status += (acv === SUCCESS ? 1 : 2);
+      status += (acv === ACHIEVE.success ? 1 : 2);
       task.status = status;
       task.tried = true;
     }
@@ -96,9 +96,9 @@ class Dictation extends Component {
     const keys = this.props.taskData[this.state.pos].keys;
 
     if (composed === keys) {
-      return SUCCESS;
+      return ACHIEVE.success;
     } else {
-      return WRONG;
+      return ACHIEVE.wrong;
     }
   }
 
@@ -117,7 +117,7 @@ class Dictation extends Component {
   }
 
   render() {
-    const success = this.state.achieve === SUCCESS
+    const success = this.state.achieve === ACHIEVE.success
 
     return (
       <div className='container'>
@@ -128,14 +128,13 @@ class Dictation extends Component {
         <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}
           onChange={this.onChange} />
         <h3 className='info-display'>{this.props.taskData[this.state.pos].info}</h3>
-        <button style={{ display: success ? 'none' : 'inline' }} onClick={this.submit}>
+        <button className='button_secondary' style={{ display: success ? 'none' : 'inline' }} onClick={this.submit}>
           提 交
         </button>
-        <span style={{ display: success ? 'none' : 'inline' }} onClick={this.tip} className='scd_btn'>
+        <span style={{ display: success ? 'none' : 'inline' }} onClick={this.tip} className='link_button'>
           提 示
         </span>
-        <button style={{ display: success ? 'inline' : 'none' }} onClick={this.next}
-          className='forwardable' >
+        <button className='button_primary' style={{ display: success ? 'inline' : 'none' }} onClick={this.next}>
           继 续
         </button>
       </div>

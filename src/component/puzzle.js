@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import shuffle from "../common/shuffle.js"
 
-import {audioPath, NORMAL, SUCCESS, WRONG} from '../common/consts.js'
+import {audioPath, ACHIEVE} from '../common/consts.js'
 
 class Puzzle extends Component {
   constructor(props) {
@@ -9,7 +9,7 @@ class Puzzle extends Component {
 
     this.state = {
       pos: 0,
-      achieve: NORMAL,
+      achieve: ACHIEVE.normal,
       composed: "",
     }
 
@@ -51,7 +51,7 @@ class Puzzle extends Component {
     this.stateExtra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
-      achieve: NORMAL,
+      achieve: ACHIEVE.normal,
       composed: "",
     },
       () => { this.stateExtra.needRefresh = false }
@@ -63,11 +63,11 @@ class Puzzle extends Component {
     const keys = this.props.taskData[this.state.pos].keys;
 
     if (composed === keys) {
-      return SUCCESS;
+      return ACHIEVE.success;
     } else if (keys.indexOf(composed) === 0) {
-      return NORMAL;
+      return ACHIEVE.normal;
     } else {
-      return WRONG;
+      return ACHIEVE.wrong;
     }
   }
 
@@ -85,7 +85,7 @@ class Puzzle extends Component {
   }
 
   render() {
-    const success = this.state.achieve === SUCCESS
+    const success = this.state.achieve === ACHIEVE.success
     const task = this.props.taskData[this.state.pos]
 
     return (
@@ -101,11 +101,10 @@ class Puzzle extends Component {
           )}
         </div>
         <h3 className="info-display">{task.info}</h3>
-        <button style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
+        <button className='button_secondary' style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
           {"重 试"}
         </button>
-        <button style={{ display: success ? "inline" : "none" }} className="forwardable"
-         onClick={this.next}>
+        <button className='button_primary' style={{ display: success ? "inline" : "none" }} onClick={this.next}>
           {"继 续"}
         </button>
       </div>
@@ -134,7 +133,7 @@ class PuzzlePiece extends Component {
     const style = { color: this.state.clicked ? "grey" : "black" }
 
     return (
-      <span style={style} className='small_btn' onClick={this.onClick}>
+      <span style={style} className='small_button' onClick={this.onClick}>
       {this.props.char===" "?"　":this.props.char}</span>
     );
   }

@@ -22,7 +22,9 @@ class Starter extends Component {
           {this.props.newTasks.map((t)=>{return t.keys}).join(' / ')}<br /><br />
           复习{this.props.allTasks.length-this.props.newTasks.length}个单词。
         </h4>
-        <button onClick={this.start}>让我们开始吧！</button>
+        <button className='button_primary' onClick={this.start}>让我们开始吧！</button>
+        <span className='link_button' onClick={this.props.changeUser}>
+        {'我不是'+this.props.userName}</span>
       </div>
       )
   }

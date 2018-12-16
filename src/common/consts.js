@@ -3,7 +3,11 @@
 const audioPath = '/sounds/';
 const hostPath = '/';
 
-const NORMAL = 'normal', SUCCESS = 'right', WRONG = 'wrong';
+const ACHIEVE={
+    normal:'normal',
+    success:'right',
+    wrong:'wrong'
+}
 
 const MESSAGE = {
     error: '服务器君遇到了麻烦 : (',
@@ -12,10 +16,19 @@ const MESSAGE = {
     loading: '正在载入数据……',
     uploading: '正在上传数据……',
     rest: '今日份练习已完成，休息一下吧！',
-    authfail:'登录失败！请检查用户名和密码',
-    uploadfail:'上传数据失败'
+    authFail: '登录失败！请检查用户名和密码',
+    uploadFail: '上传数据失败',
+    usernameInvalid: '用户名须以字母或中文开头，包含3-10个字母、中文和数字',
+    passwordInvalid: '密码包含8-20个字母或数字',
+    passwordConfirmFail:'两次输入的密码不一致',
+    usernameDuplicated: '用户名已经存在'
+}
+
+const PATTERN = {
+    username: /^([\u4E00-\u9FA5\uF900-\uFA2D]|[a-zA-Z]){1}([\u4E00-\u9FA5\uF900-\uFA2D]|[a-zA-Z0-9]){2,9}$/,
+    password: /^[a-zA-Z0-9]{8,20}$/
 }
 
 export {
-    audioPath, hostPath, NORMAL, SUCCESS, WRONG, MESSAGE
+    audioPath, hostPath, ACHIEVE, MESSAGE, PATTERN
 };

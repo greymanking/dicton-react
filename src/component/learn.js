@@ -45,7 +45,7 @@ class Learn extends Component {
         <audio ref={this.player} src={audioPath + task.audio} />
         <h2 className="keys-display">{task.keys}</h2>
         <h3 className="info-display">{task.info}</h3>
-        <button onClick={this.next}>
+        <button className='button_primary' onClick={this.next}>
           {"记住了！"}
         </button>
       </div>

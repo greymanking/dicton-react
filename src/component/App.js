@@ -1,5 +1,3 @@
-//todo: on upload unauth
-
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 
@@ -31,6 +29,7 @@ class App extends Component {
     this.upload = this.upload.bind(this);
     this.fetch = this.fetch.bind(this);
     this.dealAjaxError = this.dealAjaxError.bind(this);
+    this.changeUser = this.changeUser.bind(this);
   }
 
   dealAjaxError(reason) {
@@ -81,13 +80,19 @@ class App extends Component {
     for (let t of this.dictationTasks) {
       dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
     }
-    ajaxPost(hostPath + 'submit', JSON.stringify(dataSubmit), 'json').then(
+    ajaxPost(hostPath + 'submit', JSON.stringify({
+      username:this.extra.userName,
+      recs:dataSubmit}), 'json').then(
       (data) => {
-        if (data != 'OK') {
-          this.extra.alert=MESSAGE.uploadfail;
-          this.setState({stage:ABNORMAL})
-        }else{
+        console.log("upload res",data)
+        if (data === 'OK') {
           this.setState({stage:ENDING})
+        }else if (data==='unauth'){
+          this.setState({ stage: LOGGING })
+         } //else if (data === 'userdismatch'){} //暂无处理
+         else {
+          this.extra.alert=MESSAGE.uploadFail;
+          this.setState({stage:ABNORMAL})
         }
       },
       (reason) => { this.dealAjaxError(reason) }
@@ -125,6 +130,12 @@ class App extends Component {
     }
   }
 
+  changeUser(){
+    this.extra.userName='';
+    this.extra.afterAuth=this.fetch;
+    this.setState({stage:LOGGING})
+  }
+
   next() {
     let curStage = this.state.stage;
     while (curStage < UPLOADING) {
@@ -151,14 +162,15 @@ class App extends Component {
         stage = <h3>{MESSAGE.loading}</h3>
         break;
       case LOGGING:
-        stage = <Logging after={this.extra.afterAuth} />
+        stage = <Logging after={this.extra.afterAuth} curUser={this.extra.userName} />
         break;
       case ABNORMAL:
         stage = <h3>{this.extra.alert}</h3>
         break;
       case STARTER:
         stage = <Starter start={this.next} userName={this.extra.userName}
-          newTasks={this.learnTasks} allTasks={this.dictationTasks} />
+          newTasks={this.learnTasks} allTasks={this.dictationTasks} 
+          changeUser={this.changeUser} />
         break;
       case LEARN:
         stage = <Learn next={this.next} taskData={this.learnTasks} />
