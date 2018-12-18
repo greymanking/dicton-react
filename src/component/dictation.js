@@ -11,7 +11,8 @@ class Dictation extends Component {
     this.state = {
       pos: 0,
       achieve: ACHIEVE.normal,
-      tipping: false
+      tipping: false,
+      tips:""
     }
 
     this.player = React.createRef();
@@ -56,11 +57,24 @@ class Dictation extends Component {
 
   tip() {
     //看了提示，就不能算一次性成功
-    const task = this.props.taskData[this.state.pos];
-    task.tried = true;
+    this.props.taskData[this.state.pos].tried = true;
+    
+    const v=this.input.current.value;
+    const r=this.props.taskData[this.state.pos].keys;
 
-    this.setState({ tipping: true });
-    setTimeout(() => { this.setState({ tipping: false }) }, 1500);
+    let i=0;
+    const l=Math.min(v.length,r.length);
+
+    for(;i<l;i++){
+      if(r[i]===v[i]){
+        continue
+        } else {
+        	break
+        }
+    }
+
+    this.setState({ tipping: true, tips:r.substring(0,i+1)+(i<r.length-1?'~':'' )});
+    setTimeout(() => { this.setState({ tipping: false }) }, 1000);
   }
 
   reflow() {
@@ -123,7 +137,7 @@ class Dictation extends Component {
       <div className='container'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
         <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden" }}>
-          {this.props.taskData[this.state.pos].keys}
+          {this.state.tips}
         </div>
         <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}
           onChange={this.onChange} />
