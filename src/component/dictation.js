@@ -1,8 +1,11 @@
 //todo:正确时的消息；软键盘
 
 import React, { Component } from 'react';
+import Keyboard from 'react-simple-keyboard';
+
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
+import 'react-simple-keyboard/build/css/index.css';
 
 class Dictation extends Component {
   constructor(props) {
@@ -12,11 +15,13 @@ class Dictation extends Component {
       pos: 0,
       achieve: ACHIEVE.normal,
       tipping: false,
-      tips:""
+      tips: '',
+      composed: '',
+      layoutName: 'default'
     }
 
     this.player = React.createRef();
-    this.input = React.createRef();
+    this.keyboard = React.createRef();
 
     this.onChange = this.onChange.bind(this);
     this.reflow = this.reflow.bind(this);
@@ -26,23 +31,43 @@ class Dictation extends Component {
     this.playSound = this.playSound.bind(this);
     this.submit = this.submit.bind(this);
     this.tip = this.tip.bind(this);
+
+    this.kblayout = {
+      'default': [
+        'q w e r t y u i o p {bksp}',
+        'a s d f g h j k l \'',
+        'z x c v b n m , . {tips}',
+        '{shift} {space} {enter}'
+      ],
+      'shift': [
+        'Q W E R T Y U I O P {bksp}',
+        'A S D F G H J K L \'',
+        'Z X C V B N M , . {tips}',
+        '{shift} {space} {enter}'
+      ]
+    }
   }
 
-  onChange(event) {
+  onChange(text) {
     if (this.state.achieve !== ACHIEVE.normal) {
       this.setState({
         achieve: ACHIEVE.normal
       });
     }
+    this.setState({ composed: text })
   }
 
-  onKeyPress(event) {
-    if (event.charCode === 13) {
+  onKeyPress(button) {
+    if (button === '{enter}') {
       if (this.state.achieve === ACHIEVE.success) {
         this.next();
       } else {
         this.submit();
       }
+    } else if (button === '{tips}') {
+      this.tip()
+    } else if (button === '{shift}') {
+      this.setState({ layoutName: this.state.layoutName === 'default' ? 'shift' : 'default' })
     }
   }
 
@@ -58,38 +83,38 @@ class Dictation extends Component {
   tip() {
     //看了提示，就不能算一次性成功
     this.props.taskData[this.state.pos].tried = true;
-    
-    const v=this.input.current.value;
-    const r=this.props.taskData[this.state.pos].keys;
 
-    let i=0;
-    const l=Math.min(v.length,r.length);
+    const v = this.state.composed;
+    const r = this.props.taskData[this.state.pos].keys;
 
-    for(;i<l;i++){
-      if(r[i]===v[i]){
+    let i = 0;
+    const l = Math.min(v.length, r.length);
+
+    for (; i < l; i++) {
+      if (r[i] === v[i]) {
         continue
-        } else {
-        	break
-        }
+      } else {
+        break
+      }
     }
 
-    this.setState({ tipping: true, tips:r.substring(0,i+1)+(i<r.length-1?'~':'' )});
+    this.setState({ tipping: true, tips: r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '') });
     setTimeout(() => { this.setState({ tipping: false }) }, 1000);
   }
 
   reflow() {
     this.setState({
-      achieve: ACHIEVE.normal
+      achieve: ACHIEVE.normal,
+      composed:''
     })
+    this.keyboard.current.clearInput();
     this.playSound();
-    this.input.current.value = '';
-    this.input.current.focus();
   }
 
   submit() {
     const task = this.props.taskData[this.state.pos];
     let status = task.status;
-    const acv = this.checkComposed(this.input.current.value);
+    const acv = this.checkComposed(this.state.composed);
 
     //如已尝试，则成绩不再改变
     if (!task.tried) {
@@ -127,7 +152,6 @@ class Dictation extends Component {
 
   componentDidMount() {
     this.playSound();
-    this.input.current.focus();
   }
 
   render() {
@@ -136,21 +160,25 @@ class Dictation extends Component {
     return (
       <div className='container'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
-        <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden" }}>
+        <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden", height: "1em" }}>
           {this.state.tips}
         </div>
-        <input ref={this.input} className={this.state.achieve} onKeyPress={this.onKeyPress}
-          onChange={this.onChange} />
+        <div style={{ height: "1em" }} className={this.state.achieve}>{this.state.composed}</div>
         <h3 className='info-display'>{this.props.taskData[this.state.pos].info}</h3>
-        <button className='button_secondary' style={{ display: success ? 'none' : 'inline' }} onClick={this.submit}>
-          提 交
-        </button>
-        <span style={{ display: success ? 'none' : 'inline' }} onClick={this.tip} className='link_button'>
-          提 示
-        </span>
         <button className='button_primary' style={{ display: success ? 'inline' : 'none' }} onClick={this.next}>
           继 续
         </button>
+        <Keyboard ref={this.keyboard} layout={this.kblayout} display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
+          mergeDisplay={true} onChange={input => this.onChange(input)} onKeyPress={button => this.onKeyPress(button)}
+          layoutName={this.state.layoutName}
+          buttonTheme={[
+            {
+              class: "hg-button hg-standardBtn",
+              buttons: "{shift}"
+            },
+          ]}
+
+        />
       </div>
     );
   }
