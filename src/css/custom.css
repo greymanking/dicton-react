@@ -90,3 +90,25 @@ input {
     text-decoration: underline;
     font-size: 0.8em
 }
+
+.marker {
+    width:100px;
+    height:100px;
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin-left:-50px;
+    margin-top:-50px;
+    z-index:9999;
+    background-color: beige;
+    border-radius:15px;
+    opacity:0.8;
+}
+
+.marker div {
+    height:100%;
+    vertical-align:middle;
+    font-size:4em;
+    color:red;
+    text-align: center;
+}

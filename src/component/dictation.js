@@ -1,6 +1,7 @@
 //todo:正确时的消息；软键盘
 
 import React, { Component } from 'react';
+import Marker from './marker.js';
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -17,7 +18,7 @@ class Dictation extends Component {
       tipping: false,
       tips: '',
       composed: '',
-      layoutName: 'default'
+      layoutName: 'default',
     }
 
     this.player = React.createRef();
@@ -105,7 +106,7 @@ class Dictation extends Component {
   reflow() {
     this.setState({
       achieve: ACHIEVE.normal,
-      composed:''
+      composed: ''
     })
     this.keyboard.current.clearInput();
     this.playSound();
@@ -126,8 +127,12 @@ class Dictation extends Component {
       task.status = status;
       task.tried = true;
     }
+
+    if(acv === ACHIEVE.success){
+      setTimeout(()=>{this.next()},1000);
+    }
     this.setState({
-      achieve: acv
+      achieve: acv,
     });
   }
 
@@ -158,16 +163,13 @@ class Dictation extends Component {
     const success = this.state.achieve === ACHIEVE.success
 
     return (
-      <div className='container'>
+      <div style={{ position: 'relative' }}>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
         <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden", height: "1em" }}>
           {this.state.tips}
         </div>
-        <div style={{ height: "1em" }} className={this.state.achieve}>{this.state.composed}</div>
+        <h2 style={{ height: "1em" }} className={this.state.achieve}>{this.state.composed}</h2>
         <h3 className='info-display'>{this.props.taskData[this.state.pos].info}</h3>
-        <button className='button_primary' style={{ display: success ? 'inline' : 'none' }} onClick={this.next}>
-          继 续
-        </button>
         <Keyboard ref={this.keyboard} layout={this.kblayout} display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
           mergeDisplay={true} onChange={input => this.onChange(input)} onKeyPress={button => this.onKeyPress(button)}
           layoutName={this.state.layoutName}
@@ -179,6 +181,7 @@ class Dictation extends Component {
           ]}
 
         />
+        <Marker show={this.state.achieve === ACHIEVE.success} mark='☆' />
       </div>
     );
   }
