@@ -89,7 +89,7 @@ class Puzzle extends Component {
     const task = this.props.taskData[this.state.pos]
 
     return (
-      <div className="container">
+      <div className="pad">
         <audio ref={this.player} src={audioPath+ task.audio} />
         <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div className="btn-panel">

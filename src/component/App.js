@@ -174,7 +174,7 @@ class App extends Component {
         break;
       case LEARN:
       stage = <Dictation next={this.next} taskData={this.dictationTasks} />
-       // stage = <Learn next={this.next} taskData={this.learnTasks} />
+      //  stage = <Learn next={this.next} taskData={this.learnTasks} />
         break;
       case PUZZLE:
         stage = <Puzzle next={this.next} taskData={this.puzzleTasks} />

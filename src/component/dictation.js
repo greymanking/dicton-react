@@ -16,9 +16,13 @@ class Dictation extends Component {
       pos: 0,
       achieve: ACHIEVE.normal,
       tipping: false,
-      tips: '',
       composed: '',
       layoutName: 'default',
+    }
+
+    this.extra = {
+      tips:'',
+      perfect:true,
     }
 
     this.player = React.createRef();
@@ -84,6 +88,7 @@ class Dictation extends Component {
   tip() {
     //看了提示，就不能算一次性成功
     this.props.taskData[this.state.pos].tried = true;
+    this.extra.perfect=false;
 
     const v = this.state.composed;
     const r = this.props.taskData[this.state.pos].keys;
@@ -99,7 +104,9 @@ class Dictation extends Component {
       }
     }
 
-    this.setState({ tipping: true, tips: r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '') });
+    this.extra.tips=r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '');
+
+    this.setState({ tipping: true });
     setTimeout(() => { this.setState({ tipping: false }) }, 1000);
   }
 
@@ -109,6 +116,7 @@ class Dictation extends Component {
       composed: ''
     })
     this.keyboard.current.clearInput();
+    this.extra.perfect=true;
     this.playSound();
   }
 
@@ -130,6 +138,8 @@ class Dictation extends Component {
 
     if(acv === ACHIEVE.success){
       setTimeout(()=>{this.next()},1000);
+    } else {
+      this.extra.perfect=false;
     }
     this.setState({
       achieve: acv,
@@ -163,25 +173,25 @@ class Dictation extends Component {
     const success = this.state.achieve === ACHIEVE.success
 
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{position:'relative'}}>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
+        <div className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</div>
         <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden", height: "1em" }}>
-          {this.state.tips}
+          {this.extra.tips}
         </div>
-        <h2 style={{ height: "1em" }} className={this.state.achieve}>{this.state.composed}</h2>
-        <h3 className='info-display'>{this.props.taskData[this.state.pos].info}</h3>
+        <h4 className='right'>{this.props.taskData[this.state.pos].info}</h4>
         <Keyboard ref={this.keyboard} layout={this.kblayout} display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
           mergeDisplay={true} onChange={input => this.onChange(input)} onKeyPress={button => this.onKeyPress(button)}
           layoutName={this.state.layoutName}
           buttonTheme={[
             {
-              class: "hg-button hg-standardBtn",
-              buttons: "{shift}"
+              class: "hg-button hg-standardBtn submit_key",
+              buttons: "{enter}"
             },
           ]}
 
         />
-        <Marker show={this.state.achieve === ACHIEVE.success} mark='☆' />
+        <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect?'★':'☆'} />
       </div>
     );
   }

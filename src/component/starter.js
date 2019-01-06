@@ -15,7 +15,7 @@ class Starter extends Component {
 
   render() {
   	return (
-      <div>
+      <div className='pad'>
       <h3 style={{color:'#A26273'}}>欢迎你，{this.props.userName}</h3>
         <h4>
           我们今天要学习{this.props.newTasks.length}个新单词:<br />

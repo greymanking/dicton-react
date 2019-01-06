@@ -4,11 +4,29 @@ body {
 
 .App {
     margin:20px auto;
-    width:8.5cm;
+    width:100%;
+    max-width: 9.5cm;
     background-color:#fff; 
-    padding:15px 20px 20px 20px;
     border-bottom: 2px solid rgba(128, 128, 128, 0.212);
     border-right: 2px solid rgba(128, 128, 128, 0.212);
+}
+
+.pad {
+    padding:15px 20px 20px 20px;
+}
+
+.underlined {
+    border-width: 0 0 2px 0;
+    border-color: gray;
+    border-style: dotted;
+}
+
+.placeholder {
+    height:1em;
+}
+
+.monofont {
+    font-family: Consolas, Monaco, monospace;
 }
 
 button {
@@ -29,12 +47,14 @@ button {
     background-color: #E4B2B6;
 }
 
-input {
-    outline:none;
-    border-width: 0 0 1px 0;
-    font-size:1.2em;
+.dictfield {
     text-align:center;
-    margin:10px;
+    padding:15px;
+    margin:0 20px;
+}
+
+.large {
+    font-size:2em;
 }
 
 .right {
@@ -111,4 +131,8 @@ input {
     font-size:4em;
     color:red;
     text-align: center;
+}
+
+.submit_key {
+    background-color:orange !important;
 }

@@ -99,7 +99,7 @@ class Logging extends Component {
 
   render() {
     return (
-      <div>
+      <div className='pad'>
         <h4>{this.state.type === 0 ? '登　录' : '注　册'}</h4>
         <form name='logging'>
           <span>用户名称</span>

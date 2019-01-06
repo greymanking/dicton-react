@@ -41,7 +41,7 @@ class Learn extends Component {
   render() {
     const task = this.props.taskData[this.state.pos];
     return (
-      <div className="container">
+      <div className="pad">
         <audio ref={this.player} src={audioPath + task.audio} />
         <h2 className="keys-display">{task.keys}</h2>
         <h3 className="info-display">{task.info}</h3>
