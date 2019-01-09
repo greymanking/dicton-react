@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import '../css/custom.css';
+import React from 'react';
 
 function Marker(props) {
-  return <div className='marker' style={{ display: props.show ? 'block' : 'none' }}>
+  return <div className={'marker'+(props.show ? '' : ' invisible_absent')}>
     <div>{props.mark}</div>
   </div>
 }

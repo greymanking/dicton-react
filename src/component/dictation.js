@@ -170,13 +170,11 @@ class Dictation extends Component {
   }
 
   render() {
-    const success = this.state.achieve === ACHIEVE.success
-
     return (
       <div style={{position:'relative'}}>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
         <div className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</div>
-        <div className='tip' style={{ visibility: this.state.tipping ? "visible" : "hidden", height: "1em" }}>
+        <div className={'tip placeholder'+(this.state.tipping ? '' : ' invisible_present')}>
           {this.extra.tips}
         </div>
         <h4 className='right'>{this.props.taskData[this.state.pos].info}</h4>

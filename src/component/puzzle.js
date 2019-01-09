@@ -101,10 +101,10 @@ class Puzzle extends Component {
           )}
         </div>
         <h3 className="info-display">{task.info}</h3>
-        <button className='button_secondary' style={{ display: success ? "none" : "inline" }} onClick={this.reflow}>
+        <button className={'button_secondary'+(success ? ' invisible_absent' : '') } onClick={this.reflow}>
           {"重 试"}
         </button>
-        <button className='button_primary' style={{ display: success ? "inline" : "none" }} onClick={this.next}>
+        <button className={'button_primary'+(success ? '' : ' invisible_absent')} onClick={this.next}>
           {"继 续"}
         </button>
       </div>

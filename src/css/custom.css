@@ -136,3 +136,11 @@ button {
 .submit_key {
     background-color:orange !important;
 }
+
+.invisible_present {
+    visibility: hidden;
+}
+
+.invisible_absent {
+    display: none;
+}
