@@ -49,13 +49,13 @@ class Learn extends Component {
       //   this.setState({ progress: 100, playAnim:true });
       //   this.aniVars.reset = false;
       // }
-      this.setState({ progress: 100, playAnim:true, showIndicator: true });
+      this.setState({ progress: 100, playAnim: true, showIndicator: true });
       this.aniVars.reset = false;
       this.aniVars.startTime = new Date().getTime();
     } else {
-      let st=this.aniVars.startTime;
-      if (st!= 0 && new Date().getTime() - st >= ANITIME * 1000) {
-        this.setState({ showIndicator:false, progress:0,  playAnim:false  })
+      let st = this.aniVars.startTime;
+      if (st != 0 && new Date().getTime() - st >= ANITIME * 1000) {
+        this.setState({ showIndicator: false, progress: 0, playAnim: false })
         this.aniVars.startTime = 0
       }
     }
@@ -64,10 +64,10 @@ class Learn extends Component {
   next() {
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
-      this.aniVars.reset=true;
-      this.aniVars.startTime=0;
-      this.setState({ pos: nextPos, showIndicator:true, progress:0,  playAnim:false },
-         this.playSound);
+      this.aniVars.reset = true;
+      this.aniVars.startTime = 0;
+      this.setState({ pos: nextPos, showIndicator: true, progress: 0, playAnim: false },
+        this.playSound);
     } else {
       this.props.next();
     }
@@ -75,10 +75,10 @@ class Learn extends Component {
 
   componentDidMount() {
     this.playSound();
-    this.aniVars.intervalId=setInterval(this.tick,TICKINTERVAL);
+    this.aniVars.intervalId = setInterval(this.tick, TICKINTERVAL);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.aniVars.intervalId);
   }
 

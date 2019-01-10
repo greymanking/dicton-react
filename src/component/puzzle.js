@@ -13,9 +13,10 @@ class Puzzle extends Component {
       composed: "",
     }
 
-    this.stateExtra = {
+    this.extra = {
       needRefresh: false,
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
+      locked: false
     };
     
     this.player=React.createRef();
@@ -29,10 +30,16 @@ class Puzzle extends Component {
 
   addChar(chr) {
     const composed = this.state.composed + chr;
+    const achieved = this.checkComposed(composed);
+    
     this.setState({
       composed: composed,
-      achieve: this.checkComposed(composed)
+      achieve:  achieved
     });
+    
+    if (achieved === ACHIEVE.success) {
+      setTimeout(this.next,700);
+    }
   }
 
   playSound() {
@@ -47,14 +54,14 @@ class Puzzle extends Component {
   reflow() {
     const task = this.props.taskData[this.state.pos]
 
-    this.stateExtra.needRefresh = true;
-    this.stateExtra.shuffled = shuffle(task.keys, 10);
+    this.extra.needRefresh = true;
+    this.extra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
       achieve: ACHIEVE.normal,
       composed: "",
     },
-      () => { this.stateExtra.needRefresh = false }
+      () => { this.extra.needRefresh = false }
     )
     this.playSound();
   }
@@ -93,19 +100,16 @@ class Puzzle extends Component {
         <audio ref={this.player} src={audioPath+ task.audio} />
         <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
         <div className="btn-panel">
-          {this.stateExtra.shuffled.map(
+          {this.extra.shuffled.map(
             (chr, idx) => {
-              return <PuzzlePiece refresh={this.stateExtra.needRefresh}
+              return <PuzzlePiece refresh={this.extra.needRefresh}
                 char={chr} key={idx} sendChar={this.addChar} />
             }
           )}
         </div>
         <h3 className="info-display">{task.info}</h3>
-        <button className={'button_secondary'+(success ? ' invisible_absent' : '') } onClick={this.reflow}>
+        <button className='button_primary' onClick={this.reflow}>
           {"重 试"}
-        </button>
-        <button className={'button_primary'+(success ? '' : ' invisible_absent')} onClick={this.next}>
-          {"继 续"}
         </button>
       </div>
     );

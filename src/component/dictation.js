@@ -137,7 +137,7 @@ class Dictation extends Component {
     }
 
     if(acv === ACHIEVE.success){
-      setTimeout(()=>{this.next()},1000);
+      setTimeout(()=>{this.next()},30000);
     } else {
       this.extra.perfect=false;
     }

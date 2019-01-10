@@ -8,7 +8,6 @@ import Starter from './starter.js'
 import Logging from './logging.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
-import '../css/App.css';
 import '../css/custom.css';
 import { hostPath, MESSAGE } from '../common/consts.js'
 
@@ -173,8 +172,8 @@ class App extends Component {
           changeUser={this.changeUser} />
         break;
       case LEARN:
-      //stage = <Dictation next={this.next} taskData={this.dictationTasks} />
-      stage = <Learn next={this.next} taskData={this.learnTasks} />
+      stage = <Dictation next={this.next} taskData={this.dictationTasks} />
+      //stage = <Learn next={this.next} taskData={this.learnTasks} />
         break;
       case PUZZLE:
         stage = <Puzzle next={this.next} taskData={this.puzzleTasks} />
