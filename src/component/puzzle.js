@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Marker from './marker.js';
 import shuffle from "../common/shuffle.js"
 
 import {audioPath, ACHIEVE} from '../common/consts.js'
@@ -96,6 +97,7 @@ class Puzzle extends Component {
     const task = this.props.taskData[this.state.pos]
 
     return (
+      <div className='shade_parent'>
       <div className="pad">
         <audio ref={this.player} src={audioPath+ task.audio} />
         <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
@@ -111,6 +113,8 @@ class Puzzle extends Component {
         <button className='button_primary' onClick={this.reflow}>
           {"重 试"}
         </button>
+      </div>
+      <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect?'★':'☆'} />
       </div>
     );
   }

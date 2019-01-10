@@ -137,7 +137,7 @@ class Dictation extends Component {
     }
 
     if(acv === ACHIEVE.success){
-      setTimeout(()=>{this.next()},30000);
+      setTimeout(()=>{this.next()},1000);
     } else {
       this.extra.perfect=false;
     }
@@ -171,7 +171,7 @@ class Dictation extends Component {
 
   render() {
     return (
-      <div style={{position:'relative'}}>
+      <div className='shade_parent'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
         <div className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</div>
         <div className={'tip placeholder'+(this.state.tipping ? '' : ' invisible_present')}>

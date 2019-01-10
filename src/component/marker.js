@@ -1,9 +1,9 @@
 import React from 'react';
 
 function Marker(props) {
-  return <div className={'shadow' + (props.show ? '' : ' invisible_absent')}>
-    <div className='marker'>
-      <div>{props.mark}</div>
+  return <div className={'shade' + (props.show ? '' : ' invisible_absent')}>
+    <div className='marker_box'>
+      {props.mark}
     </div>
   </div>
 }
