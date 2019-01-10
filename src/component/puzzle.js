@@ -32,15 +32,17 @@ class Puzzle extends Component {
   addChar(chr) {
     const composed = this.state.composed + chr;
     const achieved = this.checkComposed(composed);
-    
+
+    if (achieved === ACHIEVE.success) {
+      setTimeout(this.next,700);
+    } 
+
     this.setState({
       composed: composed,
       achieve:  achieved
     });
     
-    if (achieved === ACHIEVE.success) {
-      setTimeout(this.next,700);
-    }
+    
   }
 
   playSound() {
@@ -93,14 +95,14 @@ class Puzzle extends Component {
   }
 
   render() {
-    const success = this.state.achieve === ACHIEVE.success
     const task = this.props.taskData[this.state.pos]
 
     return (
       <div className='shade_parent'>
       <div className="pad">
         <audio ref={this.player} src={audioPath+ task.audio} />
-        <h2 className={this.state.achieve}>{"　" + this.state.composed + "　"}</h2>
+        <h2 className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</h2>
+        <h2 className='placeholder' />
         <div className="btn-panel">
           {this.extra.shuffled.map(
             (chr, idx) => {
@@ -114,7 +116,7 @@ class Puzzle extends Component {
           {"重 试"}
         </button>
       </div>
-      <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect?'★':'☆'} />
+      <Marker show={this.state.achieve === ACHIEVE.success} mark={'★'} />
       </div>
     );
   }

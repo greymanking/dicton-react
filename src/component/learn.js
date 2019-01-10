@@ -54,7 +54,7 @@ class Learn extends Component {
       this.aniVars.startTime = new Date().getTime();
     } else {
       let st = this.aniVars.startTime;
-      if (st != 0 && new Date().getTime() - st >= ANITIME * 1000) {
+      if (st !== 0 && new Date().getTime() - st >= ANITIME * 1000) {
         this.setState({ showIndicator: false, progress: 0, playAnim: false })
         this.aniVars.startTime = 0
       }

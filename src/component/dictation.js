@@ -21,8 +21,8 @@ class Dictation extends Component {
     }
 
     this.extra = {
-      tips:'',
-      perfect:true,
+      tips: '',
+      perfect: true,
     }
 
     this.player = React.createRef();
@@ -88,7 +88,7 @@ class Dictation extends Component {
   tip() {
     //看了提示，就不能算一次性成功
     this.props.taskData[this.state.pos].tried = true;
-    this.extra.perfect=false;
+    this.extra.perfect = false;
 
     const v = this.state.composed;
     const r = this.props.taskData[this.state.pos].keys;
@@ -104,7 +104,7 @@ class Dictation extends Component {
       }
     }
 
-    this.extra.tips=r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '');
+    this.extra.tips = r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '');
 
     this.setState({ tipping: true });
     setTimeout(() => { this.setState({ tipping: false }) }, 1000);
@@ -116,7 +116,7 @@ class Dictation extends Component {
       composed: ''
     })
     this.keyboard.current.clearInput();
-    this.extra.perfect=true;
+    this.extra.perfect = true;
     this.playSound();
   }
 
@@ -136,10 +136,10 @@ class Dictation extends Component {
       task.tried = true;
     }
 
-    if(acv === ACHIEVE.success){
-      setTimeout(()=>{this.next()},1000);
+    if (acv === ACHIEVE.success) {
+      setTimeout(() => { this.next() }, 1000);
     } else {
-      this.extra.perfect=false;
+      this.extra.perfect = false;
     }
     this.setState({
       achieve: acv,
@@ -173,8 +173,10 @@ class Dictation extends Component {
     return (
       <div className='shade_parent'>
         <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
-        <div className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</div>
-        <div className={'tip placeholder'+(this.state.tipping ? '' : ' invisible_present')}>
+        <h2 className={'large dictfield placeholder underlined ' + this.state.achieve}>
+          {this.state.composed}
+        </h2>
+        <div className={'tip placeholder' + (this.state.tipping ? '' : ' invisible_present')}>
           {this.extra.tips}
         </div>
         <h4 className='right'>{this.props.taskData[this.state.pos].info}</h4>
@@ -189,7 +191,7 @@ class Dictation extends Component {
           ]}
 
         />
-        <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect?'★':'☆'} />
+        <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect ? '★' : '☆'} />
       </div>
     );
   }
