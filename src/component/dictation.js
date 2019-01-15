@@ -8,6 +8,8 @@ import { audioPath, ACHIEVE } from '../common/consts.js'
 
 import 'react-simple-keyboard/build/css/index.css';
 
+const Untried = -1, DictFalse = 0, DictSuccess = 1;
+
 class Dictation extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +24,7 @@ class Dictation extends Component {
 
     this.extra = {
       tips: '',
-      perfect: true,
+      status: Untried,
     }
 
     this.player = React.createRef();
@@ -54,21 +56,12 @@ class Dictation extends Component {
   }
 
   onChange(text) {
-    if (this.state.achieve !== ACHIEVE.normal) {
-      this.setState({
-        achieve: ACHIEVE.normal
-      });
-    }
-    this.setState({ composed: text })
+    this.setState({ achieve: ACHIEVE.normal, composed: text })
   }
 
   onKeyPress(button) {
     if (button === '{enter}') {
-      if (this.state.achieve === ACHIEVE.success) {
-        this.next();
-      } else {
-        this.submit();
-      }
+      this.submit();
     } else if (button === '{tips}') {
       this.tip()
     } else if (button === '{shift}') {
@@ -87,8 +80,7 @@ class Dictation extends Component {
 
   tip() {
     //看了提示，就不能算一次性成功
-    this.props.taskData[this.state.pos].tried = true;
-    this.extra.perfect = false;
+    this.extra.status = DictFalse;
 
     const v = this.state.composed;
     const r = this.props.taskData[this.state.pos].keys;
@@ -116,34 +108,25 @@ class Dictation extends Component {
       composed: ''
     })
     this.keyboard.current.clearInput();
-    this.extra.perfect = true;
+    this.extra.status = Untried;
     this.playSound();
   }
 
   submit() {
     const task = this.props.taskData[this.state.pos];
-    let status = task.status;
     const acv = this.checkComposed(this.state.composed);
 
-    //如已尝试，则成绩不再改变
-    if (!task.tried) {
-      //为了后面操作方便，对于奇数status，取平至偶数
-      if (status % 2 !== 0) {
-        status++;
-      }
-      status += (acv === ACHIEVE.success ? 1 : 2);
-      task.status = status;
-      task.tried = true;
-    }
+    if (this.extra.status === Untried) { 
+      this.extra.status = (acv === ACHIEVE.success ? DictSuccess : DictFalse);
+    } 
+    
+    task.status = this.extra.status;
 
     if (acv === ACHIEVE.success) {
       setTimeout(() => { this.next() }, 1000);
-    } else {
-      this.extra.perfect = false;
     }
-    this.setState({
-      achieve: acv,
-    });
+    
+    this.setState({achieve: acv});
   }
 
   checkComposed(composed) {
@@ -180,8 +163,11 @@ class Dictation extends Component {
           {this.extra.tips}
         </div>
         <h4 className='right'>{this.props.taskData[this.state.pos].info}</h4>
-        <Keyboard ref={this.keyboard} layout={this.kblayout} display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
-          mergeDisplay={true} onChange={input => this.onChange(input)} onKeyPress={button => this.onKeyPress(button)}
+        <Keyboard ref={this.keyboard}
+          layout={this.kblayout}
+          display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
+          mergeDisplay={true} onChange={input => this.onChange(input)}
+          onKeyPress={button => this.onKeyPress(button)}
           layoutName={this.state.layoutName}
           buttonTheme={[
             {
@@ -191,7 +177,8 @@ class Dictation extends Component {
           ]}
 
         />
-        <Marker show={this.state.achieve === ACHIEVE.success} mark={this.extra.perfect ? '★' : '☆'} />
+        <Marker show={this.state.achieve === ACHIEVE.success}
+          mark={this.extra.status === DictSuccess ? '★' : '☆'} />
       </div>
     );
   }

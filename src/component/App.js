@@ -14,6 +14,8 @@ import { hostPath, MESSAGE } from '../common/consts.js'
 const LOADING = -4, ABNORMAL = -3, LOGGING = -2,
   STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, UPLOADING = 3, ENDING = 4;
 
+const AllSorts = 0, PuzzleDictation = 1, OnlyDictation = 2;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +45,7 @@ class App extends Component {
     ajaxGet(hostPath + 'data.json').then(
       (data) => {
         if (data === 'unauth') {
-          this.extra.afterAuth=this.fetch;
+          this.extra.afterAuth = this.fetch;
           this.setState({ stage: LOGGING })
           return;
         } else if (data === 'nodata') {
@@ -80,18 +82,19 @@ class App extends Component {
       dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
     }
     ajaxPost(hostPath + 'submit', JSON.stringify({
-      username:this.extra.userName,
-      recs:dataSubmit}), 'json').then(
+      username: this.extra.userName,
+      recs: dataSubmit
+    }), 'json').then(
       (data) => {
-        console.log("upload res",data)
+        console.log("upload res", data)
         if (data === 'OK') {
-          this.setState({stage:ENDING})
-        }else if (data==='unauth'){
+          this.setState({ stage: ENDING })
+        } else if (data === 'unauth') {
           this.setState({ stage: LOGGING })
-         } //else if (data === 'userdismatch'){} //暂无处理
-         else {
-          this.extra.alert=MESSAGE.uploadFail;
-          this.setState({stage:ABNORMAL})
+        } //else if (data === 'userdismatch'){} //暂无处理
+        else {
+          this.extra.alert = MESSAGE.uploadFail;
+          this.setState({ stage: ABNORMAL })
         }
       },
       (reason) => { this.dealAjaxError(reason) }
@@ -112,11 +115,12 @@ class App extends Component {
     this.initTasks();
 
     for (let t of taskData) {
-      if (t.status === 0) {
+      t.status = -1; //Untried
+      if (t.kind === AllSorts) {
         this.learnTasks.push(t);
         this.puzzleTasks.push(t);
         this.dictationTasks.push(t);
-      } else if (t.status < 3) {
+      } else if (t.kind === PuzzleDictation) {
         this.puzzleTasks.push(t);
         this.dictationTasks.push(t);
       } else {
@@ -124,15 +128,15 @@ class App extends Component {
       }
     }
 
-    for (let t of this.dictationTasks) {
-      t.tried = false;
-    }
+
+
+    console.log(this.taskDataArray)
   }
 
-  changeUser(){
-    this.extra.userName='';
-    this.extra.afterAuth=this.fetch;
-    this.setState({stage:LOGGING})
+  changeUser() {
+    this.extra.userName = '';
+    this.extra.afterAuth = this.fetch;
+    this.setState({ stage: LOGGING })
   }
 
   next() {
@@ -168,13 +172,11 @@ class App extends Component {
         break;
       case STARTER:
         stage = <Starter start={this.next} userName={this.extra.userName}
-          newTasks={this.learnTasks} allTasks={this.dictationTasks} 
+          newTasks={this.learnTasks} allTasks={this.dictationTasks}
           changeUser={this.changeUser} />
         break;
       case LEARN:
-      stage = <Puzzle next={this.next} taskData={this.puzzleTasks} />
-      //stage = <Dictation next={this.next} taskData={this.dictationTasks} />
-      //stage = <Learn next={this.next} taskData={this.learnTasks} />
+        stage = <Learn next={this.next} taskData={this.learnTasks} />
         break;
       case PUZZLE:
         stage = <Puzzle next={this.next} taskData={this.puzzleTasks} />
