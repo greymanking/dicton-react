@@ -65,7 +65,8 @@ class App extends Component {
         }
         this.sortup(coming.data);
         this.extra.userName = coming.username;
-        this.setState({ stage: STARTER })
+        //this.setState({ stage: STARTER })
+        this.setState({ stage: DICTATION })
       },
       (reason) => {
         this.dealAjaxError(reason)
