@@ -4,6 +4,8 @@ import shuffle from "../common/shuffle.js"
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
+const PuzzleError = 0, PuzzleNoError = 1;
+
 class Puzzle extends Component {
   constructor(props) {
     super(props);
@@ -15,9 +17,8 @@ class Puzzle extends Component {
     }
 
     this.extra = {
-      needRefresh: false,
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
-      locked: false
+      status: PuzzleNoError,
     };
 
     this.player = React.createRef();
@@ -38,17 +39,24 @@ class Puzzle extends Component {
       setTimeout(this.next, 700);
     }
 
+    if (achieved === ACHIEVE.wrong) {
+      this.extra.status = PuzzleError;
+    }
+
     this.setState({
       composed: composed,
       achieve: achieved
     });
   }
 
-  backspace(){
-    let curComposed=this.state.composed;
-    let len=curComposed.length;
-    if(len>0){
-      this.setState({composed:curComposed.slice(0,len-1)})
+  backspace() {
+    let curComposed = this.state.composed;
+    let len = curComposed.length;
+    if (len > 0) {
+      this.setState({ 
+        composed: curComposed.slice(0, len - 1),
+        achieve: ACHIEVE.normal
+      })
     }
   }
 
@@ -64,15 +72,13 @@ class Puzzle extends Component {
   reflow() {
     const task = this.props.taskData[this.state.pos]
 
-    this.extra.needRefresh = true;
+    this.extra.status = PuzzleNoError;
     this.extra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
       achieve: ACHIEVE.normal,
       composed: "",
-    },
-      () => { this.extra.needRefresh = false }
-    )
+    })
     this.playSound();
   }
 
@@ -108,23 +114,22 @@ class Puzzle extends Component {
       <div className='shade_parent'>
         <div className="pad">
           <audio ref={this.player} src={audioPath + task.audio} />
-          <table style={{width:'100%',marginBottom:'2em'}}>
+          <table style={{ width: '100%', marginBottom: '2em' }}>
             <tr>
               <td className='dictfield_container'>
-              <div className={'large dictfield placeholder underlined ' + this.state.achieve}>
-              {this.state.composed}
-              </div>
+                <div className={'large dictfield placeholder underlined ' + this.state.achieve}>
+                  {this.state.composed}
+                </div>
               </td>
-              <td style={{width:'2em'}}>
-              <button className='button_primary' onClick={this.backspace}>⇦</button>
+              <td style={{ width: '2em' }}>
+                <button className='button_primary' onClick={this.backspace}>⇦</button>
               </td>
             </tr>
           </table>
           <div className="btn-panel">
             {this.extra.shuffled.map(
               (chr, idx) => {
-                return <PuzzlePiece refresh={this.extra.needRefresh}
-                  char={chr} key={idx} sendChar={this.addChar} />
+                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
               }
             )}
           </div>
@@ -133,7 +138,8 @@ class Puzzle extends Component {
             {"重 试"}
           </button>
         </div>
-        <Marker show={this.state.achieve === ACHIEVE.success} mark={'★'} />
+        <Marker show={this.state.achieve === ACHIEVE.success} 
+        mark={this.extra.status === PuzzleNoError ? '★' : '☆'} />
       </div>
     );
   }
@@ -142,33 +148,21 @@ class Puzzle extends Component {
 class PuzzlePiece extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      clicked: false
-    }
 
     this.onClick = this.onClick.bind(this);
   }
 
   onClick = function (e) {
-    if (!this.state.clicked) {
-      this.props.sendChar(this.props.char);
-    }
-    this.setState({ clicked: true })
+    this.props.sendChar(this.props.char);
   }
 
   render() {
-    const style = { color: this.state.clicked ? "grey" : "black" }
+    //const style = { color: this.state.clicked ? "grey" : "black" }
 
     return (
-      <span style={style} className='small_button' onClick={this.onClick}>
+      <span className='small_button' onClick={this.onClick}>
         {this.props.char === " " ? "　" : this.props.char}</span>
     );
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.refresh) {
-      this.setState({ clicked: false })
-    }
   }
 }
 

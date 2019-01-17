@@ -10,7 +10,7 @@ body {
 .App {
     margin:0 auto;
     width:100%;
-    max-width: 9.5cm;
+    max-width: 15cm;
     background-color:#fff; 
     border-bottom: 2px solid rgba(128, 128, 128, 0.212);
     border-right: 2px solid rgba(128, 128, 128, 0.212);
