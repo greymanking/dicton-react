@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Marker from './marker.js';
 import shuffle from "../common/shuffle.js"
 
-import {audioPath, ACHIEVE} from '../common/consts.js'
+import { audioPath, ACHIEVE } from '../common/consts.js'
 
 class Puzzle extends Component {
   constructor(props) {
@@ -19,14 +19,15 @@ class Puzzle extends Component {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
       locked: false
     };
-    
-    this.player=React.createRef();
+
+    this.player = React.createRef();
 
     this.addChar = this.addChar.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
     this.playSound = this.playSound.bind(this);
+    this.backspace = this.backspace.bind(this);
   }
 
   addChar(chr) {
@@ -34,24 +35,30 @@ class Puzzle extends Component {
     const achieved = this.checkComposed(composed);
 
     if (achieved === ACHIEVE.success) {
-      setTimeout(this.next,700);
-    } 
+      setTimeout(this.next, 700);
+    }
 
     this.setState({
       composed: composed,
-      achieve:  achieved
+      achieve: achieved
     });
-    
-    
+  }
+
+  backspace(){
+    let curComposed=this.state.composed;
+    let len=curComposed.length;
+    if(len>0){
+      this.setState({composed:curComposed.slice(0,len-1)})
+    }
   }
 
   playSound() {
     setTimeout(() => {
-      let pl=this.player.current;
-      if(pl){
-        pl.play(); 
+      let pl = this.player.current;
+      if (pl) {
+        pl.play();
       }
-    },700)
+    }, 700)
   }
 
   reflow() {
@@ -99,24 +106,34 @@ class Puzzle extends Component {
 
     return (
       <div className='shade_parent'>
-      <div className="pad">
-        <audio ref={this.player} src={audioPath+ task.audio} />
-        <h2 className={'large dictfield placeholder underlined '+this.state.achieve}>{this.state.composed}</h2>
-        <h2 className='placeholder' />
-        <div className="btn-panel">
-          {this.extra.shuffled.map(
-            (chr, idx) => {
-              return <PuzzlePiece refresh={this.extra.needRefresh}
-                char={chr} key={idx} sendChar={this.addChar} />
-            }
-          )}
+        <div className="pad">
+          <audio ref={this.player} src={audioPath + task.audio} />
+          <table style={{width:'100%',marginBottom:'2em'}}>
+            <tr>
+              <td className='dictfield_container'>
+              <div className={'large dictfield placeholder underlined ' + this.state.achieve}>
+              {this.state.composed}
+              </div>
+              </td>
+              <td style={{width:'2em'}}>
+              <button className='button_primary' onClick={this.backspace}>⇦</button>
+              </td>
+            </tr>
+          </table>
+          <div className="btn-panel">
+            {this.extra.shuffled.map(
+              (chr, idx) => {
+                return <PuzzlePiece refresh={this.extra.needRefresh}
+                  char={chr} key={idx} sendChar={this.addChar} />
+              }
+            )}
+          </div>
+          <h3 className="info-display">{task.info}</h3>
+          <button className='button_primary' onClick={this.reflow}>
+            {"重 试"}
+          </button>
         </div>
-        <h3 className="info-display">{task.info}</h3>
-        <button className='button_primary' onClick={this.reflow}>
-          {"重 试"}
-        </button>
-      </div>
-      <Marker show={this.state.achieve === ACHIEVE.success} mark={'★'} />
+        <Marker show={this.state.achieve === ACHIEVE.success} mark={'★'} />
       </div>
     );
   }
@@ -144,7 +161,7 @@ class PuzzlePiece extends Component {
 
     return (
       <span style={style} className='small_button' onClick={this.onClick}>
-      {this.props.char===" "?"　":this.props.char}</span>
+        {this.props.char === " " ? "　" : this.props.char}</span>
     );
   }
 

@@ -102,11 +102,11 @@ class Logging extends Component {
       <div className='pad'>
         <h4>{this.state.type === 0 ? '登　录' : '注　册'}</h4>
         <form name='logging'>
-          <span>用户名称　</span>
-          <input className='pad underlined' type='text' name='user_name' size='20' />
+          <span>用户名称</span>
+          <input className='underlined' type='text' name='user_name' />
           <br />
-          <span>密　　码　</span>
-          <input className='pad underlined' type='password' name='password' size='20' />
+          <span>密　　码</span>
+          <input className='underlined' type='password' name='password' />
           <br />
           {this.state.type === 1 && <React.Fragment><span>确认密码</span>
             <input type='password' name='confirm_password' size='20' /></React.Fragment>}

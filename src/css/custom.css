@@ -30,6 +30,12 @@ body {
     outline: none;
 }
 
+input {
+    margin:1em;
+    font-size:1em;
+    text-align: center;
+}
+
 .placeholder {
     height:1em;
 }
@@ -49,21 +55,26 @@ button {
 .button_primary {
     color: #fff;
     background-color: #A26273;
+    cursor:default;
 }
 
 .button_secondary {
     color:black;
     background-color: #E4B2B6;
+    cursor:default;
+}
+
+.dictfield_container {
+    padding:0 10px; 
 }
 
 .dictfield {
     text-align:center;
-    padding:15px;
-    margin:0 20px;
+    padding-bottom:8px;
 }
 
 .large {
-    font-size:2em;
+    font-size:1.5em;
 }
 
 .right {
