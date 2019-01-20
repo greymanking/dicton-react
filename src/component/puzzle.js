@@ -4,8 +4,6 @@ import shuffle from "../common/shuffle.js"
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
-const PuzzleError = 0, PuzzleNoError = 1;
-
 class Puzzle extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +16,7 @@ class Puzzle extends Component {
 
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
-      status: PuzzleNoError,
+      status: ACHIEVE.withoutError,
     };
 
     this.player = React.createRef();
@@ -35,12 +33,12 @@ class Puzzle extends Component {
     const composed = this.state.composed + chr;
     const achieved = this.checkComposed(composed);
 
-    if (achieved === ACHIEVE.success) {
+    if (achieved === ACHIEVE.correct) {
       setTimeout(this.next, 700);
     }
 
     if (achieved === ACHIEVE.wrong) {
-      this.extra.status = PuzzleError;
+      this.extra.status = ACHIEVE.withError;
     }
 
     this.setState({
@@ -53,7 +51,7 @@ class Puzzle extends Component {
     let curComposed = this.state.composed;
     let len = curComposed.length;
     if (len > 0) {
-      this.setState({ 
+      this.setState({
         composed: curComposed.slice(0, len - 1),
         achieve: ACHIEVE.normal
       })
@@ -72,7 +70,7 @@ class Puzzle extends Component {
   reflow() {
     const task = this.props.taskData[this.state.pos]
 
-    this.extra.status = PuzzleNoError;
+    this.extra.status = ACHIEVE.withoutError;
     this.extra.shuffled = shuffle(task.keys, 10);
 
     this.setState({
@@ -86,7 +84,7 @@ class Puzzle extends Component {
     const keys = this.props.taskData[this.state.pos].keys;
 
     if (composed === keys) {
-      return ACHIEVE.success;
+      return ACHIEVE.correct;
     } else if (keys.indexOf(composed) === 0) {
       return ACHIEVE.normal;
     } else {
@@ -108,38 +106,43 @@ class Puzzle extends Component {
   }
 
   render() {
+    let markcls = 'fas fa-genderless colorblack';
+    if (this.state.achieve === ACHIEVE.correct) {
+      if (this.extra.status === ACHIEVE.withoutError) {
+        markcls = 'fas fa-star colorgold';
+      } else {
+        markcls = 'fas fa-check colorred';
+      }
+    } else if (this.state.achieve === ACHIEVE.wrong) {
+      markcls = 'fas fa-times colorred';
+    }
+
+    markcls = 'marginleft mark '+markcls;
+    console.log(markcls);
+
     const task = this.props.taskData[this.state.pos]
 
     return (
-      <div className='shade_parent'>
-        <div className="pad">
+      <div className='content bgpeace'>
+        <div className='min_page'>
           <audio ref={this.player} src={audioPath + task.audio} />
-          <table style={{ width: '100%', marginBottom: '2em' }}>
-            <tr>
-              <td className='dictfield_container'>
-                <div className={'large dictfield placeholder underlined ' + this.state.achieve}>
-                  {this.state.composed}
-                </div>
-              </td>
-              <td style={{ width: '2em' }}>
-                <button className='button_primary' onClick={this.backspace}>⇦</button>
-              </td>
-            </tr>
-          </table>
-          <div className="btn-panel">
-            {this.extra.shuffled.map(
-              (chr, idx) => {
-                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
-              }
-            )}
-          </div>
-          <h3 className="info-display">{task.info}</h3>
-          <button className='button_primary' onClick={this.reflow}>
-            {"重 试"}
-          </button>
+          <span className={'composed_text underlined marginbottom'}>
+            {this.state.composed}
+          </span>
+          <span className={markcls} />
+          <h3>{task.info}</h3>
         </div>
-        <Marker show={this.state.achieve === ACHIEVE.success} 
-        mark={this.extra.status === PuzzleNoError ? '★' : '☆'} />
+        <div className='puzzle_box'>
+          {this.extra.shuffled.map(
+            (chr, idx) => {
+              return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
+            }
+          )}
+
+          <span className='puzzle_piece' onClick={this.backspace}>
+            <span className='fas fa-backspace' />
+          </span>
+        </div>
       </div>
     );
   }
@@ -157,10 +160,8 @@ class PuzzlePiece extends Component {
   }
 
   render() {
-    //const style = { color: this.state.clicked ? "grey" : "black" }
-
     return (
-      <span className='small_button' onClick={this.onClick}>
+      <span className='puzzle_piece' onClick={this.onClick}>
         {this.props.char === " " ? "　" : this.props.char}</span>
     );
   }

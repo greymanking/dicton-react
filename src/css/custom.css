@@ -1,26 +1,116 @@
-html {
-    height: 100%;
-}
-
+html,
 body {
-    background-color:#f2f2f2;
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.App {
-    margin:0 auto;
-    width:100%;
-    max-width: 15cm;
-    background-color:#fff; 
-    border-bottom: 2px solid rgba(128, 128, 128, 0.212);
-    border-right: 2px solid rgba(128, 128, 128, 0.212);
-    height:100%;
-    max-height:18cm;
+input {
+    background-color:inherit;
     text-align: center;
 }
 
-.pad {
-    padding:15px 20px 20px 20px;
+button {
+    padding:0.5rem 1rem;
+    background-color: #E4B2B6;
+    border-radius:5px;
+    border:1px solid gainsboro;
+}
+
+#root {
+    height:100%;
+}
+
+.app {
+    width: 100%;
+    max-width: 12cm;
+    background-color: white;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    overflow-x:hidden;
+}
+
+.header {
+    background-color: brown;
+    padding: 0.5rem 1rem;
+    height:1.5rem;
+}
+
+.message_bar {
+    padding: 0.5rem 1rem;
+    height:1.5rem;
+    background-color: inherit;
+    transition: background-color 1s;
+}
+
+.content {
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.min_page {
+    /* margin:0 auto; */
+    padding: 0.5rem 1rem 3rem 1rem;
+}
+
+.stretch_box {
+    flex-grow: 2;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.footer {
+    height: 5rem;
+}
+
+.puzzle_piece {
+    display: inline-block;
+    padding: 0.3rem;
+    font-size: 1.5rem;
+    margin: 0.3rem;
+    cursor: pointer;
+    width: 2.25rem;
+    height:2.25rem; 
+    background-color:#E4B2B6;
+    border-radius:5px;
+    vertical-align: bottom; /*默认是baseline*/
+    text-align: center;
+}
+
+.puzzle_box {
+    width:17.5rem;
+    margin: 1em auto 2em auto;
+}
+
+.composed_text {
+    display:inline-block;
+    width:14rem;
+    height:2.25rem;
+    font-size:1.5rem;
+}
+
+.mark {
+    display:inline-block;
+    width:2.5rem;
+    font-size:2.5rem;
+    vertical-align: top;
+    transition: all 0.2s;
+}
+
+.tip {
+    color: blue;
+    font-size: 1rem;
+    height:1.5em;
+}
+
+.submit_key {
+    background-color: orange !important;
 }
 
 .underlined {
@@ -30,149 +120,81 @@ body {
     outline: none;
 }
 
-input {
-    margin:1em;
-    font-size:1em;
+.cursordefault {
+    cursor:default;
+}
+
+.marginbottom {
+    margin-bottom:1rem;
+}
+
+.marginleft {
+    margin-left:1rem;
+}
+
+.fontnormal {
+    font-size: 1rem;
+}
+
+.fontsmall {
+    font-size: 0.81rem;
+}
+
+.fontlarge {
+    font-size: 1.38rem;
+}
+
+.textcenter {
     text-align: center;
 }
 
-.placeholder {
-    height:1em;
+.colorred {
+    color:red;
 }
 
-.monofont {
-    font-family: Consolas, Monaco, monospace;
-}
-
-button {
-    padding: 10px 20px;
-    margin:0 10px;
-    outline:none;
-    border:1px solid #A26273;
-    border-radius:7px;
-}
-
-.button_primary {
-    color: #fff;
-    background-color: #A26273;
-    cursor:default;
-}
-
-.button_secondary {
+.colorblack {
     color:black;
-    background-color: #E4B2B6;
-    cursor:default;
 }
 
-.dictfield_container {
-    padding:0 10px; 
+.colorwhite {
+    color:white;
 }
 
-.dictfield {
-    text-align:center;
-    padding-bottom:8px;
+.colorgold {
+    color:gold;
 }
 
-.large {
-    font-size:1.5em;
+.bgwarn {
+    background-color: rgba(255, 255, 0, 0.651);
 }
 
-.right {
-    color: green
+.bgpeace {
+    background-color: whitesmoke;
 }
 
-.wrong {
-    color:red
+.elvisible {
+    visibility: visible;
 }
 
-.normal {
-    color:black
+.elinvisible {
+    visibility: hidden;
 }
 
-.small_button {
-    display: inline-block;
-    padding: 5px;
-    font-size: 25px;
-    margin: 4px;
-    cursor: pointer;
-    width: 1em;
-    height:1.2em; 
-    background-color:#E4B2B6;
-    border-radius:5px;
-    vertical-align: bottom /*默认是baseline*/
+@keyframes pagemove {
+    0% {
+    transform:translateX(0);
+    }
+    30% {
+    transform:translateX(-100%);
+    }
+    31% {
+    transform:translateX(100%);
+    }
+    100% {
+    transform:translateX(0);
+    }
 }
 
-.message {
-    margin:8px 0 15px 0;
-    vertical-align: center;
-    text-align:left;
-    padding:5px;
-    color:red;
-    font-size:0.7em
-}
-
-.tip {
-    color:rgba(18, 130, 241, 0.8); 
-}
-
-.sign_form {
-    text-align:left;
-    padding:15px 0
-}
-
-.button_group {
-    margin:15px;
-    text-align:center
-}
-
-.link_button {
-    cursor: pointer;
-    text-decoration: underline;
-    font-size: 0.8em
-}
-
-.shade_parent {
-    width:100%; 
-    height:100%;
-    position:relative;
-}
-
-.shade { 
-    width:100%; 
-    height:100%;
-    position:absolute;
-    left: 0px;
-    top: 0px;
-    z-index:1001; 
-    background-color:rgba(180, 180, 180, 0.5);
-}
-
-
-.marker_box {
-    width:130px;
-    height:130px;
-    line-height: 130px;
-    position: relative;
-    top:50%;
-    margin:-65px auto 0 auto;
-    text-align: center; 
-    vertical-align: middle;
-    background-color: #FFFFAA;
-    border-radius:15px;
-    font-size:110px;
-    color:red;
-    border-bottom: 2px solid rgba(128, 128, 128, 0.212);
-    border-right: 2px solid rgba(128, 128, 128, 0.212);
-}
-
-.submit_key {
-    background-color:orange !important;
-}
-
-.invisible_present {
-    visibility: hidden !important;
-}
-
-.invisible_absent {
-    display: none !important;
+.page_ani {
+    animation: pagemove 1.5s;
 }

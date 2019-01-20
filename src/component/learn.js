@@ -85,28 +85,28 @@ class Learn extends Component {
   render() {
     const task = this.props.taskData[this.state.pos];
     return (
-      <div className="pad">
-        <audio ref={this.player} src={audioPath + task.audio} />
-        <div className={this.state.showIndicator ? '' : ' invisible_absent'}>
-          <Circle animate={this.state.playAnim}
-            animationDuration={ANITIME + "s"}
-            responsive={false}
-            size="70"
-            lineWidth="25"
-            progress={this.state.progress}
-            progressColor="rgb(76, 154, 255)"
-            bgColor="#ecedf0"
-            showPercentage={false}
-            showPercentageSymbol={false} />
+      <div className='content bgpeace'>
+        <div className='min_page'>
+          <audio ref={this.player} src={audioPath + task.audio} />
+          {this.state.showIndicator ? (<div>
+            <Circle animate={this.state.playAnim}
+              animationDuration={ANITIME + "s"}
+              responsive={false}
+              size="70"
+              lineWidth="25"
+              progress={this.state.progress}
+              progressColor="rgb(76, 154, 255)"
+              bgColor="#ecedf0"
+              showPercentage={false}
+              showPercentageSymbol={false} />
+          </div>) :
+            (<h2> {task.keys}</h2>)
+          }
+          <h3>{task.info}</h3>
+          <button onClick={this.next}>
+            {this.state.showIndicator ? '我记得' : '下一个'}
+          </button>
         </div>
-        <h2 className={'keys-display' + (this.state.showIndicator ? ' invisible_absent' : '')}>
-          {task.keys}
-        </h2>
-
-        <h3 className="info-display">{task.info}</h3>
-        <button className='button_primary' onClick={this.next}>
-          {this.state.showIndicator ? '我记得' : '下一个'}
-        </button>
       </div>
     );
   }

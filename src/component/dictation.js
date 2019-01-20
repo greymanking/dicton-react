@@ -8,8 +8,6 @@ import { audioPath, ACHIEVE } from '../common/consts.js'
 
 import 'react-simple-keyboard/build/css/index.css';
 
-const Untried = -1, DictFalse = 0, DictSuccess = 1;
-
 class Dictation extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +22,7 @@ class Dictation extends Component {
 
     this.extra = {
       tips: '',
-      status: Untried,
+      status: ACHIEVE.withoutError,
     }
 
     this.player = React.createRef();
@@ -80,7 +78,7 @@ class Dictation extends Component {
 
   tip() {
     //看了提示，就不能算一次性成功
-    this.extra.status = DictFalse;
+    this.extra.status = ACHIEVE.withError;
 
     const v = this.state.composed;
     const r = this.props.taskData[this.state.pos].keys;
@@ -108,32 +106,30 @@ class Dictation extends Component {
       composed: ''
     })
     this.keyboard.current.clearInput();
-    this.extra.status = Untried;
+    this.extra.status = ACHIEVE.withoutError;
     this.playSound();
   }
 
   submit() {
-    const task = this.props.taskData[this.state.pos];
     const acv = this.checkComposed(this.state.composed);
 
-    if (this.extra.status === Untried) { 
-      this.extra.status = (acv === ACHIEVE.success ? DictSuccess : DictFalse);
-    } 
-    
-    task.status = this.extra.status;
+    if (acv === ACHIEVE.wrong) {
+      this.extra.status = ACHIEVE.withError;
+    }
 
-    if (acv === ACHIEVE.success) {
+    if (acv === ACHIEVE.correct) {
+      this.props.taskData[this.state.pos].status = this.extra.status;
       setTimeout(() => { this.next() }, 1000);
     }
-    
-    this.setState({achieve: acv});
+
+    this.setState({ achieve: acv });
   }
 
   checkComposed(composed) {
     const keys = this.props.taskData[this.state.pos].keys;
 
     if (composed === keys) {
-      return ACHIEVE.success;
+      return ACHIEVE.correct;
     } else {
       return ACHIEVE.wrong;
     }
@@ -153,16 +149,38 @@ class Dictation extends Component {
   }
 
   render() {
+    let markcls = 'fas fa-genderless colorblack';
+    if (this.state.achieve === ACHIEVE.correct) {
+      if (this.extra.status === ACHIEVE.withoutError) {
+        markcls = 'fas fa-star colorgold';
+      } else {
+        markcls = 'fas fa-check colorred';
+      }
+    } else if (this.state.achieve === ACHIEVE.wrong) {
+      markcls = 'fas fa-times colorred';
+    }
+
+    markcls = 'marginleft mark '+markcls;
+    console.log(markcls);
+
+    const task = this.props.taskData[this.state.pos]
     return (
-      <div className='shade_parent'>
-        <audio ref={this.player} src={audioPath + this.props.taskData[this.state.pos].audio} />
-        <h2 className={'large dictfield placeholder underlined ' + this.state.achieve}>
-          {this.state.composed}
-        </h2>
-        <div className={'tip placeholder' + (this.state.tipping ? '' : ' invisible_present')}>
-          {this.extra.tips}
+      <div className='content bgpeace'>
+        <div className='stretch_box'>
+          <div className='min_page'>
+            <audio ref={this.player} src={audioPath + task.audio} />
+            <div>
+              <span className={'composed_text underlined marginbottom'}>
+                {this.state.composed}
+              </span>
+              <span className={markcls} />
+            </div>
+            <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
+              {this.extra.tips}
+            </div>
+            <h4>{task.info}</h4>
+          </div>
         </div>
-        <h4 className='right'>{this.props.taskData[this.state.pos].info}</h4>
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}
           display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
@@ -175,10 +193,7 @@ class Dictation extends Component {
               buttons: "{enter}"
             },
           ]}
-
         />
-        <Marker show={this.state.achieve === ACHIEVE.success}
-          mark={this.extra.status === DictSuccess ? '★' : '☆'} />
       </div>
     );
   }

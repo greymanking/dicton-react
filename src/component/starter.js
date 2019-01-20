@@ -5,8 +5,8 @@ class Starter extends Component {
     super(props);
     this.state = {
     }
-    
-    this.start=this.start.bind(this);
+
+    this.start = this.start.bind(this);
   }
 
   start() {
@@ -14,19 +14,22 @@ class Starter extends Component {
   }
 
   render() {
-  	return (
-      <div className='pad'>
-      <h3 style={{color:'#A26273'}}>欢迎你，{this.props.userName}</h3>
-        <h4>
-          我们今天要学习{this.props.newTasks.length}个新单词:<br />
-          {this.props.newTasks.map((t)=>{return t.keys}).join(' / ')}<br /><br />
-          复习{this.props.allTasks.length-this.props.newTasks.length}个单词。
+    return (
+      <div className='content bgpeace'>
+        <div className='min_page'>
+          <h3 style={{ color: '#A26273' }}>欢迎你，{this.props.userName}</h3>
+          <h4>
+            我们今天要学习{this.props.newTasks.length}个新单词:<br />
+            {this.props.newTasks.map((t) => { return t.keys }).join(' / ')}<br /><br />
+            复习{this.props.allTasks.length - this.props.newTasks.length}个单词。
         </h4>
-        <button className='button_primary' onClick={this.start}>让我们开始吧！</button>
-        <span className='link_button' onClick={this.props.changeUser}>
-        {'我不是'+this.props.userName}</span>
+          <br />
+          <button className='marginbottom' onClick={this.start}>让我们开始吧！</button>
+          <span className='marginleft fontsmall cursordefault' onClick={this.props.changeUser}>
+            {'我不是' + this.props.userName}</span>
+        </div>
       </div>
-      )
+    )
   }
 }
 

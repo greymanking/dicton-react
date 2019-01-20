@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 12cm;
+      background-color: beige;
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      overflow-x:hidden;
+    }
+
+    .header {
+      background-color: brown;
+      padding: 0.5em 1em;
+    }
+
+    .message_bar {
+      background-color: yellow;
+      padding: 0.5em 1em;
+    }
+
+    .content_box {
+      background-color: whitesmoke;
+      flex-grow: 2;
+      padding: 0.5em 1em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content {
+      background-color: white;
+      height: 6em;
+      width: 6em;
+      text-align: center;
+    }
+
+    .bottom_thing {
+      height: 5em;
+    }
+
+    @keyframes pagemove {
+      0% {
+        transform:translateX(0);
+      }
+      30% {
+        transform:translateX(-100%);
+      }
+      31% {
+        transform:translateX(100%);
+      }
+      100% {
+        transform:translateX(0);
+      }
+    }
+
+    .page {
+      animation: pagemove 1.5s;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="header">
+      <span>coins:</span>
+    </div>
+    <div class="message_bar">
+      message
+    </div>
+    <div id="moving" class="content_box">
+      <div class="content">
+        nothing
+      </div>
+    </div>
+    <div class="bottom_thing">
+      footer
+    </div>
+  </div>
+</body>
+<script>
+var mv=document.getElementById('moving');
+var stopani=false;
+function showAni(){
+  if(stopani){
+    mv.className='content_box';
+    stopani=false;
+  } else {
+    mv.className='content_box page'
+    stopani =true;
+  }
+}
+setInterval(showAni,5000);
+</script>
+</html>

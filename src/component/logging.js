@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 import { ajaxPost } from '../common/ajaxPromise.js';
 import { hostPath, MESSAGE, PATTERN } from '../common/consts.js';
 
+const TYPE_LOGIN = 0, TYPE_SIGNUP = 1;
+
 class Logging extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      type: 0,
-      msgVisible: false
-    }
-
-    this.extra = {
-      msg: ''
+      type: TYPE_LOGIN,
+      validateRes: '　'//全角空格，用于占位
     }
 
     this.login = this.login.bind(this);
-    this.showMessage = this.showMessage.bind(this);
     this.alter = this.alter.bind(this);
   }
 
@@ -26,11 +23,6 @@ class Logging extends Component {
       nameField.value = this.props.curUser;
       nameField.readOnly = true;
     }
-  }
-
-  showMessage(msg) {
-    this.extra.msg = msg;
-    this.setState({ msgVisible: true });
   }
 
   validate(username, password, repassword) {
@@ -49,34 +41,37 @@ class Logging extends Component {
   }
 
   alter() {
-    if (this.state.type === 0) {
-      this.setState({ type: 1, msgVisible: false })
+    if (this.state.type === TYPE_LOGIN) {
+      this.setState({ type: TYPE_SIGNUP })
     } else {
-      this.setState({ type: 0, msgVisible: false })
+      this.setState({ type: TYPE_LOGIN })
     }
+    this.props.showMessage('');
   }
 
   login(e) {
     e.preventDefault();
 
-    const f=document.forms['logging']
+    const f = document.forms['logging']
 
     const username = f.user_name.value;
     const password = f.password.value;
 
-    let res='';
-    if(this.state.type===0){
-      res=this.validate(username, password);
+    let res = '';
+    if (this.state.type === TYPE_LOGIN) {
+      res = this.validate(username, password);
     } else {
-      res = this.validate(username, password,f.confirm_password.value);
+      res = this.validate(username, password, f.confirm_password.value);
     }
 
     if (res !== 'OK') {
-      this.showMessage(res);
+      this.setState({ validateRes: res });
       return;
+    } else {
+      this.setState({ validateRes: '　' })
     }
 
-    ajaxPost(hostPath + (this.state.type === 0 ? 'login' : 'logup'),
+    ajaxPost(hostPath + (this.state.type === TYPE_LOGIN ? 'login' : 'logup'),
       JSON.stringify({
         name: username,
         password: password
@@ -84,41 +79,55 @@ class Logging extends Component {
       'json').then(
         (data) => {
           if (data === 'duplicated') {
-            this.showMessage(MESSAGE.usernameDuplicated);
+            this.props.showMessage(MESSAGE.usernameDuplicated);
           } else if (data === 'OK') {
+            this.props.showMessage('');
             this.props.after();
           } else {
-            this.showMessage(MESSAGE.authFail)
+            this.props.showMessage(MESSAGE.authFail);
           }
         },
         (reason) => {
-          this.showMessage(MESSAGE[reason])
+          this.props.showMessage(MESSAGE[reason]);
         }
       )
   }
 
   render() {
+    let inputClass = 'underlined marginbottom marginleft fontnormal';
     return (
-      <div className='pad'>
-        <h4>{this.state.type === 0 ? '登　录' : '注　册'}</h4>
-        <form name='logging'>
-          <span>用户名称</span>
-          <input className='underlined' type='text' name='user_name' />
-          <br />
-          <span>密　　码</span>
-          <input className='underlined' type='password' name='password' />
-          <br />
-          {this.state.type === 1 && <React.Fragment><span>确认密码</span>
-            <input type='password' name='confirm_password' size='20' /></React.Fragment>}
-          <div className='message' style={{ display: this.state.msgVisible ? "block" : "none" }}>
-            {this.extra.msg}
+      <div className='content bgpeace'>
+        <div className='min_page'>
+          <div className='fontlarge marginbottom'>
+            {this.state.type === TYPE_LOGIN ? '登　录' : '注　册'}
           </div>
-          <div className='button_group'>
-            <button className='button_primary' onClick={this.login}>{this.state.type === 0 ? '登　录' : '注　册'}</button>
-            <span className='link_button' style={{ display: this.props.curUser === '' ? "inline" : "none" }}
-              onClick={this.alter}>{this.state.type === 0 ? '注册新用户' : '登  录'}</span>
-          </div>
-        </form>
+          <form name='logging'>
+            <div>
+              <span>用户名称</span>
+              <input className={inputClass} type='text' name='user_name' />
+            </div>
+            <div>
+              <span>密　　码</span>
+              <input className={inputClass} type='password' name='password' />
+            </div>
+            <div className={this.state.type === TYPE_SIGNUP ? 'elvisible' : 'elinvisible'}>
+              <span>确认密码</span>
+              <input className={inputClass} type='password' name='confirm_password' />
+            </div>
+
+            <div className='marginbottom fontsmall colorred'>{this.state.validateRes}</div>
+            <div className='button_group'>
+              <button onClick={this.login} className='fontnormal'>
+                {this.state.type === TYPE_LOGIN ? '登　录' : '注　册'}
+              </button>
+              {
+                this.props.curUser === '' && <span className='marginleft cursordefault fontsmall'
+                  onClick={this.alter}>
+                  {this.state.type === TYPE_LOGIN ? '注  册' : '登  录'}</span>
+              }
+            </div>
+          </form>
+        </div>
       </div>
     )
   }

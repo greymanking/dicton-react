@@ -3,10 +3,12 @@
 const audioPath = '/sounds/';
 const hostPath = '/';
 
-const ACHIEVE={
-    normal:'normal',
-    success:'right',
-    wrong:'wrong'
+const ACHIEVE = {
+    normal: -1,
+    wrong: 0,
+    correct: 1,
+    withError: 0,
+    withoutError: 1,
 }
 
 const MESSAGE = {
@@ -19,8 +21,8 @@ const MESSAGE = {
     authFail: '登录失败！请检查用户名和密码',
     uploadFail: '上传数据失败',
     usernameInvalid: '用户名须以字母或中文开头，包含3-10个字母、中文和数字',
-    passwordInvalid: '密码包含8-20个字母或数字',
-    passwordConfirmFail:'两次输入的密码不一致',
+    passwordInvalid: '密码应包含8-20个字母或数字',
+    passwordConfirmFail: '两次输入的密码不一致',
     usernameDuplicated: '用户名已经存在'
 }
 

@@ -8,7 +8,6 @@ import Starter from './starter.js'
 import Logging from './logging.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
-import '../css/custom.css';
 import { hostPath, MESSAGE } from '../common/consts.js'
 
 const LOADING = -4, ABNORMAL = -3, LOGGING = -2,
@@ -19,7 +18,10 @@ const AllSorts = 0, PuzzleDictation = 1, OnlyDictation = 2;
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { stage: LOADING };
+    this.state = {
+      stage: LOADING,
+      message: ''
+    };
     this.extra = { alert: '', userName: '', afterAuth: null }
 
     this.taskDataArray = new Array(3);
@@ -31,6 +33,7 @@ class App extends Component {
     this.fetch = this.fetch.bind(this);
     this.dealAjaxError = this.dealAjaxError.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    this.showMessage = this.showMessage.bind(this);
   }
 
   dealAjaxError(reason) {
@@ -129,8 +132,6 @@ class App extends Component {
       }
     }
 
-
-
     console.log(this.taskDataArray)
   }
 
@@ -153,6 +154,10 @@ class App extends Component {
     this.setState({ stage: curStage });
   }
 
+  showMessage(msg) {
+    this.setState({ message: msg });
+  }
+
   componentDidMount() {
     this.fetch();
   }
@@ -166,7 +171,8 @@ class App extends Component {
         stage = <h3>{MESSAGE.loading}</h3>
         break;
       case LOGGING:
-        stage = <Logging after={this.extra.afterAuth} curUser={this.extra.userName} />
+        stage = <Logging after={this.extra.afterAuth} curUser={this.extra.userName}
+          showMessage={this.showMessage} />
         break;
       case ABNORMAL:
         stage = <h3>{this.extra.alert}</h3>
@@ -195,9 +201,19 @@ class App extends Component {
         stage = <h3>我已经彻底迷茫了！！</h3>
     }
     return (
-      <div className='App'>
-        {stage}
+      <div className='app'>
+        <div className='header colorwhite'>
+          小学生背单词
+        </div>
+        <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace')+' message_bar'}>
+          {this.state.message}
+        </div>
+          {stage}
+        {/* <div className='footer'>
+          footer
+        </div> */}
       </div>
+
     );
   }
 }
