@@ -11,12 +11,14 @@ class Puzzle extends Component {
     this.state = {
       pos: 0,
       achieve: ACHIEVE.normal,
-      composed: "",
+      composed: '',
+      runAni: false,
     }
 
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
       status: ACHIEVE.withoutError,
+      enabled: true,
     };
 
     this.player = React.createRef();
@@ -30,10 +32,12 @@ class Puzzle extends Component {
   }
 
   addChar(chr) {
+    if (!this.extra.enabled) { return; }
     const composed = this.state.composed + chr;
     const achieved = this.checkComposed(composed);
 
     if (achieved === ACHIEVE.correct) {
+      this.extra.enabled = false;
       setTimeout(this.next, 700);
     }
 
@@ -48,6 +52,7 @@ class Puzzle extends Component {
   }
 
   backspace() {
+    if (!this.extra.enabled) { return; }
     let curComposed = this.state.composed;
     let len = curComposed.length;
     if (len > 0) {
@@ -72,6 +77,7 @@ class Puzzle extends Component {
 
     this.extra.status = ACHIEVE.withoutError;
     this.extra.shuffled = shuffle(task.keys, 10);
+    this.extra.enabled = true;
 
     this.setState({
       achieve: ACHIEVE.normal,
@@ -95,7 +101,9 @@ class Puzzle extends Component {
   next() {
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
-      this.setState({ pos: nextPos }, this.reflow);
+      this.setState({ runAni: true });
+      setTimeout(() => { this.setState({ pos: nextPos }, this.reflow); }, 1500 * 0.3);
+      setTimeout(() => { this.setState({ runAni: false }) }, 1500);
     } else {
       this.props.next();
     }
@@ -117,13 +125,12 @@ class Puzzle extends Component {
       markcls = 'fas fa-times colorred';
     }
 
-    markcls = 'marginleft mark '+markcls;
-    console.log(markcls);
+    markcls = 'marginleft mark ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
 
     return (
-      <div className='content bgpeace'>
+      <div className={'content bgpeace'+(this.state.runAni? ' page_ani':'')}>
         <div className='min_page'>
           <audio ref={this.player} src={audioPath + task.audio} />
           <span className={'composed_text underlined marginbottom'}>

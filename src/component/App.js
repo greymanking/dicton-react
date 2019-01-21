@@ -191,7 +191,7 @@ class App extends Component {
         stage = <h3>我已经彻底迷茫了！！</h3>
     }
     return (
-      <div className='app'>
+      <div className='app bgpeace'>
         <div className='header colorwhite'>
           小学生背单词
         </div>

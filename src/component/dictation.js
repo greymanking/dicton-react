@@ -18,11 +18,13 @@ class Dictation extends Component {
       tipping: false,
       composed: '',
       layoutName: 'default',
+      runAni: false,
     }
 
     this.extra = {
       tips: '',
       status: ACHIEVE.withoutError,
+      enabled: true,
     }
 
     this.player = React.createRef();
@@ -54,10 +56,12 @@ class Dictation extends Component {
   }
 
   onChange(text) {
+    if (!this.extra.enabled) { return; }
     this.setState({ achieve: ACHIEVE.normal, composed: text })
   }
 
   onKeyPress(button) {
+    if (!this.extra.enabled) { return; }
     if (button === '{enter}') {
       this.submit();
     } else if (button === '{tips}') {
@@ -77,6 +81,7 @@ class Dictation extends Component {
   }
 
   tip() {
+    if (!this.extra.enabled) { return; }
     //看了提示，就不能算一次性成功
     this.extra.status = ACHIEVE.withError;
 
@@ -107,10 +112,12 @@ class Dictation extends Component {
     })
     this.keyboard.current.clearInput();
     this.extra.status = ACHIEVE.withoutError;
+    this.extra.enabled = true;
     this.playSound();
   }
 
   submit() {
+    if (!this.extra.enabled) { return; }
     const acv = this.checkComposed(this.state.composed);
 
     if (acv === ACHIEVE.wrong) {
@@ -119,6 +126,7 @@ class Dictation extends Component {
 
     if (acv === ACHIEVE.correct) {
       this.props.taskData[this.state.pos].status = this.extra.status;
+      this.extra.enabled = false;
       setTimeout(() => { this.next() }, 1000);
     }
 
@@ -138,7 +146,9 @@ class Dictation extends Component {
   next() {
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
-      this.setState({ pos: nextPos }, this.reflow);
+      this.setState({ runAni: true });
+      setTimeout(() => { this.setState({ pos: nextPos }, this.reflow); }, 1500 * 0.3);
+      setTimeout(() => { this.setState({ runAni: false }) }, 1500);
     } else {
       this.props.next();
     }
@@ -166,7 +176,7 @@ class Dictation extends Component {
     const task = this.props.taskData[this.state.pos]
     return (
       <div className='content bgpeace'>
-        <div className='stretch_box'>
+        <div className={'stretch_box'+(this.state.runAni? ' page_ani':'')}>
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div>

@@ -216,5 +216,5 @@ button {
 }
 
 .load_ani {
-    animation: selfrotate infinite;
+    animation: selfrotate 2s infinite;
 }
