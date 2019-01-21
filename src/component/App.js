@@ -6,12 +6,13 @@ import Learn from './learn.js'
 import Dictation from './dictation.js'
 import Starter from './starter.js'
 import Logging from './logging.js'
+import Ending from './ending.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
 import { hostPath, MESSAGE } from '../common/consts.js'
 
-const LOADING = -4, ABNORMAL = -3, LOGGING = -2,
-  STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, UPLOADING = 3, ENDING = 4;
+const LOADING = -3, LOGGING = -2,
+  STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
 
 const AllSorts = 0, PuzzleDictation = 1, OnlyDictation = 2;
 
@@ -23,7 +24,6 @@ class App extends Component {
       message: ''
     };
     this.extra = { alert: '', userName: '', afterAuth: null }
-
     this.taskDataArray = new Array(3);
     //此句可删
     this.initTasks();
@@ -31,15 +31,8 @@ class App extends Component {
     this.next = this.next.bind(this);
     this.upload = this.upload.bind(this);
     this.fetch = this.fetch.bind(this);
-    this.dealAjaxError = this.dealAjaxError.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.showMessage = this.showMessage.bind(this);
-  }
-
-  dealAjaxError(reason) {
-    console.log(reason);
-    this.extra.alert = MESSAGE[reason]
-    this.setState({ stage: ABNORMAL });
   }
 
   fetch() {
@@ -52,8 +45,7 @@ class App extends Component {
           this.setState({ stage: LOGGING })
           return;
         } else if (data === 'nodata') {
-          this.extra.alert = MESSAGE.nodata
-          this.setState({ stage: ABNORMAL })
+          this.setState({ message: MESSAGE.nodata })
           return;
         }
 
@@ -62,8 +54,7 @@ class App extends Component {
         try {
           coming = JSON.parse(data);
         } catch (err) {
-          this.extra.alert = MESSAGE.error;
-          this.setState({ stage: ABNORMAL });
+          this.setState({ message: MESSAGE.error });
           return;
         }
         this.sortup(coming.data);
@@ -72,7 +63,7 @@ class App extends Component {
         //this.setState({ stage: DICTATION })
       },
       (reason) => {
-        this.dealAjaxError(reason)
+        this.setState({ message: MESSAGE[reason] });
       }
     )
   }
@@ -97,11 +88,10 @@ class App extends Component {
           this.setState({ stage: LOGGING })
         } //else if (data === 'userdismatch'){} //暂无处理
         else {
-          this.extra.alert = MESSAGE.uploadFail;
-          this.setState({ stage: ABNORMAL })
+          this.setState({ message: MESSAGE.uploadFail })
         }
       },
-      (reason) => { this.dealAjaxError(reason) }
+      (reason) => { this.setState({ message: MESSAGE[reason] }); }
     )
   }
 
@@ -127,7 +117,7 @@ class App extends Component {
       } else if (t.kind === PuzzleDictation) {
         this.puzzleTasks.push(t);
         this.dictationTasks.push(t);
-      } else {
+      } else if (t.kind === OnlyDictation) {
         this.dictationTasks.push(t);
       }
     }
@@ -143,9 +133,9 @@ class App extends Component {
 
   next() {
     let curStage = this.state.stage;
-    while (curStage < UPLOADING) {
+    while (curStage < ENDING) {
       curStage++;
-      if (curStage === UPLOADING) {
+      if (curStage === ENDING) {
         this.upload();
       } else if (this.taskDataArray[curStage].length > 0) {
         break;
@@ -168,14 +158,17 @@ class App extends Component {
 
     switch (this.state.stage) {
       case LOADING:
-        stage = <h3>{MESSAGE.loading}</h3>
+        stage = <div className='content bgpeace'>
+          <div className='min_page fontextralarge'><h3>
+            <i className={this.state.message === '' ? 'load_ani fas fa-spinner' :
+             'colorred fas fa-exclamation-triangle'}></i>
+          </h3>
+          </div>
+        </div>
         break;
       case LOGGING:
         stage = <Logging after={this.extra.afterAuth} curUser={this.extra.userName}
           showMessage={this.showMessage} />
-        break;
-      case ABNORMAL:
-        stage = <h3>{this.extra.alert}</h3>
         break;
       case STARTER:
         stage = <Starter start={this.next} userName={this.extra.userName}
@@ -191,11 +184,8 @@ class App extends Component {
       case DICTATION:
         stage = <Dictation next={this.next} taskData={this.dictationTasks} />
         break;
-      case UPLOADING:
-        stage = <h3>{MESSAGE.uploading}</h3>
-        break;
       case ENDING:
-        stage = <h3>{MESSAGE.rest}</h3>
+        stage = <Ending puzzles={this.puzzleTasks} dictations={this.dictationTasks} />
         break;
       default:
         stage = <h3>我已经彻底迷茫了！！</h3>
@@ -205,10 +195,10 @@ class App extends Component {
         <div className='header colorwhite'>
           小学生背单词
         </div>
-        <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace')+' message_bar'}>
+        <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
           {this.state.message}
         </div>
-          {stage}
+        {stage}
         {/* <div className='footer'>
           footer
         </div> */}

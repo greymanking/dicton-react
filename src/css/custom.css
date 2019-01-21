@@ -144,6 +144,10 @@ button {
     font-size: 1.38rem;
 }
 
+.fontextralarge {
+    font-size: 3rem;
+}
+
 .textcenter {
     text-align: center;
 }
@@ -195,6 +199,22 @@ button {
     }
 }
 
+@keyframes selfrotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .page_ani {
     animation: pagemove 1.5s;
+}
+
+.load_ani {
+    animation: selfrotate infinite;
 }
