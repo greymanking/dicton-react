@@ -17,7 +17,7 @@ class Puzzle extends Component {
 
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
-      status: ACHIEVE.withoutError,
+      status: ACHIEVE.puzzleSuccess,
       enabled: true,
     };
 
@@ -37,12 +37,16 @@ class Puzzle extends Component {
     const achieved = this.checkComposed(composed);
 
     if (achieved === ACHIEVE.correct) {
+      let s=this.props.taskData[this.state.pos].status;
+      
+      this.props.taskData[this.state.pos].status = s|this.extra.status;
+      console.log('s=',s,' extra.status',this.extra.status,' task status',this.props.taskData[this.state.pos].status);
       this.extra.enabled = false;
       setTimeout(this.next, 700);
     }
 
     if (achieved === ACHIEVE.wrong) {
-      this.extra.status = ACHIEVE.withError;
+      this.extra.status = ACHIEVE.puzzleFalse;
     }
 
     this.setState({
@@ -75,7 +79,7 @@ class Puzzle extends Component {
   reflow() {
     const task = this.props.taskData[this.state.pos]
 
-    this.extra.status = ACHIEVE.withoutError;
+    this.extra.status = ACHIEVE.puzzleSuccess;
     this.extra.shuffled = shuffle(task.keys, 10);
     this.extra.enabled = true;
 
@@ -116,7 +120,7 @@ class Puzzle extends Component {
   render() {
     let markcls = 'fas fa-genderless colorblack';
     if (this.state.achieve === ACHIEVE.correct) {
-      if (this.extra.status === ACHIEVE.withoutError) {
+      if (this.extra.status === ACHIEVE.puzzleSuccess) {
         markcls = 'fas fa-star colorgold';
       } else {
         markcls = 'fas fa-check colorred';

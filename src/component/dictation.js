@@ -83,7 +83,7 @@ class Dictation extends Component {
   tip() {
     if (!this.extra.enabled) { return; }
     //看了提示，就不能算一次性成功
-    this.extra.status = ACHIEVE.withError;
+    this.extra.status = ACHIEVE.dictFalse;
 
     const v = this.state.composed;
     const r = this.props.taskData[this.state.pos].keys;
@@ -111,7 +111,7 @@ class Dictation extends Component {
       composed: ''
     })
     this.keyboard.current.clearInput();
-    this.extra.status = ACHIEVE.withoutError;
+    this.extra.status = ACHIEVE.dictSuccess;
     this.extra.enabled = true;
     this.playSound();
   }
@@ -121,11 +121,13 @@ class Dictation extends Component {
     const acv = this.checkComposed(this.state.composed);
 
     if (acv === ACHIEVE.wrong) {
-      this.extra.status = ACHIEVE.withError;
+      this.extra.status = ACHIEVE.dictFalse;
     }
 
     if (acv === ACHIEVE.correct) {
-      this.props.taskData[this.state.pos].status = this.extra.status;
+      let s=this.props.taskData[this.state.pos].status;
+      this.props.taskData[this.state.pos].status = s|this.extra.status;
+      console.log('s=',s,' extra.status',this.extra.status,' task status',this.props.taskData[this.state.pos].status);
       this.extra.enabled = false;
       setTimeout(() => { this.next() }, 1000);
     }
@@ -161,7 +163,7 @@ class Dictation extends Component {
   render() {
     let markcls = 'fas fa-genderless colorblack';
     if (this.state.achieve === ACHIEVE.correct) {
-      if (this.extra.status === ACHIEVE.withoutError) {
+      if (this.extra.status === ACHIEVE.dictSuccess) {
         markcls = 'fas fa-star colorgold';
       } else {
         markcls = 'fas fa-check colorred';
@@ -171,7 +173,6 @@ class Dictation extends Component {
     }
 
     markcls = 'marginleft mark '+markcls;
-    console.log(markcls);
 
     const task = this.props.taskData[this.state.pos]
     return (

@@ -7,8 +7,10 @@ const ACHIEVE = {
     normal: -1,
     wrong: 0,
     correct: 1,
-    withError: 0,
-    withoutError: 1,
+    dictFalse: 1,
+    dictSuccess: 2,
+    puzzleFalse: 4,
+    puzzleSuccess: 8
 }
 
 const MESSAGE = {

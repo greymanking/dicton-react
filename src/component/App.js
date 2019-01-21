@@ -109,7 +109,7 @@ class App extends Component {
     this.initTasks();
 
     for (let t of taskData) {
-      t.status = -1; //Untried
+      t.status = 0; 
       if (t.kind === AllSorts) {
         this.learnTasks.push(t);
         this.puzzleTasks.push(t);
