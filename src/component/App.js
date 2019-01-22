@@ -21,9 +21,17 @@ class App extends Component {
     super(props);
     this.state = {
       stage: LOADING,
-      message: ''
+      message: '',
+      learned:0,
+      diamonds:0,
+      coins:0
     };
-    this.extra = { alert: '', userName: '', afterAuth: null }
+    this.extra = { 
+      userName: '', 
+      afterAuth: null,
+      diamonds_saved: 0,
+      coins_saved:0
+    };
     this.taskDataArray = new Array(3);
     //此句可删
     this.initTasks();
@@ -59,7 +67,7 @@ class App extends Component {
         }
         this.sortup(coming.data);
         this.extra.userName = coming.username;
-        this.setState({ stage: STARTER })
+        this.setState({ stage: STARTER, learned: coming.learned })
         //this.setState({ stage: DICTATION })
       },
       (reason) => {
@@ -173,7 +181,7 @@ class App extends Component {
       case STARTER:
         stage = <Starter start={this.next} userName={this.extra.userName}
           newTasks={this.learnTasks} allTasks={this.dictationTasks}
-          changeUser={this.changeUser} />
+          changeUser={this.changeUser} learned={this.state.learned} />
         break;
       case LEARN:
         stage = <Learn next={this.next} taskData={this.learnTasks} />

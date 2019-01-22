@@ -15,6 +15,7 @@ button {
     background-color: #E4B2B6;
     border-radius:5px;
     border:1px solid gainsboro;
+    font-size: 1rem;
 }
 
 #root {
