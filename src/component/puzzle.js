@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Marker from './marker.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import shuffle from "../common/shuffle.js"
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -40,7 +40,6 @@ class Puzzle extends Component {
       let s=this.props.taskData[this.state.pos].status;
       
       this.props.taskData[this.state.pos].status = s|this.extra.status;
-      console.log('s=',s,' extra.status',this.extra.status,' task status',this.props.taskData[this.state.pos].status);
       this.extra.enabled = false;
       setTimeout(this.next, 700);
     }
@@ -118,15 +117,18 @@ class Puzzle extends Component {
   }
 
   render() {
-    let markcls = 'fas fa-genderless colorblack';
+    let markcls = 'colorblack', markicon= 'genderless';
     if (this.state.achieve === ACHIEVE.correct) {
       if (this.extra.status === ACHIEVE.puzzleSuccess) {
-        markcls = 'fas fa-star colorgold';
+        markcls = 'colorgold';
+        markicon = 'star'; 
       } else {
-        markcls = 'fas fa-check colorred';
+        markcls = 'colorred';
+        markicon = 'check';
       }
     } else if (this.state.achieve === ACHIEVE.wrong) {
-      markcls = 'fas fa-times colorred';
+      markcls = 'colorred';
+      markicon = 'times';
     }
 
     markcls = 'marginleft mark ' + markcls;
@@ -137,10 +139,10 @@ class Puzzle extends Component {
       <div className={'content bgpeace'+(this.state.runAni? ' page_ani':'')}>
         <div className='min_page'>
           <audio ref={this.player} src={audioPath + task.audio} />
-          <span className={'composed_text underlined marginbottom'}>
+          <span className={'composed_text underlined'}>
             {this.state.composed}
           </span>
-          <span className={markcls} />
+          <FontAwesomeIcon icon={markicon} className={markcls} />
           <h3>{task.info}</h3>
         </div>
         <div className='puzzle_box'>
@@ -150,9 +152,9 @@ class Puzzle extends Component {
             }
           )}
 
-          <span className='puzzle_piece' onClick={this.backspace}>
-            <span className='fas fa-backspace' />
-          </span>
+          <button className='btn_bkspc' onClick={this.backspace}>
+          <FontAwesomeIcon icon='backspace' />
+          </button>
         </div>
       </div>
     );
@@ -172,8 +174,8 @@ class PuzzlePiece extends Component {
 
   render() {
     return (
-      <span className='puzzle_piece' onClick={this.onClick}>
-        {this.props.char === " " ? "　" : this.props.char}</span>
+      <button className='puzzle_piece' onClick={this.onClick}>
+        {this.props.char === " " ? "　" : this.props.char}</button>
     );
   }
 }

@@ -28,11 +28,18 @@ const MESSAGE = {
     usernameDuplicated: '用户名已经存在'
 }
 
+const ULSTATUS = {
+    notGoing: 0,
+    going: 1,
+    fail: 2,
+    done: 3
+}
+
 const PATTERN = {
     username: /^([\u4E00-\u9FA5\uF900-\uFA2D]|[a-zA-Z]){1}([\u4E00-\u9FA5\uF900-\uFA2D]|[a-zA-Z0-9]){2,9}$/,
     password: /^[a-zA-Z0-9]{8,20}$/
 }
 
 export {
-    audioPath, hostPath, ACHIEVE, MESSAGE, PATTERN
+    audioPath, hostPath, ACHIEVE, MESSAGE, PATTERN, ULSTATUS
 };

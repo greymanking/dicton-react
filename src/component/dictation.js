@@ -1,7 +1,5 @@
-//todo:正确时的消息；软键盘
-
 import React, { Component } from 'react';
-import Marker from './marker.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -23,7 +21,7 @@ class Dictation extends Component {
 
     this.extra = {
       tips: '',
-      status: ACHIEVE.withoutError,
+      status: ACHIEVE.dictSuccess,
       enabled: true,
     }
 
@@ -127,7 +125,6 @@ class Dictation extends Component {
     if (acv === ACHIEVE.correct) {
       let s=this.props.taskData[this.state.pos].status;
       this.props.taskData[this.state.pos].status = s|this.extra.status;
-      console.log('s=',s,' extra.status',this.extra.status,' task status',this.props.taskData[this.state.pos].status);
       this.extra.enabled = false;
       setTimeout(() => { this.next() }, 1000);
     }
@@ -161,18 +158,21 @@ class Dictation extends Component {
   }
 
   render() {
-    let markcls = 'fas fa-genderless colorblack';
+    let markcls = 'colorblack', markicon= 'genderless';
     if (this.state.achieve === ACHIEVE.correct) {
       if (this.extra.status === ACHIEVE.dictSuccess) {
-        markcls = 'fas fa-star colorgold';
+        markcls = 'colorgold';
+        markicon = 'star'; 
       } else {
-        markcls = 'fas fa-check colorred';
+        markcls = 'colorred';
+        markicon = 'check';
       }
     } else if (this.state.achieve === ACHIEVE.wrong) {
-      markcls = 'fas fa-times colorred';
+      markcls = 'colorred';
+      markicon = 'times';
     }
 
-    markcls = 'marginleft mark '+markcls;
+    markcls = 'marginleft mark ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
     return (
@@ -181,15 +181,15 @@ class Dictation extends Component {
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div>
-              <span className={'composed_text underlined marginbottom'}>
+              <span className={'composed_text underlined'}>
                 {this.state.composed}
               </span>
-              <span className={markcls} />
+              <FontAwesomeIcon icon={markicon} className={markcls} />
             </div>
             <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
               {this.extra.tips}
             </div>
-            <h4>{task.info}</h4>
+            <h3>{task.info}</h3>
           </div>
         </div>
         <Keyboard ref={this.keyboard}

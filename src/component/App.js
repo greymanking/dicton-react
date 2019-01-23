@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
@@ -9,7 +8,16 @@ import Logging from './logging.js'
 import Ending from './ending.js'
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
-import { hostPath, MESSAGE } from '../common/consts.js'
+import { hostPath, MESSAGE, ULSTATUS } from '../common/consts.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes, 
+  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faYenSign }
+ from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+library.add(faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes, 
+  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faYenSign);
 
 const LOADING = -3, LOGGING = -2,
   STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
@@ -22,25 +30,28 @@ class App extends Component {
     this.state = {
       stage: LOADING,
       message: '',
-      learned:0,
-      diamonds:0,
-      coins:0
+      learned: 0,
+      diamonds: 0,
+      coins: 0,
+      uploadStatus: ULSTATUS.notGoing
     };
-    this.extra = { 
-      userName: '', 
+    this.extra = {
+      userName: '',
       afterAuth: null,
       diamonds_saved: 0,
-      coins_saved:0
+      coins_saved: 0
     };
     this.taskDataArray = new Array(3);
     //此句可删
     this.initTasks();
 
-    this.next = this.next.bind(this);
+    this.nextstage = this.nextstage.bind(this);
     this.upload = this.upload.bind(this);
     this.fetch = this.fetch.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.showMessage = this.showMessage.bind(this);
+    this.nextrun = this.nextrun.bind(this);
+    this.doFallible = this.doFallible.bind(this);
   }
 
   fetch() {
@@ -84,6 +95,9 @@ class App extends Component {
     for (let t of this.dictationTasks) {
       dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
     }
+
+    this.setState({ message: MESSAGE.uploading, uploadStatus: ULSTATUS.going });
+
     ajaxPost(hostPath + 'submit', JSON.stringify({
       username: this.extra.userName,
       recs: dataSubmit
@@ -91,15 +105,15 @@ class App extends Component {
       (data) => {
         console.log("upload res", data)
         if (data === 'OK') {
-          this.setState({ stage: ENDING })
+          this.setState({ message: '', uploadStatus: ULSTATUS.done })
         } else if (data === 'unauth') {
-          this.setState({ stage: LOGGING })
+          this.setState({ message: '', stage: LOGGING })
         } //else if (data === 'userdismatch'){} //暂无处理
         else {
-          this.setState({ message: MESSAGE.uploadFail })
+          this.setState({ message: MESSAGE.uploadFail, uploadStatus: ULSTATUS.fail })
         }
       },
-      (reason) => { this.setState({ message: MESSAGE[reason] }); }
+      (reason) => { this.setState({ message: MESSAGE[reason], uploadStatus: ULSTATUS.fail }); }
     )
   }
 
@@ -117,7 +131,7 @@ class App extends Component {
     this.initTasks();
 
     for (let t of taskData) {
-      t.status = 0; 
+      t.status = 0;
       if (t.kind === AllSorts) {
         this.learnTasks.push(t);
         this.puzzleTasks.push(t);
@@ -139,7 +153,7 @@ class App extends Component {
     this.setState({ stage: LOGGING })
   }
 
-  next() {
+  nextstage() {
     let curStage = this.state.stage;
     while (curStage < ENDING) {
       curStage++;
@@ -150,6 +164,20 @@ class App extends Component {
       }
     }
     this.setState({ stage: curStage });
+  }
+
+  nextrun() {
+    this.setState({
+      stage: LOADING,
+      message: '',
+      uploadStatus: ULSTATUS.notGoing
+    });
+    this.initTasks();
+    this.fetch();
+  }
+
+  doFallible(){
+
   }
 
   showMessage(msg) {
@@ -167,10 +195,9 @@ class App extends Component {
     switch (this.state.stage) {
       case LOADING:
         stage = <div className='content bgpeace'>
-          <div className='min_page fontextralarge'><h3>
-            <i className={this.state.message === '' ? 'load_ani fas fa-spinner' :
-             'colorred fas fa-exclamation-triangle'}></i>
-          </h3>
+          <div className='min_page fontextralarge'>
+            {this.state.message === '' ? <FontAwesomeIcon icon='spinner' className='load_ani' /> :
+              <FontAwesomeIcon icon='exclamation-triangle' className='colorred' />}
           </div>
         </div>
         break;
@@ -179,21 +206,22 @@ class App extends Component {
           showMessage={this.showMessage} />
         break;
       case STARTER:
-        stage = <Starter start={this.next} userName={this.extra.userName}
+        stage = <Starter start={this.nextstage} userName={this.extra.userName}
           newTasks={this.learnTasks} allTasks={this.dictationTasks}
           changeUser={this.changeUser} learned={this.state.learned} />
         break;
       case LEARN:
-        stage = <Learn next={this.next} taskData={this.learnTasks} />
+        stage = <Learn next={this.nextstage} taskData={this.learnTasks} />
         break;
       case PUZZLE:
-        stage = <Puzzle next={this.next} taskData={this.puzzleTasks} />
+        stage = <Puzzle next={this.nextstage} taskData={this.puzzleTasks} />
         break;
       case DICTATION:
-        stage = <Dictation next={this.next} taskData={this.dictationTasks} />
+        stage = <Dictation next={this.nextstage} taskData={this.dictationTasks} />
         break;
       case ENDING:
-        stage = <Ending puzzles={this.puzzleTasks} dictations={this.dictationTasks} />
+        stage = <Ending uploadStatus={this.state.uploadStatus} puzzles={this.puzzleTasks}
+          dictations={this.dictationTasks} nextrun={this.nextrun} doFallible={this.doFallible} />
         break;
       default:
         stage = <h3>我已经彻底迷茫了！！</h3>

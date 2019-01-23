@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { ajaxPost } from '../common/ajaxPromise.js';
 import { hostPath, MESSAGE, PATTERN } from '../common/consts.js';
 
@@ -101,23 +103,24 @@ class Logging extends Component {
           <div className='fontlarge marginbottom'>
             {this.state.type === TYPE_LOGIN ? '登　录' : '注　册'}
           </div>
+          <br />
           <form name='logging'>
             <div>
-              <span>用户名称</span>
-              <input className={inputClass} type='text' name='user_name' />
+              <FontAwesomeIcon icon='user' />
+              <input className={inputClass} type='text' name='user_name' title='用户名' />
             </div>
             <div>
-              <span>密　　码</span>
-              <input className={inputClass} type='password' name='password' />
+              <FontAwesomeIcon icon='key' />
+              <input className={inputClass} type='password' name='password'  title='密码' />
             </div>
             <div className={this.state.type === TYPE_SIGNUP ? 'elvisible' : 'elinvisible'}>
-              <span>确认密码</span>
-              <input className={inputClass} type='password' name='confirm_password' />
+              <FontAwesomeIcon icon='key' />
+              <input className={inputClass} type='password' name='confirm_password' title='重复密码' />
             </div>
 
             <div className='marginbottom fontsmall colorred'>{this.state.validateRes}</div>
             <div className='button_group'>
-              <button onClick={this.login} className='fontnormal'>
+              <button onClick={this.login} className='primary'>
                 {this.state.type === TYPE_LOGIN ? '登　录' : '注　册'}
               </button>
               {

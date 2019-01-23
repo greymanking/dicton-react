@@ -25,7 +25,7 @@ class Starter extends Component {
             复习{this.props.allTasks.length - this.props.newTasks.length}个单词。
         </h4>
           <br />
-          <button className='marginbottom' onClick={this.start}>让我们开始吧！</button>
+          <button className='primary' onClick={this.start}>让我们开始吧！</button>
           <span className='marginleft fontsmall cursordefault' onClick={this.props.changeUser}>
             {'我不是' + this.props.userName}</span>
         </div>
