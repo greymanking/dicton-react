@@ -49,6 +49,11 @@ button.btn_bkspc:active {
     color:brown;
 }
 
+table {
+    width:18rem;
+    margin:2rem auto;
+}
+
 #root {
     height:100%;
 }
