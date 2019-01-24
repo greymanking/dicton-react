@@ -100,7 +100,8 @@ class Learn extends Component {
               showPercentage={false}
               showPercentageSymbol={false} />
           </div>) :
-            (<h2> {task.keys}</h2>)
+            (<><h2>{task.keys}</h2>
+            <span className='phonetic'>{task.phonetic}</span></>)
           }
           <h3>{task.info}</h3>
           <button className='primary' onClick={this.next}>

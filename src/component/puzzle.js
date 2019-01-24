@@ -131,7 +131,7 @@ class Puzzle extends Component {
       markicon = 'times';
     }
 
-    markcls = 'marginleft mark ' + markcls;
+    // markcls = 'marginleft ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
 
@@ -142,7 +142,7 @@ class Puzzle extends Component {
           <span className={'composed_text underlined'}>
             {this.state.composed}
           </span>
-          <FontAwesomeIcon icon={markicon} className={markcls} />
+          <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
           <h3>{task.info}</h3>
         </div>
         <div className='puzzle_box'>

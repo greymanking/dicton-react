@@ -15,6 +15,7 @@ button {
     border-radius:5px;
     border:1px solid gainsboro;
     outline: none;
+    user-select: none;
 }
 
 button:active {
@@ -119,10 +120,21 @@ table {
 }
 
 .mark {
+    display:inline-block;
     font-size:2.5rem;
     height: 4rem;
+    width: 4rem;
     vertical-align: top;
     transition: all 0.2s;
+}
+
+.phonetic {
+    font-family:'Microsoft Yahei',sans-serif,Arial,Verdana;
+    font-size:1rem;
+}
+
+.monofont {
+    font-family: Consolas,Monaco,monospace !important;
 }
 
 .tip {

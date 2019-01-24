@@ -172,7 +172,7 @@ class Dictation extends Component {
       markicon = 'times';
     }
 
-    markcls = 'marginleft mark ' + markcls;
+    // markcls = 'marginleft mark ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
     return (
@@ -184,7 +184,9 @@ class Dictation extends Component {
               <span className={'composed_text underlined'}>
                 {this.state.composed}
               </span>
+              <div className='mark'>
               <FontAwesomeIcon icon={markicon} className={markcls} />
+              </div>
             </div>
             <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
               {this.extra.tips}
@@ -194,6 +196,7 @@ class Dictation extends Component {
         </div>
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}
+          theme={'hg-theme-default monofont'}
           display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
           mergeDisplay={true} onChange={input => this.onChange(input)}
           onKeyPress={button => this.onKeyPress(button)}
