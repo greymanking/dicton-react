@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import shuffle from "../common/shuffle.js"
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
-class Puzzle extends Component {
+class Puzzle extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -102,6 +102,8 @@ class Puzzle extends Component {
   }
 
   next() {
+    this.props.addCoins(this.extra.status === ACHIEVE.puzzleFalse?15:20);
+    
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.setState({ runAni: true });
@@ -161,7 +163,7 @@ class Puzzle extends Component {
   }
 }
 
-class PuzzlePiece extends Component {
+class PuzzlePiece extends PureComponent {
   constructor(props) {
     super(props);
 

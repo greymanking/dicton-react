@@ -62,6 +62,8 @@ class Learn extends Component {
   }
 
   next() {
+    this.props.addCoins(5);
+    
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.aniVars.reset = true;

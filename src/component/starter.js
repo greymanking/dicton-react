@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
-class Starter extends Component {
+class Starter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

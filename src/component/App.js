@@ -11,13 +11,15 @@ import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 import { hostPath, MESSAGE, ULSTATUS } from '../common/consts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes, 
-  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faYenSign }
- from '@fortawesome/free-solid-svg-icons'
+import {
+  faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes,
+  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faCoins
+}
+  from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-library.add(faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes, 
-  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faYenSign);
+library.add(faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes,
+  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faCoins);
 
 const LOADING = -3, LOGGING = -2,
   STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
@@ -50,6 +52,7 @@ class App extends Component {
     this.fetch = this.fetch.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.showMessage = this.showMessage.bind(this);
+    this.addCoins = this.addCoins.bind(this);
     this.nextrun = this.nextrun.bind(this);
     this.doFallible = this.doFallible.bind(this);
   }
@@ -77,8 +80,12 @@ class App extends Component {
           return;
         }
         this.sortup(coming.data);
+
         this.extra.userName = coming.username;
-        this.setState({ stage: STARTER, learned: coming.learned })
+        this.extra.diamonds_saved = coming.diamonds;
+        this.extra.coins_saved = coming.coins;
+
+        this.setState({ stage: STARTER, learned: coming.learned, })
         //this.setState({ stage: DICTATION })
       },
       (reason) => {
@@ -176,12 +183,17 @@ class App extends Component {
     this.fetch();
   }
 
-  doFallible(){
+  doFallible() {
 
   }
 
   showMessage(msg) {
     this.setState({ message: msg });
+  }
+
+  addCoins(c) {
+    let totalc = this.state.coins + c;
+    this.setState({ coins: totalc })
   }
 
   componentDidMount() {
@@ -211,25 +223,30 @@ class App extends Component {
           changeUser={this.changeUser} learned={this.state.learned} />
         break;
       case LEARN:
-        stage = <Learn next={this.nextstage} taskData={this.learnTasks} />
+        stage = <Learn next={this.nextstage} addCoins={this.addCoins}
+          taskData={this.learnTasks} />
         break;
       case PUZZLE:
-        stage = <Puzzle next={this.nextstage} taskData={this.puzzleTasks} />
+        stage = <Puzzle next={this.nextstage} addCoins={this.addCoins}
+          taskData={this.puzzleTasks} />
         break;
       case DICTATION:
-        stage = <Dictation next={this.nextstage} taskData={this.dictationTasks} />
+        stage = <Dictation next={this.nextstage} addCoins={this.addCoins}
+          taskData={this.dictationTasks} />
         break;
       case ENDING:
         stage = <Ending uploadStatus={this.state.uploadStatus} puzzles={this.puzzleTasks}
-          dictations={this.dictationTasks} nextrun={this.nextrun} doFallible={this.doFallible} />
+          dictations={this.dictationTasks} nextrun={this.nextrun} doFallible={this.doFallible}
+          coins={this.state.coins} diamonds={this.state.diamonds} />
         break;
       default:
-        stage = <h3>我已经彻底迷茫了！！</h3>
+
     }
     return (
       <div className='app bgpeace'>
         <div className='header colorwhite'>
-          小学生背单词
+          <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
+          <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
         </div>
         <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
           {this.state.message}

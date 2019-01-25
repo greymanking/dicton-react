@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Keyboard from 'react-simple-keyboard';
 
@@ -6,7 +6,7 @@ import { audioPath, ACHIEVE } from '../common/consts.js'
 
 import 'react-simple-keyboard/build/css/index.css';
 
-class Dictation extends Component {
+class Dictation extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -40,13 +40,13 @@ class Dictation extends Component {
     this.kblayout = {
       'default': [
         'q w e r t y u i o p {bksp}',
-        'a s d f g h j k l \'',
+        'a s d f g h j k l & \'',
         'z x c v b n m , . {tips}',
         '{shift} {space} {enter}'
       ],
       'shift': [
         'Q W E R T Y U I O P {bksp}',
-        'A S D F G H J K L \'',
+        'A S D F G H J K L & \'',
         'Z X C V B N M , . {tips}',
         '{shift} {space} {enter}'
       ]
@@ -143,6 +143,8 @@ class Dictation extends Component {
   }
 
   next() {
+    this.props.addCoins(this.extra.status === ACHIEVE.dictFalse?15:30);
+    
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.setState({ runAni: true });
@@ -197,7 +199,7 @@ class Dictation extends Component {
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}
           theme={'hg-theme-default monofont'}
-          display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提示', '{space}': '空格' }}
+          display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提 示', '{space}': '空格' }}
           mergeDisplay={true} onChange={input => this.onChange(input)}
           onKeyPress={button => this.onKeyPress(button)}
           layoutName={this.state.layoutName}

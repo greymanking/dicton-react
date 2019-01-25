@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { ACHIEVE, ULSTATUS } from '../common/consts.js'
 
-class Ending extends Component {
+class Ending extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,10 +47,12 @@ class Ending extends Component {
                 <td>{dg}/{dl}</td><td>胜率{(dg / dl * 100).toFixed(0)}%</td>
               </tr>
               <tr>
-                <td><FontAwesomeIcon icon='yen-sign' /></td>
+                <td><FontAwesomeIcon icon='coins' /></td>
+                <td>{this.props.coins}</td>
               </tr>
               <tr>
                 <td><FontAwesomeIcon icon='gem' /></td>
+                <td>{this.props.diamonds}</td>
               </tr>
               <tr>
                 <td></td><td>目前级别</td>
