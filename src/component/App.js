@@ -107,6 +107,8 @@ class App extends Component {
 
     ajaxPost(hostPath + 'submit', JSON.stringify({
       username: this.extra.userName,
+      coins: this.state.coins,
+      diamonds: this.state.diamonds,
       recs: dataSubmit
     }), 'json').then(
       (data) => {
