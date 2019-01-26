@@ -253,7 +253,7 @@ class App extends Component {
       case ENDING:
         stage = <Ending uploadStatus={this.state.uploadStatus} puzzles={this.puzzleTasks}
           dictations={this.dictationTasks} nextrun={this.nextrun} doFallible={this.doFallible}
-          coins={this.state.coins} diamonds={this.state.diamonds} />
+          coins={this.state.coins} diamonds={this.state.diamonds} savedCoins={this.extra.coins_saved} />
         break;
       default:
 
