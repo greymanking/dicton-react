@@ -27,6 +27,8 @@ const LOADING = -3, LOGGING = -2,
 
 const AllSorts = 0, PuzzleDictation = 1, OnlyDictation = 2;
 
+const NormalTasks = 0, FallibleTasks = 1;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +44,8 @@ class App extends Component {
       userName: '',
       afterAuth: null,
       diamonds_saved: 0,
-      coins_saved: 0
+      coins_saved: 0,
+      tasksType: NormalTasks
     };
     this.taskDataArray = new Array(3);
     //此句可删
@@ -50,6 +53,7 @@ class App extends Component {
 
     this.nextstage = this.nextstage.bind(this);
     this.upload = this.upload.bind(this);
+    this.handleDataReceived = this.handleDataReceived.bind(this);
     this.fetch = this.fetch.bind(this);
     this.changeUser = this.changeUser.bind(this);
     this.showMessage = this.showMessage.bind(this);
@@ -58,36 +62,47 @@ class App extends Component {
     this.doFallible = this.doFallible.bind(this);
   }
 
+  handleDataReceived(data) {
+    //XMLHttpRequest的onerror似乎不起作用，防止其他错误的返回也有data
+    let coming = null;
+    try {
+      coming = JSON.parse(data);
+    } catch (err) {
+      this.setState({ message: MESSAGE.error });
+      return;
+    }
+    this.sortup(coming.data);
+
+    this.extra.userName = coming.username;
+    this.extra.diamonds_saved = coming.diamonds;
+    this.extra.coins_saved = coming.coins;
+
+    this.setState({ stage: STARTER, learned: coming.learned, coins: 0, diamonds: 0 })
+    //this.setState({ stage: DICTATION })}
+  }
+
+
   fetch() {
     this.extra.afterAuth = this.fetch;
+    this.initTasks();
 
-    ajaxGet(hostPath + 'data.json').then(
+    let file = (this.extra.tasksType === FallibleTasks) ? 'fallible.json' : 'data.json';
+
+    ajaxGet(hostPath + file).then(
       (data) => {
+        console.log('data', data, 'match', data === "nodata")
         if (data === 'unauth') {
           this.extra.afterAuth = this.fetch;
-          this.setState({ stage: LOGGING })
+          this.setState({ stage: LOGGING });
           return;
         } else if (data === 'nodata') {
-          this.setState({ message: MESSAGE.nodata })
+          console.log('judge', data);
+          this.setState({ message: MESSAGE.nodata });
           return;
         }
 
-        //XMLHttpRequest的onerror似乎不起作用，防止其他错误的返回也有data
-        let coming = null;
-        try {
-          coming = JSON.parse(data);
-        } catch (err) {
-          this.setState({ message: MESSAGE.error });
-          return;
-        }
-        this.sortup(coming.data);
+        this.handleDataReceived(data);
 
-        this.extra.userName = coming.username;
-        this.extra.diamonds_saved = coming.diamonds;
-        this.extra.coins_saved = coming.coins;
-
-        this.setState({ stage: STARTER, learned: coming.learned, coins:0, diamonds:0})
-        //this.setState({ stage: DICTATION })
       },
       (reason) => {
         this.setState({ message: MESSAGE[reason] });
@@ -138,8 +153,6 @@ class App extends Component {
   }
 
   sortup(taskData) {
-    this.initTasks();
-
     for (let t of taskData) {
       t.status = 0;
       if (t.kind === AllSorts) {
@@ -160,6 +173,7 @@ class App extends Component {
   changeUser() {
     this.extra.userName = '';
     this.extra.afterAuth = this.fetch;
+    this.extra.tasksType = NormalTasks;
     this.setState({ stage: LOGGING })
   }
 
@@ -184,8 +198,8 @@ class App extends Component {
       }
     }
 
-    this.setState({ stage: curStage, diamonds: da }, function(){
-      if(curStage === ENDING){this.upload();} //setState结束后才上传，否则上传数据不完整
+    this.setState({ stage: curStage, diamonds: da }, function () {
+      if (curStage === ENDING) { this.upload(); } //setState结束后才上传，否则上传数据不完整
     });
   }
 
@@ -195,12 +209,18 @@ class App extends Component {
       message: '',
       uploadStatus: ULSTATUS.notGoing
     });
-    this.initTasks();
+    this.extra.tasksType = NormalTasks;
     this.fetch();
   }
 
   doFallible() {
-
+    this.setState({
+      stage: LOADING,
+      message: '',
+      uploadStatus: ULSTATUS.notGoing
+    });
+    this.extra.tasksType = FallibleTasks;
+    this.fetch();
   }
 
   showMessage(msg) {
@@ -225,7 +245,14 @@ class App extends Component {
         stage = <div className='content bgpeace'>
           <div className='min_page fontextralarge'>
             {this.state.message === '' ? <FontAwesomeIcon icon='spinner' className='load_ani' /> :
-              <FontAwesomeIcon icon='exclamation-triangle' className='colorred' />}
+              <>
+                <FontAwesomeIcon icon='exclamation-triangle' className='colorred' />
+                {this.extra.tasksType === FallibleTasks &&
+                  <div className='margintop'>
+                    <button className='primary' onClick={this.nextrun}>做普通任务</button>
+                  </div>}
+              </>
+            }
           </div>
         </div>
         break;

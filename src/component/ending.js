@@ -29,7 +29,7 @@ class Ending extends PureComponent {
           {us === ULSTATUS.fail && <FontAwesomeIcon icon='exclamation-triangle' className='colorred fontextralarge' />}
           {us === ULSTATUS.done && <div>
             <h3>你已完成本轮练习！</h3>
-            <table cellpadding='10px'><tbody>
+            <table cellPadding='10px'><tbody>
               <tr><td>本轮胜率</td></tr>
               <tr>{pl !== 0 && <td><FontAwesomeIcon icon='puzzle-piece' /> {pg}/{pl} {(pg / pl * 100).toFixed(0)}%</td>}
                 <td><FontAwesomeIcon icon='keyboard' /> {dg}/{dl} {(dg / dl * 100).toFixed(0)}%</td>
