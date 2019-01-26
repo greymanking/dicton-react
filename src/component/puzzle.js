@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import shuffle from "../common/shuffle.js"
+import {shuffle} from "../common/utils.js"
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 

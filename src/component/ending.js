@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { ACHIEVE, ULSTATUS } from '../common/consts.js'
+import { countPerfect } from "../common/utils.js"
 
 class Ending extends PureComponent {
   constructor(props) {
@@ -13,18 +14,9 @@ class Ending extends PureComponent {
   render() {
     let pl = this.props.puzzles.length;
     let dl = this.props.dictations.length;
-    let pg = 0, dg = 0;
 
-    for (let p of this.props.puzzles) {
-      if ((p.status & ACHIEVE.puzzleSuccess) === ACHIEVE.puzzleSuccess) {
-        pg++;
-      }
-    }
-    for (let d of this.props.dictations) {
-      if ((d.status & ACHIEVE.dictSuccess) === ACHIEVE.dictSuccess) {
-        dg++;
-      }
-    }
+    let pg = countPerfect(this.props.puzzles, ACHIEVE.puzzleSuccess);
+    let dg = countPerfect(this.props.dictations, ACHIEVE.dictSuccess);;
 
     let us = this.props.uploadStatus;
 
@@ -48,11 +40,11 @@ class Ending extends PureComponent {
               </tr>
               <tr>
                 <td><FontAwesomeIcon icon='coins' /></td>
-                <td>{this.props.coins}</td>
+                <td>共获得{this.props.coins}个</td>
               </tr>
               <tr>
                 <td><FontAwesomeIcon icon='gem' /></td>
-                <td>{this.props.diamonds}</td>
+                <td>共获得{this.props.diamonds}个</td>
               </tr>
               <tr>
                 <td></td><td>目前级别</td>

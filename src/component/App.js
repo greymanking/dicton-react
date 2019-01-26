@@ -6,9 +6,10 @@ import Dictation from './dictation.js'
 import Starter from './starter.js'
 import Logging from './logging.js'
 import Ending from './ending.js'
-import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 
-import { hostPath, MESSAGE, ULSTATUS } from '../common/consts.js'
+import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
+import { countPerfect } from '../common/utils.js'
+import { hostPath, MESSAGE, ACHIEVE, ULSTATUS } from '../common/consts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -85,7 +86,7 @@ class App extends Component {
         this.extra.diamonds_saved = coming.diamonds;
         this.extra.coins_saved = coming.coins;
 
-        this.setState({ stage: STARTER, learned: coming.learned, })
+        this.setState({ stage: STARTER, learned: coming.learned, coins:0, diamonds:0})
         //this.setState({ stage: DICTATION })
       },
       (reason) => {
@@ -164,15 +165,28 @@ class App extends Component {
 
   nextstage() {
     let curStage = this.state.stage;
+    let da = this.state.diamonds;
+
+    if (curStage === PUZZLE &&
+      countPerfect(this.puzzleTasks, ACHIEVE.puzzleSuccess) === this.puzzleTasks.length) {
+      da += 1;
+    } else if (curStage === DICTATION &&
+      countPerfect(this.dictationTasks, ACHIEVE.dictSuccess) === this.dictationTasks.length) {
+      da += 2;
+    }
+
     while (curStage < ENDING) {
       curStage++;
       if (curStage === ENDING) {
-        this.upload();
+        break;
       } else if (this.taskDataArray[curStage].length > 0) {
         break;
       }
     }
-    this.setState({ stage: curStage });
+
+    this.setState({ stage: curStage, diamonds: da }, function(){
+      if(curStage === ENDING){this.upload();} //setState结束后才上传，否则上传数据不完整
+    });
   }
 
   nextrun() {

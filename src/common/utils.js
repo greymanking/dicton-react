@@ -26,4 +26,16 @@ function shuffle(word, minlen) {
     return arr;
 }
 
-export default shuffle;
+function countPerfect(arr,criteria){
+    let c = 0;
+
+    for (let t of arr) {
+      if ((t.status & criteria) === criteria) {
+        c++;
+      }
+    }
+
+    return c;
+}
+
+export {shuffle, countPerfect};
