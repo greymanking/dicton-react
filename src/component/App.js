@@ -90,13 +90,11 @@ class App extends Component {
 
     ajaxGet(hostPath + file).then(
       (data) => {
-        console.log('data', data, 'match', data === "nodata")
         if (data === 'unauth') {
           this.extra.afterAuth = this.fetch;
           this.setState({ stage: LOGGING });
           return;
         } else if (data === 'nodata') {
-          console.log('judge', data);
           this.setState({ message: MESSAGE.nodata });
           return;
         }
@@ -113,7 +111,6 @@ class App extends Component {
   upload() {
     this.extra.afterAuth = this.upload;
 
-    console.log(this.dictationTasks);
     const dataSubmit = []
     for (let t of this.dictationTasks) {
       dataSubmit.push({ taskid: t.taskid, status: t.status, lastrec: t.lastrec })
@@ -128,7 +125,6 @@ class App extends Component {
       recs: dataSubmit
     }), 'json').then(
       (data) => {
-        console.log("upload res", data)
         if (data === 'OK') {
           this.setState({ message: '', uploadStatus: ULSTATUS.done })
         } else if (data === 'unauth') {
@@ -166,8 +162,6 @@ class App extends Component {
         this.dictationTasks.push(t);
       }
     }
-
-    console.log(this.taskDataArray)
   }
 
   changeUser() {

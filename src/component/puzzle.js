@@ -102,7 +102,7 @@ class Puzzle extends PureComponent {
   }
 
   next() {
-    this.props.addCoins(this.extra.status === ACHIEVE.puzzleFalse?15:20);
+    this.props.addCoins(this.extra.status === ACHIEVE.puzzleFalse?10:15);
     
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
@@ -146,6 +146,7 @@ class Puzzle extends PureComponent {
           </span>
           <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
           <h3>{task.info}</h3>
+          <span className='phonetic'>{task.phonetic}</span>
         </div>
         <div className='puzzle_box'>
           {this.extra.shuffled.map(

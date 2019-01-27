@@ -11,6 +11,29 @@ function shuffle(word, minlen) {
     let mod = wl % 5;
     if (mod !== 0) { wl = wl + (5 - mod); }
 
+    const vowels = ['a', 'e', 'i', 'o', 'u'];
+
+    for (let i = 0; i < vowels.length; i++) {
+        if (s.size < wl) {
+            s.add(vowels[i]);
+        } else {
+            break;
+        }
+    }
+
+    const confusions = [['c', 'k'], ['i', 'y'], ['k', 'g'], ['l', 'r'], ['m', 'n'],
+     ['p', 'b'],['q', 'k'], ['r', 'l'], ['s', 'c'], ['v', 'f'], ['w', 'u'], ['ph', 'f']]
+
+    for (let i = 0; i < confusions.length; i++) {
+        if (s.size < wl) {
+            if (word.indexOf(confusions[i][0]) >= 0) {
+                s.add(confusions[i][1]);
+            }
+        } else {
+            break;
+        }
+    }
+
     while (s.size < wl) {
         s.add(String.fromCharCode(randomFrom(97, 117)));
     }
@@ -26,16 +49,16 @@ function shuffle(word, minlen) {
     return arr;
 }
 
-function countPerfect(arr,criteria){
+function countPerfect(arr, criteria) {
     let c = 0;
 
     for (let t of arr) {
-      if ((t.status & criteria) === criteria) {
-        c++;
-      }
+        if ((t.status & criteria) === criteria) {
+            c++;
+        }
     }
 
     return c;
 }
 
-export {shuffle, countPerfect};
+export { shuffle, countPerfect };
