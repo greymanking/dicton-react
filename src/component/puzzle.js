@@ -134,7 +134,7 @@ class Puzzle extends PureComponent {
       markicon = 'times';
     }
 
-    // markcls = 'marginleft ' + markcls;
+    //markcls = 'mark_anim ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
 
@@ -144,10 +144,10 @@ class Puzzle extends PureComponent {
         <div className={this.state.runAni ? ' page_ani' : ''}>
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
-            <span className={'composed_text underlined'}>
-              {this.state.composed}
-            </span>
-            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
+            <div className='composed_box'>
+              <div className='composed_text'>{this.state.composed}</div>
+              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
+            </div>
             <h3>{task.info}</h3>
             <span className='phonetic'>{task.phonetic}</span>
           </div>

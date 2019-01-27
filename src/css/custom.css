@@ -117,19 +117,36 @@ table {
     margin: 1em auto 2em auto;
 }
 
+.composed_box {
+    width:17rem;
+    margin:0 auto;
+    height:2.5rem;
+    line-height: 2.5rem;
+    padding:5px 8px;
+    border:1px dotted gray;
+    border-radius:8px;
+    background-color: white;
+}
+
 .composed_text {
-    display:inline-block;
-    width:14rem;
-    height:2.25rem;
+    width:12rem;
+    float:left;
     font-size:1.5rem;
+    text-align: left;
+    vertical-align: center;
 }
 
 .mark {
-    display:inline-block;
+    float: right;
+    width:2.5rem;
+    height:2.5rem;
+    line-height:2.5rem;
+    text-align: center;
     font-size:2.5rem;
-    height: 4rem;
-    width: 4rem;
-    vertical-align: top;
+    vertical-align: center;
+}
+
+.mark_anim {
     transition: all 0.2s;
 }
 

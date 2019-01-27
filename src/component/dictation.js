@@ -184,13 +184,9 @@ class Dictation extends PureComponent {
         <div className={'stretch_box' + (this.state.runAni ? ' page_ani' : '')}>
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
-            <div>
-              <span className={'composed_text underlined'}>
-                {this.state.composed}
-              </span>
-              <div className='mark'>
-                <FontAwesomeIcon icon={markicon} className={markcls} />
-              </div>
+            <div className='composed_box'>
+              <div className='composed_text'>{this.state.composed}</div>
+              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
             </div>
             <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
               {this.extra.tips}
