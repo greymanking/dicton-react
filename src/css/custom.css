@@ -93,7 +93,6 @@ table {
 }
 
 .min_page {
-    /* margin:0 auto; */
     padding: 0.5rem 1rem 3rem 1rem;
 }
 
@@ -106,6 +105,11 @@ table {
 
 .footer {
     height: 5rem;
+}
+
+.learn_box {
+    height: 11rem;
+    margin:0 auto; 
 }
 
 .puzzle_box {
@@ -146,6 +150,20 @@ table {
 
 .submit_key {
     background-color: orange !important;
+}
+
+.pagerel_active {
+    color: black;
+    padding: 0 0.3rem;
+}
+
+.pagerel_blur {
+    color:rgba(0, 0, 0, 0.137);
+    padding: 0 0.3rem;
+}
+
+.pager_box {
+    padding: 0.5rem 0 3.5rem 0;
 }
 
 .underlined {

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Pager from './pager.js'
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -123,8 +124,8 @@ class Dictation extends PureComponent {
     }
 
     if (acv === ACHIEVE.correct) {
-      let s=this.props.taskData[this.state.pos].status;
-      this.props.taskData[this.state.pos].status = s|this.extra.status;
+      let s = this.props.taskData[this.state.pos].status;
+      this.props.taskData[this.state.pos].status = s | this.extra.status;
       this.extra.enabled = false;
       setTimeout(() => { this.next() }, 1000);
     }
@@ -143,8 +144,8 @@ class Dictation extends PureComponent {
   }
 
   next() {
-    this.props.addCoins(this.extra.status === ACHIEVE.dictFalse?15:30);
-    
+    this.props.addCoins(this.extra.status === ACHIEVE.dictFalse ? 15 : 30);
+
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.setState({ runAni: true });
@@ -160,11 +161,11 @@ class Dictation extends PureComponent {
   }
 
   render() {
-    let markcls = 'colorblack', markicon= 'genderless';
+    let markcls = 'colorblack', markicon = 'genderless';
     if (this.state.achieve === ACHIEVE.correct) {
       if (this.extra.status === ACHIEVE.dictSuccess) {
         markcls = 'colorgold';
-        markicon = 'star'; 
+        markicon = 'star';
       } else {
         markcls = 'colorred';
         markicon = 'check';
@@ -179,7 +180,8 @@ class Dictation extends PureComponent {
     const task = this.props.taskData[this.state.pos]
     return (
       <div className='content bgpeace'>
-        <div className={'stretch_box'+(this.state.runAni? ' page_ani':'')}>
+        <Pager total={this.props.taskData.length} cur={this.state.pos} />
+        <div className={'stretch_box' + (this.state.runAni ? ' page_ani' : '')}>
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div>
@@ -187,7 +189,7 @@ class Dictation extends PureComponent {
                 {this.state.composed}
               </span>
               <div className='mark'>
-              <FontAwesomeIcon icon={markicon} className={markcls} />
+                <FontAwesomeIcon icon={markicon} className={markcls} />
               </div>
             </div>
             <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>

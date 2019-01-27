@@ -285,9 +285,10 @@ class App extends Component {
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
         </div>
+        {(this.state.stage!==PUZZLE && this.state.stage!==DICTATION && this.state.stage!==LEARN) && 
         <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
           {this.state.message}
-        </div>
+        </div>}
         {stage}
         {/* <div className='footer'>
           footer

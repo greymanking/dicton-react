@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {shuffle} from "../common/utils.js"
+import { shuffle } from "../common/utils.js"
+import Pager from './pager.js'
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
@@ -37,9 +38,9 @@ class Puzzle extends PureComponent {
     const achieved = this.checkComposed(composed);
 
     if (achieved === ACHIEVE.correct) {
-      let s=this.props.taskData[this.state.pos].status;
-      
-      this.props.taskData[this.state.pos].status = s|this.extra.status;
+      let s = this.props.taskData[this.state.pos].status;
+
+      this.props.taskData[this.state.pos].status = s | this.extra.status;
       this.extra.enabled = false;
       setTimeout(this.next, 700);
     }
@@ -102,8 +103,8 @@ class Puzzle extends PureComponent {
   }
 
   next() {
-    this.props.addCoins(this.extra.status === ACHIEVE.puzzleFalse?10:15);
-    
+    this.props.addCoins(this.extra.status === ACHIEVE.puzzleFalse ? 10 : 15);
+
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.setState({ runAni: true });
@@ -119,11 +120,11 @@ class Puzzle extends PureComponent {
   }
 
   render() {
-    let markcls = 'colorblack', markicon= 'genderless';
+    let markcls = 'colorblack', markicon = 'genderless';
     if (this.state.achieve === ACHIEVE.correct) {
       if (this.extra.status === ACHIEVE.puzzleSuccess) {
         markcls = 'colorgold';
-        markicon = 'star'; 
+        markicon = 'star';
       } else {
         markcls = 'colorred';
         markicon = 'check';
@@ -138,26 +139,29 @@ class Puzzle extends PureComponent {
     const task = this.props.taskData[this.state.pos]
 
     return (
-      <div className={'content bgpeace'+(this.state.runAni? ' page_ani':'')}>
-        <div className='min_page'>
-          <audio ref={this.player} src={audioPath + task.audio} />
-          <span className={'composed_text underlined'}>
-            {this.state.composed}
-          </span>
-          <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
-          <h3>{task.info}</h3>
-          <span className='phonetic'>{task.phonetic}</span>
-        </div>
-        <div className='puzzle_box'>
-          {this.extra.shuffled.map(
-            (chr, idx) => {
-              return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
-            }
-          )}
+      <div className={'content bgpeace'}>
+        <Pager total={this.props.taskData.length} cur={this.state.pos} />
+        <div className={this.state.runAni ? ' page_ani' : ''}>
+          <div className='min_page'>
+            <audio ref={this.player} src={audioPath + task.audio} />
+            <span className={'composed_text underlined'}>
+              {this.state.composed}
+            </span>
+            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
+            <h3>{task.info}</h3>
+            <span className='phonetic'>{task.phonetic}</span>
+          </div>
+          <div className='puzzle_box'>
+            {this.extra.shuffled.map(
+              (chr, idx) => {
+                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
+              }
+            )}
 
-          <button className='btn_bkspc' onClick={this.backspace}>
-          <FontAwesomeIcon icon='backspace' />
-          </button>
+            <button className='btn_bkspc' onClick={this.backspace}>
+              <FontAwesomeIcon icon='backspace' />
+            </button>
+          </div>
         </div>
       </div>
     );

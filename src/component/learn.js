@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Circle from 'react-circle';
-
+import Pager from './pager.js'
 
 import { audioPath } from '../common/consts.js'
 
@@ -63,7 +63,7 @@ class Learn extends Component {
 
   next() {
     this.props.addCoins(5);
-    
+
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
       this.aniVars.reset = true;
@@ -88,7 +88,8 @@ class Learn extends Component {
     const task = this.props.taskData[this.state.pos];
     return (
       <div className='content bgpeace'>
-        <div className='min_page'>
+        <Pager total={this.props.taskData.length} cur={this.state.pos} />
+        <div className='learn_box'>
           <audio ref={this.player} src={audioPath + task.audio} />
           {this.state.showIndicator ? (<div>
             <Circle animate={this.state.playAnim}
@@ -103,12 +104,14 @@ class Learn extends Component {
               showPercentageSymbol={false} />
           </div>) :
             (<><h2>{task.keys}</h2>
-            <span className='phonetic'>{task.phonetic}</span></>)
+              <span className='phonetic'>{task.phonetic}</span></>)
           }
           <h3>{task.info}</h3>
-          <button className='primary' onClick={this.next}>
-            {this.state.showIndicator ? '我会写' : '下一个'}
-          </button>
+        </div>
+        <div>
+        <button className='primary' onClick={this.next}>
+          {this.state.showIndicator ? '我会写' : '下一个'}
+        </button>
         </div>
       </div>
     );
