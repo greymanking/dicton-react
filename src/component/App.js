@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Transition from 'react-transition-group/Transition';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
@@ -38,7 +39,8 @@ class App extends Component {
       learned: 0,
       diamonds: 0,
       coins: 0,
-      uploadStatus: ULSTATUS.notGoing
+      uploadStatus: ULSTATUS.notGoing,
+      show: true,
     };
     this.extra = {
       userName: '',
@@ -172,6 +174,7 @@ class App extends Component {
   }
 
   nextstage() {
+    this.setState({show:!this.state.show});
     let curStage = this.state.stage;
     let da = this.state.diamonds;
 
@@ -277,13 +280,29 @@ class App extends Component {
           coins={this.state.coins} diamonds={this.state.diamonds} savedCoins={this.extra.coins_saved} />
         break;
       default:
-
     }
     return (
       <div className='app bgpeace'>
         <div className='header colorwhite'>
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
+          <Transition
+            in={this.state.show}
+            timeout={4000}
+          >
+            {state => {
+              switch (state) {
+                case 'entering':
+                  return 'Entering…';
+                case 'entered':
+                  return 'Entered!';
+                case 'exiting':
+                  return 'Exiting…';
+                case 'exited':
+                  return 'Exited!';
+              }
+            }}
+          </Transition>
         </div>
         {(this.state.stage!==PUZZLE && this.state.stage!==DICTATION && this.state.stage!==LEARN) && 
         <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
@@ -294,7 +313,6 @@ class App extends Component {
           footer
         </div> */}
       </div>
-
     );
   }
 }
