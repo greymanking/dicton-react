@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Transition from 'react-transition-group/Transition';
+import { CSSTransition } from 'react-transition-group';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
@@ -40,7 +40,7 @@ class App extends Component {
       diamonds: 0,
       coins: 0,
       uploadStatus: ULSTATUS.notGoing,
-      show: true,
+      showAni: true,
     };
     this.extra = {
       userName: '',
@@ -174,7 +174,7 @@ class App extends Component {
   }
 
   nextstage() {
-    this.setState({show:!this.state.show});
+    this.setState({showAni:true});
     let curStage = this.state.stage;
     let da = this.state.diamonds;
 
@@ -282,27 +282,12 @@ class App extends Component {
       default:
     }
     return (
+      <CSSTransition in={this.state.showAni} timeout={6000} classNames='fade'
+      onEntered={()=>{alert('ok');this.setState({showAni:false});}}>
       <div className='app bgpeace'>
         <div className='header colorwhite'>
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
-          <Transition
-            in={this.state.show}
-            timeout={4000}
-          >
-            {state => {
-              switch (state) {
-                case 'entering':
-                  return 'Entering…';
-                case 'entered':
-                  return 'Entered!';
-                case 'exiting':
-                  return 'Exiting…';
-                case 'exited':
-                  return 'Exited!';
-              }
-            }}
-          </Transition>
         </div>
         {(this.state.stage!==PUZZLE && this.state.stage!==DICTATION && this.state.stage!==LEARN) && 
         <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
@@ -313,6 +298,7 @@ class App extends Component {
           footer
         </div> */}
       </div>
+      </CSSTransition>
     );
   }
 }

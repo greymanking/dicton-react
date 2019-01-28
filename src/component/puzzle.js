@@ -141,7 +141,7 @@ class Puzzle extends PureComponent {
     return (
       <div className={'content bgpeace'}>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className={this.state.runAni ? ' page_ani' : ''}>
+        <div className={this.state.runAni ? ' page_ani' : ''} >
           <div className='min_page'>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div className='composed_box'>

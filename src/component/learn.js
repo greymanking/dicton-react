@@ -109,9 +109,9 @@ class Learn extends Component {
           <h3>{task.info}</h3>
         </div>
         <div>
-        <button className='primary' onClick={this.next}>
-          {this.state.showIndicator ? '我会写' : '下一个'}
-        </button>
+          <button className='primary' onClick={this.next}>
+            {this.state.showIndicator ? '我会写' : '下一个'}
+          </button>
         </div>
       </div>
     );
