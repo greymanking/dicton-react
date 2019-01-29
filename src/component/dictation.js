@@ -181,18 +181,16 @@ class Dictation extends PureComponent {
     return (
       <div className='content bgpeace'>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className={'stretch_box' + (this.state.runAni ? ' page_ani' : '')}>
-          <div className='min_page'>
-            <audio ref={this.player} src={audioPath + task.audio} />
-            <div className='composed_box'>
-              <div className='composed_text'>{this.state.composed}</div>
-              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
-            </div>
-            <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
-              {this.extra.tips}
-            </div>
-            <h3>{task.info}</h3>
+        <div className={'min_page' + (this.state.runAni ? ' page_ani' : '')}>
+          <audio ref={this.player} src={audioPath + task.audio} />
+          <div className='composed_box'>
+            <div className='composed_text'>{this.state.composed}</div>
+            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
           </div>
+          <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
+            {this.extra.tips}
+          </div>
+          <h3>{task.info}</h3>
         </div>
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}

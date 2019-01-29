@@ -89,18 +89,16 @@ table {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: center;
 }
 
 .min_page {
-    padding: 0.5rem 1rem 3rem 1rem;
-}
-
-.stretch_box {
+    text-align: center;
+    padding:1rem;
     flex-grow: 2;
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 .footer {
@@ -109,13 +107,14 @@ table {
 
 .learn_box {
     height: 11rem;
-    margin:2rem auto; 
+    margin:0 auto 2rem auto; 
 }
 
 .puzzle_box {
     width:18rem;
     margin: 1em auto;
-}
+    text-align:center;
+} 
 
 .composed_box {
     width:17rem;
@@ -181,6 +180,7 @@ table {
 
 .pager_box {
     padding: 1rem;
+    margin:0 auto;
 }
 
 .underlined {

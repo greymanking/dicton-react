@@ -236,8 +236,9 @@ class App extends Component {
   render() {
 
     let stage = null;
+    let ss = this.state.stage;
 
-    switch (this.state.stage) {
+    switch (ss) {
       case LOADING:
         stage = <div className='content bgpeace'>
           <div className='min_page fontextralarge'>
@@ -289,7 +290,7 @@ class App extends Component {
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
         </div>
-        {(this.state.stage!==PUZZLE && this.state.stage!==DICTATION && this.state.stage!==LEARN) && 
+        {(ss!==PUZZLE && ss!==DICTATION && ss!==LEARN && ss!==STARTER) && 
         <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
           {this.state.message}
         </div>}

@@ -89,29 +89,31 @@ class Learn extends Component {
     return (
       <div className='content bgpeace'>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className='learn_box'>
-          <audio ref={this.player} src={audioPath + task.audio} />
-          {this.state.showIndicator ? (<div>
-            <Circle animate={this.state.playAnim}
-              animationDuration={ANITIME + "s"}
-              responsive={false}
-              size="70"
-              lineWidth="25"
-              progress={this.state.progress}
-              progressColor="rgb(76, 154, 255)"
-              bgColor="#ecedf0"
-              showPercentage={false}
-              showPercentageSymbol={false} />
-          </div>) :
-            (<><h2>{task.keys}</h2>
-              <span className='phonetic'>{task.phonetic}</span></>)
-          }
-          <h3>{task.info}</h3>
-        </div>
-        <div>
-          <button className='primary' onClick={this.next}>
-            {this.state.showIndicator ? '我会写' : '下一个'}
-          </button>
+        <div className='min_page'>
+          <div className='learn_box'>
+            <audio ref={this.player} src={audioPath + task.audio} />
+            {this.state.showIndicator ? (<div>
+              <Circle animate={this.state.playAnim}
+                animationDuration={ANITIME + "s"}
+                responsive={false}
+                size="70"
+                lineWidth="25"
+                progress={this.state.progress}
+                progressColor="rgb(76, 154, 255)"
+                bgColor="#ecedf0"
+                showPercentage={false}
+                showPercentageSymbol={false} />
+            </div>) :
+              (<><h2>{task.keys}</h2>
+                <span className='phonetic'>{task.phonetic}</span></>)
+            }
+            <h3>{task.info}</h3>
+          </div>
+          <div>
+            <button className='primary' onClick={this.next}>
+              {this.state.showIndicator ? '我会写' : '下一个'}
+            </button>
+          </div>
         </div>
       </div>
     );

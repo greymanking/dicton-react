@@ -141,27 +141,25 @@ class Puzzle extends PureComponent {
     return (
       <div className={'content bgpeace'}>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className={this.state.runAni ? ' page_ani' : ''} >
-          <div className='min_page'>
-            <audio ref={this.player} src={audioPath + task.audio} />
-            <div className='composed_box'>
-              <div className='composed_text'>{this.state.composed}</div>
-              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
-            </div>
-            <h3>{task.info}</h3>
-            <span className='phonetic'>{task.phonetic}</span>
+        <div className={'min_page' + (this.state.runAni ? ' page_ani' : '')}>
+          <audio ref={this.player} src={audioPath + task.audio} />
+          <div className='composed_box'>
+            <div className='composed_text'>{this.state.composed}</div>
+            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
           </div>
-          <div className='puzzle_box'>
-            {this.extra.shuffled.map(
-              (chr, idx) => {
-                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
-              }
-            )}
+          <h3>{task.info}</h3>
+          <span className='phonetic'>{task.phonetic}</span>
+        </div>
+        <div className='puzzle_box'>
+          {this.extra.shuffled.map(
+            (chr, idx) => {
+              return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
+            }
+          )}
 
-            <button className='btn_bkspc' onClick={this.backspace}>
-              <FontAwesomeIcon icon='backspace' />
-            </button>
-          </div>
+          <button className='btn_bkspc' onClick={this.backspace}>
+            <FontAwesomeIcon icon='backspace' />
+          </button>
         </div>
       </div>
     );
