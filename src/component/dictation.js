@@ -71,12 +71,8 @@ class Dictation extends PureComponent {
   }
 
   playSound() {
-    setTimeout(() => {
-      let pl = this.player.current;
-      if (pl) {
-        pl.play();
-      }
-    }, 700)
+    let pl = this.player.current;
+    pl && pl.play();
   }
 
   tip() {

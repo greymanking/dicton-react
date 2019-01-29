@@ -14,14 +14,14 @@ import { hostPath, MESSAGE, ACHIEVE, ULSTATUS } from '../common/consts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes,
+  faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes, faVolumeUp,
   faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faCoins
 }
   from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 library.add(faSpinner, faExclamationTriangle, faGenderless, faStar, faCheck, faTimes,
-  faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faCoins);
+  faVolumeUp, faBackspace, faUser, faKey, faPuzzlePiece, faKeyboard, faGem, faCoins);
 
 const LOADING = -3, LOGGING = -2,
   STARTER = -1, LEARN = 0, PUZZLE = 1, DICTATION = 2, ENDING = 3;
@@ -246,7 +246,7 @@ class App extends Component {
               <>
                 <FontAwesomeIcon icon='exclamation-triangle' className='colorred' />
                 {this.extra.tasksType === FallibleTasks &&
-                  <div className='margintop'>
+                  <div>
                     <button className='primary' onClick={this.nextrun}>做普通任务</button>
                   </div>}
               </>
@@ -290,10 +290,8 @@ class App extends Component {
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
         </div>
-        {(ss!==PUZZLE && ss!==DICTATION && ss!==LEARN && ss!==STARTER) && 
-        <div className={(this.state.message !== '' ? 'bgwarn' : 'bgpeace') + ' message_bar'}>
-          {this.state.message}
-        </div>}
+        {this.state.message && 
+        <div className={'bgwarn message_bar'}>{this.state.message}</div>}
         {stage}
         {/* <div className='footer'>
           footer

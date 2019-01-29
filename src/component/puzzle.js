@@ -68,12 +68,8 @@ class Puzzle extends PureComponent {
   }
 
   playSound() {
-    setTimeout(() => {
-      let pl = this.player.current;
-      if (pl) {
-        pl.play();
-      }
-    }, 700)
+    let pl = this.player.current;
+    pl && pl.play();
   }
 
   reflow() {
@@ -148,18 +144,21 @@ class Puzzle extends PureComponent {
             <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
           </div>
           <h3>{task.info}</h3>
-          <span className='phonetic'>{task.phonetic}</span>
-        </div>
-        <div className='puzzle_box'>
-          {this.extra.shuffled.map(
-            (chr, idx) => {
-              return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
-            }
-          )}
+          <span className='phonetic'>{task.phonetic}
+          <FontAwesomeIcon icon='volume-up' className='marginleft' onClick={this.playSound} />
+          </span>
 
-          <button className='btn_bkspc' onClick={this.backspace}>
-            <FontAwesomeIcon icon='backspace' />
-          </button>
+          <div className='puzzle_box'>
+            {this.extra.shuffled.map(
+              (chr, idx) => {
+                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
+              }
+            )}
+
+            <button className='btn_bkspc' onClick={this.backspace}>
+              <FontAwesomeIcon icon='backspace' />
+            </button>
+          </div>
         </div>
       </div>
     );

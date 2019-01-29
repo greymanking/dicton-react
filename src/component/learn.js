@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import Circle from 'react-circle';
 import Pager from './pager.js'
 
@@ -32,12 +34,8 @@ class Learn extends Component {
   }
 
   playSound() {
-    setTimeout(() => {
-      let pl = this.player.current;
-      if (pl) {
-        pl.play();
-      }
-    }, 700)
+    let pl = this.player.current;
+    pl && pl.play();
   }
 
   tick() {
@@ -105,10 +103,11 @@ class Learn extends Component {
                 showPercentageSymbol={false} />
             </div>) :
               (<><h2>{task.keys}</h2>
-                <span className='phonetic'>{task.phonetic}</span></>)
+                <span className='phonetic'>{task.phonetic}</span>
+                <FontAwesomeIcon icon='volume-up' className='marginleft' onClick={this.playSound} /></>)
             }
-            <h3>{task.info}</h3>
           </div>
+          <div className='fontlarge' style={{marginBottom:"2rem"}}>{task.info}</div>
           <div>
             <button className='primary' onClick={this.next}>
               {this.state.showIndicator ? '我会写' : '下一个'}
