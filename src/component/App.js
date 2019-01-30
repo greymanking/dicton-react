@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { CSSTransition } from 'react-transition-group';
 
 import Puzzle from './puzzle.js'
 import Learn from './learn.js'
@@ -40,7 +39,7 @@ class App extends Component {
       diamonds: 0,
       coins: 0,
       uploadStatus: ULSTATUS.notGoing,
-      showAni: true,
+      showAni: false,
     };
     this.extra = {
       userName: '',
@@ -174,7 +173,7 @@ class App extends Component {
   }
 
   nextstage() {
-    this.setState({showAni:true});
+
     let curStage = this.state.stage;
     let da = this.state.diamonds;
 
@@ -194,10 +193,14 @@ class App extends Component {
         break;
       }
     }
+    this.setState({ showAni: true, diamonds: da });
 
-    this.setState({ stage: curStage, diamonds: da }, function () {
-      if (curStage === ENDING) { this.upload(); } //setState结束后才上传，否则上传数据不完整
-    });
+    setTimeout(()=>{this.setState({ stage: curStage })},1000);
+
+    setTimeout(() => {
+      this.setState({ showAni: false },
+        function () { if (curStage === ENDING) { this.upload(); } })
+    }, 2800);
   }
 
   nextrun() {
@@ -283,21 +286,18 @@ class App extends Component {
       default:
     }
     return (
-      <CSSTransition in={this.state.showAni} timeout={6000} classNames='fade'
-      onEntered={()=>{alert('ok');this.setState({showAni:false});}}>
-      <div className='app bgpeace'>
+      <div className={'app' + (this.state.showAni ? ' fade_ani' : '')}>
         <div className='header colorwhite'>
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}
         </div>
-        {this.state.message && 
-        <div className={'bgwarn message_bar'}>{this.state.message}</div>}
+        {this.state.message &&
+          <div className={'bgwarn message_bar'}>{this.state.message}</div>}
         {stage}
         {/* <div className='footer'>
           footer
         </div> */}
       </div>
-      </CSSTransition>
     );
   }
 }
