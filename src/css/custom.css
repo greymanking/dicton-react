@@ -124,7 +124,8 @@ input:-webkit-autofill {
 .iconlabel {
     display:inline-block;
     padding:0 8px;
-    vertical-align:center
+    vertical-align:center;
+    width:1rem;
 }
 
 .learn_box {
