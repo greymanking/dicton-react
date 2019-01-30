@@ -5,10 +5,6 @@ body {
     padding: 0;
 }
 
-input {
-    background-color:inherit;
-    text-align: center;
-}
 
 button {
     background-color:rgb(228, 178, 182);
@@ -104,6 +100,33 @@ table {
     height: 5rem;
 }
 
+.input_wrapper {
+    display:inline-block;
+    border:1px solid rgb(228, 178, 182);
+    height:2rem;
+    line-height:2rem;
+    margin-bottom:1rem;
+}
+
+input.loginput {
+    outline:0;
+    width:14rem;
+    border:none;
+    font-size:1rem;
+    margin-right:8px;
+    background-color: inherit;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 500px whitesmoke inset;
+}
+
+.iconlabel {
+    display:inline-block;
+    padding:0 8px;
+    vertical-align:center
+}
+
 .learn_box {
     height: 6rem;
     margin:0 auto 2rem auto; 
@@ -180,7 +203,7 @@ table {
 .pager_box {
     padding: 1rem;
     margin:0 auto;
-    font-size: 1mm;
+    font-size: 0.7rem;
 }
 
 .underlined {

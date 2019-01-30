@@ -96,7 +96,6 @@ class Logging extends Component {
   }
 
   render() {
-    let inputClass = 'underlined marginbottom marginleft fontnormal';
     return (
       <div className='content bgpeace'>
         <div className='min_page'>
@@ -105,17 +104,17 @@ class Logging extends Component {
           </div>
           <br />
           <form name='logging'>
-            <div>
-              <FontAwesomeIcon icon='user' />
-              <input className={inputClass} type='text' name='user_name' title='用户名' />
+            <div className='input_wrapper'>
+              <span className='iconlabel'><FontAwesomeIcon icon='user' /></span>
+              <input className='loginput' type='text' name='user_name' placeholder='用户名' />
             </div>
-            <div>
-              <FontAwesomeIcon icon='key' />
-              <input className={inputClass} type='password' name='password'  title='密码' />
+            <div className='input_wrapper'>
+              <span className='iconlabel'><FontAwesomeIcon icon='key' /></span>
+              <input className='loginput' type='password' name='password' placeholder='密码'/>
             </div>
-            <div className={this.state.type === TYPE_SIGNUP ? 'elvisible' : 'elinvisible'}>
-              <FontAwesomeIcon icon='key' />
-              <input className={inputClass} type='password' name='confirm_password' title='重复密码' />
+            <div className={'input_wrapper ' + (this.state.type === TYPE_SIGNUP ? 'elvisible' : 'elinvisible')}>
+              <span className='iconlabel'> <FontAwesomeIcon icon='key' /></span>
+              <input className='loginput' type='password' name='confirm_password' placeholder='重复密码'/>
             </div>
 
             <div className='marginbottom fontsmall colorred'>{this.state.validateRes}</div>
