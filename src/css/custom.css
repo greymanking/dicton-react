@@ -1,4 +1,4 @@
-html,
+﻿html,
 body {
     height: 100%;
     margin: 0;
@@ -181,6 +181,7 @@ table {
 .pager_box {
     padding: 1rem;
     margin:0 auto;
+    font-size: 1mm;
 }
 
 .underlined {
