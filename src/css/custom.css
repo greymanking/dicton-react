@@ -320,14 +320,12 @@ input:-webkit-autofill {
     }
 }
 
-.page_ani {
-    animation: pagemove 1.5s;
+.fadein {
+    transform: translateX(0);
+    transition:transform 3000ms;
 }
 
-.load_ani {
-    animation: selfrotate 2s infinite;
-}
-
-.fade_ani {
-    animation: fadeinout 2500ms;
+.fadeout {
+    transform: translateX(-100%);
+    transition:transform 500ms;
 }

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import Anim from './Anim.js'
 
 class Starter extends PureComponent {
   constructor(props) {
@@ -16,6 +17,7 @@ class Starter extends PureComponent {
   render() {
     return (
       <div className='content bgpeace'>
+      <Anim><h1 className='marginleft'>OK</h1></Anim>
         <div className='min_page'>
           <h3 style={{ color: '#A26273' }}>欢迎你，{this.props.userName}</h3>
           <h4>
