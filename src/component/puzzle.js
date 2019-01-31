@@ -145,22 +145,30 @@ class Puzzle extends PureComponent {
           </div>
           <h3>{task.info}</h3>
           <span className='phonetic'>{task.phonetic}
-          <FontAwesomeIcon icon='volume-up' className='marginleft' onClick={this.playSound} />
+            <FontAwesomeIcon icon='volume-up' className='marginleft' onClick={this.playSound} />
           </span>
-
-          <div className='puzzle_box'>
-            {this.extra.shuffled.map(
-              (chr, idx) => {
-                return <PuzzlePiece char={chr} key={idx} sendChar={this.addChar} />
-              }
-            )}
-
-            <button className='btn_bkspc' onClick={this.backspace}>
-              <FontAwesomeIcon icon='backspace' />
-            </button>
-          </div>
+          <PuzzleBox shuffled={this.extra.shuffled} addChar={this.addChar} backspace={this.backspace} />
         </div>
       </div>
+    );
+  }
+}
+
+class PuzzleBox extends PureComponent {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+    <div className='puzzle_box'>
+      {this.props.shuffled.map(
+        (chr, idx) => <PuzzlePiece char={chr} key={idx} sendChar={this.props.addChar} />
+      )}
+      <button className='btn_bkspc' onClick={this.props.backspace}>
+        <FontAwesomeIcon icon='backspace' />
+      </button>
+    </div>
     );
   }
 }
