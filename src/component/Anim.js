@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 
 const PRETRANS = 0, FADEOUT = 1, PAUSETRANS = 2, FADEIN = 3, NOTRANS = 4;
 const WAITDUR = 1000, FADEOUTDUR = 500, PAUSEDUR = 500, FADEINDUR = 3000;
@@ -8,7 +9,7 @@ class Anim extends PureComponent {
     super(props);
 
     this.state = {
-      state: PRETRANS,
+      status: PRETRANS,
       tpoint: 0,
       timerid: 0
     }
@@ -18,13 +19,13 @@ class Anim extends PureComponent {
   }
 
   tick() {
-    if (this.state.state === PRETRANS && new Date().getTime() - this.state.tpoint >= WAITDUR) {
+    if (this.state.status === PRETRANS && new Date().getTime() - this.state.tpoint >= WAITDUR) {
       this.setState({ state: FADEOUT, tpoint: new Date().getTime() });
-    } else if (this.state.state === FADEOUT && new Date().getTime() - this.state.tpoint >= FADEOUTDUR) {
+    } else if (this.state.status === FADEOUT && new Date().getTime() - this.state.tpoint >= FADEOUTDUR) {
       this.setState({ state: PAUSETRANS, tpoint: new Date().getTime() });
-    } else if (this.state.state === PAUSETRANS && new Date().getTime() - this.state.tpoint >= PAUSEDUR) {
+    } else if (this.state.status === PAUSETRANS && new Date().getTime() - this.state.tpoint >= PAUSEDUR) {
       this.setState({ state: FADEIN, tpoint: new Date().getTime() });
-    } else if (this.state.state === FADEIN && new Date().getTime() - this.state.tpoint >= FADEINDUR) {
+    } else if (this.state.status === FADEIN && new Date().getTime() - this.state.tpoint >= FADEINDUR) {
       this.setState({ state: NOTRANS, tpoint:0 });
       //page.className = 'fadein';
     }
@@ -39,24 +40,34 @@ class Anim extends PureComponent {
   }
 
   prepareAnim() {
-    if (this.state.state === NOTRANS)
+    if (this.state.status === NOTRANS)
       this.setState({ state: PRETRANS });
   }
 
   render() {
-    let children=this.props.children;
-    console.log(children);
     let addcls='';
-    if(this.state.state===FADEIN){
-      addcls=' fadein';
-    } else if(this.state.state === FADEOUT){
-      addcls = ' fadeout';
+    if(this.state.status===FADEIN){
+      addcls='fadein';
+    } else if(this.state.status === FADEOUT){
+      addcls = 'fadeout';
     }
-    if(children && children.props.className){
-      
-      //children.props.className=children.props.className+addcls;
+    
+    let dom=ReactDOM.findDOMNode(this);
+    if(dom && addcls){
+      dom.className=addcls;
     }
+
     return this.props.children;
+    // const status = this.state.status
+
+    // const { children, ...childProps } = this.props
+
+    // // if (typeof children === 'function') {
+    // //   return children(status, childProps)
+    // // }
+
+    // const child = React.Children.only(children)
+    // return React.cloneElement(child, childProps)
   }
 }
 
