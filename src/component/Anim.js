@@ -21,29 +21,25 @@ class Anim extends PureComponent {
   tick() {
     const curTime = new Date().getTime();
     const { status, tpoint } = this.state;
+    const onEvent = (e => e && typeof e === 'function' && e());
 
-    if (status === NOTRANS && this.props.in){
-      this.setState({ status: PREPARE, tpoint: curTime });
-      const prepare = this.props.onPrepare;
-      prepare && typeof prepare === 'function' && prepare();
-    } 
-    
+    if (status === NOTRANS && this.props.in) {
+      this.setState({ status: PREPARE, tpoint: curTime },
+        () => onEvent(this.props.onPrepare));
+    }
+
     if (status === PREPARE && curTime - tpoint >= WAITDUR) {
-      this.setState({ status: MOVEOUT, tpoint: curTime });
-      const moveout = this.props.onMoveout;
-      moveout && typeof moveout === 'function' && moveout();
+      this.setState({ status: MOVEOUT, tpoint: curTime },
+        () => onEvent(this.props.onMoveout));
     } else if (status === MOVEOUT && curTime - tpoint >= MOVEOUTDUR) {
-      this.setState({ status: PAUSE, tpoint: curTime });
-      const pause = this.props.onPause;
-      pause && typeof pause === 'function' && pause();
+      this.setState({ status: PAUSE, tpoint: curTime },
+        () => onEvent(this.props.onPause));
     } else if (status === PAUSE && curTime - tpoint >= PAUSEDUR) {
-      this.setState({ status: MOVEIN, tpoint: curTime });
-      const movein = this.props.onMovein;
-      movein && typeof movein === 'function' && movein();
+      this.setState({ status: MOVEIN, tpoint: curTime },
+        () => onEvent(this.props.onMovein));
     } else if (status === MOVEIN && curTime - tpoint >= MOVEINDUR) {
-      this.setState({ status: NOTRANS, tpoint: 0 });
-      const stop = this.props.onStop;
-      stop && typeof stop === 'function' && stop();
+      this.setState({ status: NOTRANS, tpoint: 0 },
+        () => onEvent(this.props.onStop));
     }
   }
 
@@ -62,13 +58,13 @@ class Anim extends PureComponent {
 
   render() {
     let addcls = '';
-    const {status} = this.state;
+    const { status } = this.state;
     if (status === MOVEIN) {
-      addcls = this.props.classes+'-in';
-    } else if (status === MOVEOUT ){
-      addcls = this.props.classes+'-out';
-    } else if (status === PAUSE){
-      addcls = this.props.classes+'-pause';
+      addcls = this.props.classes + '-in';
+    } else if (status === MOVEOUT) {
+      addcls = this.props.classes + '-out';
+    } else if (status === PAUSE) {
+      addcls = this.props.classes + '-pause';
     }
 
     const { children, ...childProps } = this.props;
@@ -78,10 +74,10 @@ class Anim extends PureComponent {
     }
 
     const child = React.Children.only(children);
-    let oldClassName=child.props.className;
-    let newClassName=oldClassName?(oldClassName+' '+addcls):addcls;
+    let oldClassName = child.props.className;
+    let newClassName = oldClassName ? (oldClassName + ' ' + addcls) : addcls;
 
-    return React.cloneElement(child, {className:newClassName});
+    return React.cloneElement(child, { className: newClassName });
   }
 }
 
