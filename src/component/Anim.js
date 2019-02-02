@@ -35,7 +35,6 @@ class Anim extends PureComponent {
 
   componentDidMount() {
     this.setState({ timerid: setInterval(this.tick, 250), tpoint: new Date().getTime() });
-    console.log('prepare', new Date().getTime()/1000)
   }
 
   componentWillUnmount() {
@@ -65,8 +64,11 @@ class Anim extends PureComponent {
       return children(addcls, childProps);
     }
 
-    const child = React.Children.only(children)
-    return React.cloneElement(child, childProps);
+    const child = React.Children.only(children);
+    let oldClassName=child.props.className;
+    let newClassName=oldClassName?(oldClassName+' '+addcls):addcls;
+
+    return React.cloneElement(child, {className:newClassName});
   }
 }
 

@@ -17,7 +17,7 @@ class Starter extends PureComponent {
   render() {
     return (
       <div className='content bgpeace'>
-      <Anim style={{color:'red',backgroundColor:'green'}}>{(addcls,props)=><div className={addcls} {...props}>OK</div>}</Anim>
+      <Anim><div className='marginleft'>OK</div></Anim>
         <div className='min_page'>
           <h3 style={{ color: '#A26273' }}>欢迎你，{this.props.userName}</h3>
           <h4>
