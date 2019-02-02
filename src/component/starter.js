@@ -16,8 +16,7 @@ class Starter extends PureComponent {
 
   render() {
     return (
-      <div className='content bgpeace'>
-      <Anim><div className='marginleft'>OK</div></Anim>
+      <Anim classes='fade' in={true}><div className='content bgpeace'>
         <div className='min_page'>
           <h3 style={{ color: '#A26273' }}>欢迎你，{this.props.userName}</h3>
           <h4>
@@ -32,7 +31,7 @@ class Starter extends PureComponent {
               {'我不是' + this.props.userName}</span>
           </div>
         </div>
-      </div>
+      </div></Anim>
     )
   }
 }
