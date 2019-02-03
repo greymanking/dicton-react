@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Pager from './pager.js'
+import Anim from './Anim.js'
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -23,7 +24,6 @@ class Dictation extends PureComponent {
     this.extra = {
       tips: '',
       status: ACHIEVE.dictSuccess,
-      enabled: true,
     }
 
     this.player = React.createRef();
@@ -33,6 +33,7 @@ class Dictation extends PureComponent {
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
+    this.onNewTaskReady = this.onNewTaskReady.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.playSound = this.playSound.bind(this);
     this.submit = this.submit.bind(this);
@@ -55,16 +56,16 @@ class Dictation extends PureComponent {
   }
 
   onChange(text) {
-    if (!this.extra.enabled) { return; }
+    if (this.state.runAni) { return; }
     this.setState({ achieve: ACHIEVE.normal, composed: text })
   }
 
   onKeyPress(button) {
-    if (!this.extra.enabled) { return; }
+    if (this.state.runAni) { return; }
     if (button === '{enter}') {
       this.submit();
     } else if (button === '{tips}') {
-      this.tip()
+      this.tip();
     } else if (button === '{shift}') {
       this.setState({ layoutName: this.state.layoutName === 'default' ? 'shift' : 'default' })
     }
@@ -76,7 +77,7 @@ class Dictation extends PureComponent {
   }
 
   tip() {
-    if (!this.extra.enabled) { return; }
+    if (this.state.runAni) { return; }
     //看了提示，就不能算一次性成功
     this.extra.status = ACHIEVE.dictFalse;
 
@@ -107,26 +108,26 @@ class Dictation extends PureComponent {
     })
     this.keyboard.current.clearInput();
     this.extra.status = ACHIEVE.dictSuccess;
-    this.extra.enabled = true;
     this.playSound();
   }
 
   submit() {
-    if (!this.extra.enabled) { return; }
+    if (this.state.runAni) { return; }
     const acv = this.checkComposed(this.state.composed);
 
     if (acv === ACHIEVE.wrong) {
       this.extra.status = ACHIEVE.dictFalse;
     }
 
+    let runAni = false;
+
     if (acv === ACHIEVE.correct) {
       let s = this.props.taskData[this.state.pos].status;
       this.props.taskData[this.state.pos].status = s | this.extra.status;
-      this.extra.enabled = false;
-      setTimeout(() => { this.next() }, 1000);
+      runAni = true;
     }
 
-    this.setState({ achieve: acv });
+    this.setState({ achieve: acv, runAni: runAni });
   }
 
   checkComposed(composed) {
@@ -144,12 +145,15 @@ class Dictation extends PureComponent {
 
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
-      this.setState({ runAni: true });
-      setTimeout(() => { this.setState({ pos: nextPos }, this.reflow); }, 1500 * 0.3);
-      setTimeout(() => { this.setState({ runAni: false }) }, 1500);
+      this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
     }
+  }
+
+  onNewTaskReady() {
+    this.playSound();
+    this.setState({ runAni: false });
   }
 
   componentDidMount() {
@@ -177,17 +181,19 @@ class Dictation extends PureComponent {
     return (
       <div className='content bgpeace'>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className={'min_page' + (this.state.runAni ? ' page_ani' : '')}>
-          <audio ref={this.player} src={audioPath + task.audio} />
-          <div className='composed_box'>
-            <div className='composed_text'>{this.state.composed}</div>
-            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
+        <Anim classes='fade' in={this.state.runAni} onPause={this.next} onStop={this.onNewTaskReady}>
+          <div className={'min_page'}>
+            <audio ref={this.player} src={audioPath + task.audio} />
+            <div className='composed_box'>
+              <div className='composed_text'>{this.state.composed}</div>
+              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
+            </div>
+            <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
+              {this.extra.tips}
+            </div>
+            <h3>{task.info}</h3>
           </div>
-          <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
-            {this.extra.tips}
-          </div>
-          <h3>{task.info}</h3>
-        </div>
+        </Anim>
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}
           theme={'hg-theme-default monofont'}

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { shuffle } from "../common/utils.js"
 import Pager from './pager.js'
+import Anim from './Anim.js'
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
 
@@ -19,7 +20,6 @@ class Puzzle extends PureComponent {
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
       status: ACHIEVE.puzzleSuccess,
-      enabled: true,
     };
 
     this.player = React.createRef();
@@ -28,35 +28,38 @@ class Puzzle extends PureComponent {
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
     this.next = this.next.bind(this);
+    this.onNewTaskReady = this.onNewTaskReady.bind(this);
     this.playSound = this.playSound.bind(this);
     this.backspace = this.backspace.bind(this);
   }
 
   addChar(chr) {
-    if (!this.extra.enabled) { return; }
+    if (this.state.runAni) { return; }
     const composed = this.state.composed + chr;
     const achieved = this.checkComposed(composed);
-
-    if (achieved === ACHIEVE.correct) {
-      let s = this.props.taskData[this.state.pos].status;
-
-      this.props.taskData[this.state.pos].status = s | this.extra.status;
-      this.extra.enabled = false;
-      setTimeout(this.next, 700);
-    }
 
     if (achieved === ACHIEVE.wrong) {
       this.extra.status = ACHIEVE.puzzleFalse;
     }
 
+    let runAni = false;
+
+    if (achieved === ACHIEVE.correct) {
+      let s = this.props.taskData[this.state.pos].status;
+
+      this.props.taskData[this.state.pos].status = s | this.extra.status;
+      runAni = true;
+    }
+
     this.setState({
       composed: composed,
-      achieve: achieved
+      achieve: achieved,
+      runAni: runAni
     });
   }
 
   backspace() {
-    if (!this.extra.enabled) { return; }
+    if (this.extra.runAni) { return; }
     let curComposed = this.state.composed;
     let len = curComposed.length;
     if (len > 0) {
@@ -77,13 +80,11 @@ class Puzzle extends PureComponent {
 
     this.extra.status = ACHIEVE.puzzleSuccess;
     this.extra.shuffled = shuffle(task.keys, 10);
-    this.extra.enabled = true;
 
     this.setState({
       achieve: ACHIEVE.normal,
       composed: "",
     })
-    this.playSound();
   }
 
   checkComposed(composed) {
@@ -103,12 +104,15 @@ class Puzzle extends PureComponent {
 
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.taskData.length) {
-      this.setState({ runAni: true });
-      setTimeout(() => { this.setState({ pos: nextPos }, this.reflow); }, 1500 * 0.3);
-      setTimeout(() => { this.setState({ runAni: false }) }, 1500);
+      this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
     }
+  }
+
+  onNewTaskReady(){
+    this.playSound();
+    this.setState({runAni:false});
   }
 
   componentDidMount() {
@@ -137,7 +141,8 @@ class Puzzle extends PureComponent {
     return (
       <div className={'content bgpeace'}>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <div className={'min_page' + (this.state.runAni ? ' page_ani' : '')}>
+        <Anim classes='fade' in={this.state.runAni} onPause={this.next} onStop={this.onNewTaskReady}>
+        <div className={'min_page'}>
           <audio ref={this.player} src={audioPath + task.audio} />
           <div className='composed_box'>
             <div className='composed_text'>{this.state.composed}</div>
@@ -149,26 +154,23 @@ class Puzzle extends PureComponent {
           </span>
           <PuzzleBox shuffled={this.extra.shuffled} addChar={this.addChar} backspace={this.backspace} />
         </div>
+        </Anim>
       </div>
     );
   }
 }
 
 class PuzzleBox extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
-    <div className='puzzle_box'>
-      {this.props.shuffled.map(
-        (chr, idx) => <PuzzlePiece char={chr} key={idx} sendChar={this.props.addChar} />
-      )}
-      <button className='btn_bkspc' onClick={this.props.backspace}>
-        <FontAwesomeIcon icon='backspace' />
-      </button>
-    </div>
+      <div className='puzzle_box'>
+        {this.props.shuffled.map(
+          (chr, idx) => <PuzzlePiece char={chr} key={idx} sendChar={this.props.addChar} />
+        )}
+        <button className='btn_bkspc' onClick={this.props.backspace}>
+          <FontAwesomeIcon icon='backspace' />
+        </button>
+      </div>
     );
   }
 }

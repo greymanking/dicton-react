@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 
 const PREPARE = 0, MOVEOUT = 1, PAUSE = 2, MOVEIN = 3, NOTRANS = 4;
-const WAITDUR = 1000, MOVEOUTDUR = 500, PAUSEDUR = 500, MOVEINDUR = 3000;
+const WAITDUR = 500, MOVEOUTDUR = 500, PAUSEDUR = 500, MOVEINDUR = 1500;
 
 class Anim extends PureComponent {
   constructor(props) {
@@ -40,11 +40,12 @@ class Anim extends PureComponent {
     } else if (status === MOVEIN && curTime - tpoint >= MOVEINDUR) {
       this.setState({ status: NOTRANS, tpoint: 0 },
         () => onEvent(this.props.onStop));
+      
     }
   }
 
   componentDidMount() {
-    this.setState({ timerid: setInterval(this.tick, 250) });
+    this.setState({timerid: setInterval(this.tick, 250)});
   }
 
   componentWillUnmount() {
@@ -77,7 +78,7 @@ class Anim extends PureComponent {
     let oldClassName = child.props.className;
     let newClassName = oldClassName ? (oldClassName + ' ' + addcls) : addcls;
 
-    return React.cloneElement(child, { className: newClassName });
+    return React.cloneElement(child, newClassName ? { className: newClassName } : null);
   }
 }
 

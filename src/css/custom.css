@@ -322,7 +322,7 @@ input:-webkit-autofill {
 
 .fade-in {
     transform: translateX(0);
-    transition:transform 3000ms;
+    transition:transform 1500ms;
 }
 
 .fade-out {

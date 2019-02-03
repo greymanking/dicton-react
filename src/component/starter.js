@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react';
-import Anim from './Anim.js'
 
 class Starter extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      anim:true
-    }
 
     this.start = this.start.bind(this);
-    this.toggleAnim = ()=>this.setState({anim:!this.state.anim})
+    this.toggleAnim = () => this.setState({ anim: !this.state.anim })
   }
 
   start() {
@@ -18,7 +14,7 @@ class Starter extends PureComponent {
 
   render() {
     return (
-      <Anim classes='fade' in={this.state.anim} onStop={this.toggleAnim}><div className='content bgpeace'>
+      <div className='content bgpeace'>
         <div className='min_page'>
           <h3 style={{ color: '#A26273' }}>欢迎你，{this.props.userName}</h3>
           <h4>
@@ -28,12 +24,11 @@ class Starter extends PureComponent {
             复习{this.props.allTasks.length - this.props.newTasks.length}个单词。
           </h4>
           <div className='margintop'>
-            <button className='primary' onClick={this.start}>让我们开始吧！</button>
-            <span className='marginleft fontsmall cursordefault' onClick={this.props.changeUser}>
-              {'我不是' + this.props.userName}</span>
+            <button className='primary' onClick={this.start}>Let's Go！</button>
+            <button className='marginleft primary' onClick={this.props.changeUser}>切换用户</button>
           </div>
         </div>
-      </div></Anim>
+      </div>
     )
   }
 }
