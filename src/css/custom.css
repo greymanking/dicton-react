@@ -333,3 +333,25 @@ input:-webkit-autofill {
 .fade-pause {
     transform:translateX(100%);
 }
+
+.fade-enter,.fade-appear {
+    transform: translateX(100%);
+}
+
+.fade-enter-active,.fade-appear-active {
+    transform:translateX(0);
+    transition:all 1000ms ease-out;
+}
+
+.fade-exit {
+    transform: translateX(0);
+}
+
+.fade-exit-active {
+    transform:translateX(-100%);
+    transition:all 1000ms ease-out;
+}
+
+.fade-exit-done {
+    transform: translateX(-100%);
+}

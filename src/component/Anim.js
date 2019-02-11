@@ -1,8 +1,15 @@
 import React, { PureComponent } from 'react';
 // import ReactDOM from 'react-dom';
 
-const PREPARE = 0, MOVEOUT = 1, PAUSE = 2, MOVEIN = 3, NOTRANS = 4;
-const WAITDUR = 500, MOVEOUTDUR = 500, PAUSEDUR = 500, MOVEINDUR = 1500;
+export const PREPARE = 0;
+export const MOVEOUT = 1;
+export const PAUSE = 2;
+export const MOVEIN = 3;
+export const NOTRANS = 4;
+
+const suffix = ['-prepare', '-out', '-pause', '-in', '-stop'];
+
+function noop() { }
 
 class Anim extends PureComponent {
   constructor(props) {
@@ -14,59 +21,66 @@ class Anim extends PureComponent {
       timerid: 0
     }
 
-    // this.prepareAnim = this.prepareAnim.bind(this);
+    this.durs = [500, 500, 500, 1500, 0];
+    this.handlers = [noop, noop, noop, noop, noop];
+    this.start = PREPARE;
+    this.end = NOTRANS;
+
     this.tick = this.tick.bind(this);
+    this.readParams = this.readParams.bind(this);
+  }
+
+  readParams(props) {
+    this.start = props.start || PREPARE;
+    this.end = props.end || NOTRANS;
+
+    let handlers = [props.onPrepare, props.onMoveout, props.onPause,
+    props.onMovein, props.onStop];
+    for (let i = 0; i < handlers.length; i++) {
+      if (handlers[i] && typeof handlers[i] === 'function') {
+        this.handlers[i] = handlers[i];
+      }
+    }
   }
 
   tick() {
-    const curTime = new Date().getTime();
-    const { status, tpoint } = this.state;
-    const onEvent = (e => e && typeof e === 'function' && e());
-
-    if (status === NOTRANS && this.props.in) {
-      this.setState({ status: PREPARE, tpoint: curTime },
-        () => onEvent(this.props.onPrepare));
+    if (!this.props.in) {
+      return;
     }
 
-    if (status === PREPARE && curTime - tpoint >= WAITDUR) {
-      this.setState({ status: MOVEOUT, tpoint: curTime },
-        () => onEvent(this.props.onMoveout));
-    } else if (status === MOVEOUT && curTime - tpoint >= MOVEOUTDUR) {
-      this.setState({ status: PAUSE, tpoint: curTime },
-        () => onEvent(this.props.onPause));
-    } else if (status === PAUSE && curTime - tpoint >= PAUSEDUR) {
-      this.setState({ status: MOVEIN, tpoint: curTime },
-        () => onEvent(this.props.onMovein));
-    } else if (status === MOVEIN && curTime - tpoint >= MOVEINDUR) {
-      this.setState({ status: NOTRANS, tpoint: 0 },
-        () => onEvent(this.props.onStop));
-      
+    const { status, tpoint } = this.props;
+
+    const curTime = new Date().getTime();
+
+    let nextStatus = -1;
+
+    if (status === this.end) {
+      nextStatus = this.start;
+    } else if (curTime - tpoint >= this.durs[status]) {
+      nextStatus = status + 1;
+    }
+
+    if (nextStatus >= 0) {
+      this.setState({ status: nextStatus, tpoint: curTime }, this.handlers[nextStatus]);
     }
   }
 
   componentDidMount() {
-    this.setState({timerid: setInterval(this.tick, 250)});
+    this.readParams(this.props);
+    this.setState({ timerid: setInterval(this.tick, 250) });
   }
 
   componentWillUnmount() {
     clearInterval(this.state.timerid);
   }
 
-  // prepareAnim() {
-  //   if (this.state.status === NOTRANS)
-  //     this.setState({ state: PREPARE, tpoint: new Date().getTime() });
-  // }
+  componentDidUpdate(prevProps) {
+    this.readParams(this.props);
+  }
 
   render() {
-    let addcls = '';
     const { status } = this.state;
-    if (status === MOVEIN) {
-      addcls = this.props.classes + '-in';
-    } else if (status === MOVEOUT) {
-      addcls = this.props.classes + '-out';
-    } else if (status === PAUSE) {
-      addcls = this.props.classes + '-pause';
-    }
+    const addcls = this.props.classes + suffix[status];
 
     const { children, ...childProps } = this.props;
 

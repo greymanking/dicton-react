@@ -2,11 +2,9 @@ import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { shuffle } from "../common/utils.js"
 import Pager from './pager.js'
-import {CSSTransition} from 'react-transition-group';
+import Anim from './Anim.js'
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
-
-
 
 class Puzzle extends PureComponent {
   constructor(props) {
@@ -16,13 +14,12 @@ class Puzzle extends PureComponent {
       pos: 0,
       achieve: ACHIEVE.normal,
       composed: '',
-      animStatus: true,
+      runAni: false,
     }
 
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
       status: ACHIEVE.puzzleSuccess,
-      animDur: 500,
     };
 
     this.player = React.createRef();
@@ -45,19 +42,19 @@ class Puzzle extends PureComponent {
       this.extra.status = ACHIEVE.puzzleFalse;
     }
 
-    let animStatus = true;
+    let runAni = false;
 
     if (achieved === ACHIEVE.correct) {
       let s = this.props.taskData[this.state.pos].status;
 
       this.props.taskData[this.state.pos].status = s | this.extra.status;
-      animStatus = false;
+      runAni = true;
     }
 
     this.setState({
       composed: composed,
       achieve: achieved,
-      animStatus: animStatus
+      runAni: runAni
     });
   }
 
@@ -87,7 +84,6 @@ class Puzzle extends PureComponent {
     this.setState({
       achieve: ACHIEVE.normal,
       composed: "",
-      animStatus: true
     })
   }
 
@@ -116,10 +112,11 @@ class Puzzle extends PureComponent {
 
   onNewTaskReady(){
     this.playSound();
+    this.setState({runAni:false});
   }
 
   componentDidMount() {
-    //this.playSound();
+    this.playSound();
   }
 
   render() {
@@ -144,8 +141,7 @@ class Puzzle extends PureComponent {
     return (
       <div className={'content bgpeace'}>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <CSSTransition timeout={1000} in={this.state.animStatus} appear 
-        classNames='fade' onExited={this.next} onEntered={this.onNewTaskReady}>
+        <Anim classes='fade' in={this.state.runAni} onPause={this.next} onStop={this.onNewTaskReady}>
         <div className={'min_page'}>
           <audio ref={this.player} src={audioPath + task.audio} />
           <div className='composed_box'>
@@ -158,7 +154,7 @@ class Puzzle extends PureComponent {
           </span>
           <PuzzleBox shuffled={this.extra.shuffled} addChar={this.addChar} backspace={this.backspace} />
         </div>
-        </CSSTransition>
+        </Anim>
       </div>
     );
   }
