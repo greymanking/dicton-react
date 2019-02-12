@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Pager from './pager.js'
-import {CSSTransition} from 'react-transition-group';
+import Anim, {MOVEIN, NOTRANS, MOVEOUT, PREPARE, PAUSE} from './Anim.js';
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -18,13 +18,14 @@ class Dictation extends PureComponent {
       tipping: false,
       composed: '',
       layoutName: 'default',
-      animStatus: true,
+      runAni: true,
+      aniStart: PAUSE,
+      aniEnd: NOTRANS
     }
 
     this.extra = {
       tips: '',
       status: ACHIEVE.dictSuccess,
-      animDur: 1000,
     }
 
     this.player = React.createRef();
@@ -103,16 +104,13 @@ class Dictation extends PureComponent {
   }
 
   reflow() {
-   
+    this.setState({
+      achieve: ACHIEVE.normal,
+      composed: ''
+    })
     this.keyboard.current.clearInput();
     this.extra.status = ACHIEVE.dictSuccess;
     this.playSound();
-
-    this.setState({
-      achieve: ACHIEVE.normal,
-      composed: '',
-      animStatus: true
-    }) 
   }
 
   submit() {
@@ -123,15 +121,15 @@ class Dictation extends PureComponent {
       this.extra.status = ACHIEVE.dictFalse;
     }
 
-    let animStatus = true;
+    let runAni = false;
 
     if (acv === ACHIEVE.correct) {
       let s = this.props.taskData[this.state.pos].status;
       this.props.taskData[this.state.pos].status = s | this.extra.status;
-      animStatus = false;
+      runAni = true;
     }
 
-    this.setState({ achieve: acv, animStatus: animStatus });
+    this.setState({ achieve: acv, runAni: runAni });
   }
 
   checkComposed(composed) {
@@ -145,6 +143,9 @@ class Dictation extends PureComponent {
   }
 
   next() {
+    if(this.start===PAUSE){
+      return;
+    }
     this.props.addCoins(this.extra.status === ACHIEVE.dictFalse ? 15 : 30);
 
     const nextPos = this.state.pos + 1;
@@ -152,11 +153,13 @@ class Dictation extends PureComponent {
       this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
+      this.setState({runAni:false})
     }
   }
 
   onNewTaskReady() {
     this.playSound();
+    this.setState({ runAni: false, aniStart:PREPARE, aniEnd:NOTRANS });
   }
 
   componentDidMount() {
@@ -184,8 +187,8 @@ class Dictation extends PureComponent {
     return (
       <div className='content bgpeace'>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <CSSTransition timeout={1000} in={this.state.animStatus} appear 
-        classNames='fade' onExited={this.next} onEntered={this.onNewTaskReady}>
+        <Anim classes='fade' in={this.state.runAni} onPause={this.next} start={this.state.aniStart}
+        end={this.state.aniEnd} onStop={this.onNewTaskReady}>
           <div className={'min_page'}>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div className='composed_box'>
@@ -197,7 +200,7 @@ class Dictation extends PureComponent {
             </div>
             <h3>{task.info}</h3>
           </div>
-        </CSSTransition>
+        </Anim>
         <Keyboard ref={this.keyboard}
           layout={this.kblayout}
           theme={'hg-theme-default monofont'}

@@ -22,7 +22,7 @@ class Puzzle extends PureComponent {
     this.extra = {
       shuffled: shuffle(this.props.taskData[this.state.pos].keys, 10),
       status: ACHIEVE.puzzleSuccess,
-      animDur: 500,
+      animDur: 1000,
     };
 
     this.player = React.createRef();

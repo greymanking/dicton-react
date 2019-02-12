@@ -41,8 +41,6 @@ class Anim extends PureComponent {
         this.handlers[i] = handlers[i];
       }
     }
-
-    console.log(this.start, this.end);
   }
 
   tick() {
@@ -61,8 +59,6 @@ class Anim extends PureComponent {
     } else if (curTime - tpoint >= this.durs[status]) {
       nextStatus = status + 1;
     }
-
-    console.log('next',nextStatus);
 
     if (nextStatus >= 0) {
       this.setState({ status: nextStatus, tpoint: curTime }, this.handlers[nextStatus]);
