@@ -41,6 +41,8 @@ class Anim extends PureComponent {
         this.handlers[i] = handlers[i];
       }
     }
+
+    console.log(this.start, this.end);
   }
 
   tick() {
@@ -48,7 +50,7 @@ class Anim extends PureComponent {
       return;
     }
 
-    const { status, tpoint } = this.props;
+    const { status, tpoint } = this.state;
 
     const curTime = new Date().getTime();
 
@@ -60,6 +62,8 @@ class Anim extends PureComponent {
       nextStatus = status + 1;
     }
 
+    console.log('next',nextStatus);
+
     if (nextStatus >= 0) {
       this.setState({ status: nextStatus, tpoint: curTime }, this.handlers[nextStatus]);
     }
@@ -67,7 +71,7 @@ class Anim extends PureComponent {
 
   componentDidMount() {
     this.readParams(this.props);
-    this.setState({ timerid: setInterval(this.tick, 250) });
+    this.setState({ timerid: setInterval(this.tick, 250), status: this.start });
   }
 
   componentWillUnmount() {

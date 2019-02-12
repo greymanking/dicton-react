@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Pager from './pager.js'
-import Anim from './Anim.js'
+import Anim, {MOVEIN, NOTRANS, MOVEOUT, PREPARE, PAUSE} from './Anim.js';
 import Keyboard from 'react-simple-keyboard';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
@@ -18,7 +18,9 @@ class Dictation extends PureComponent {
       tipping: false,
       composed: '',
       layoutName: 'default',
-      runAni: false,
+      runAni: true,
+      aniStart: MOVEIN,
+      aniEnd: NOTRANS
     }
 
     this.extra = {
@@ -148,16 +150,17 @@ class Dictation extends PureComponent {
       this.setState({ pos: nextPos }, this.reflow);
     } else {
       this.props.next();
+      this.setState({runAni:false})
     }
   }
 
   onNewTaskReady() {
     this.playSound();
-    this.setState({ runAni: false });
+    this.setState({ runAni: false, aniStart:PREPARE, aniEnd:NOTRANS });
   }
 
   componentDidMount() {
-    this.playSound();
+    // this.playSound();
   }
 
   render() {
@@ -181,7 +184,8 @@ class Dictation extends PureComponent {
     return (
       <div className='content bgpeace'>
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
-        <Anim classes='fade' in={this.state.runAni} onPause={this.next} onStop={this.onNewTaskReady}>
+        <Anim classes='fade' in={this.state.runAni} onPause={this.next} start={this.state.aniStart}
+        end={this.state.aniEnd} onStop={this.onNewTaskReady}>
           <div className={'min_page'}>
             <audio ref={this.player} src={audioPath + task.audio} />
             <div className='composed_box'>
