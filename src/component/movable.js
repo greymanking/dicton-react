@@ -28,10 +28,12 @@ class Movable extends PureComponent {
 
   render() {
     return (
-      <CSSTransition timeout={this.extra.animDur} in={this.state.animStatus} appear
-        classNames='fade' onExited={this.next} onEntered={this.props.onNewTaskReady}>
+      <CSSTransition timeout={this.props.animDur} in={this.props.animStatus} appear
+        classNames='fade' onExited={this.props.onExit} onEntered={this.props.onEntered}>
         {this.props.children}
       </CSSTransition>
     );
   }
 }
+
+export default Movable;

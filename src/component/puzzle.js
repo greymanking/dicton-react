@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { shuffle } from "../common/utils.js"
 import Pager from './pager.js'
+import ComposedBox from './composedbox.js'
 import {CSSTransition} from 'react-transition-group';
 
 import { audioPath, ACHIEVE } from '../common/consts.js'
-
 
 
 class Puzzle extends PureComponent {
@@ -123,35 +123,17 @@ class Puzzle extends PureComponent {
   }
 
   render() {
-    let markcls = 'colorblack', markicon = 'genderless';
-    if (this.state.achieve === ACHIEVE.correct) {
-      if (this.extra.status === ACHIEVE.puzzleSuccess) {
-        markcls = 'colorgold';
-        markicon = 'star';
-      } else {
-        markcls = 'colorred';
-        markicon = 'check';
-      }
-    } else if (this.state.achieve === ACHIEVE.wrong) {
-      markcls = 'colorred';
-      markicon = 'times';
-    }
-
-    //markcls = 'mark_anim ' + markcls;
 
     const task = this.props.taskData[this.state.pos]
 
     return (
       <div className={'content bgpeace'}>
+        <audio ref={this.player} src={audioPath + task.audio} />
         <Pager total={this.props.taskData.length} cur={this.state.pos} />
         <CSSTransition timeout={1000} in={this.state.animStatus} appear 
         classNames='fade' onExited={this.next} onEntered={this.onNewTaskReady}>
         <div className={'min_page'}>
-          <audio ref={this.player} src={audioPath + task.audio} />
-          <div className='composed_box'>
-            <div className='composed_text'>{this.state.composed}</div>
-            <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
-          </div>
+          <ComposedBox composed={this.state.composed} achieve={this.state.achieve} status={this.extra.status} />
           <h3>{task.info}</h3>
           <span className='phonetic'>{task.phonetic}
             <FontAwesomeIcon icon='volume-up' className='marginleft' onClick={this.playSound} />
