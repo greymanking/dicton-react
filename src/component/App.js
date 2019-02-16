@@ -39,7 +39,6 @@ class App extends Component {
       diamonds: 0,
       coins: 0,
       uploadStatus: ULSTATUS.notGoing,
-      showAni: false,
     };
     this.extra = {
       userName: '',
@@ -193,14 +192,8 @@ class App extends Component {
         break;
       }
     }
-    this.setState({ showAni: true, diamonds: da });
-
-    setTimeout(()=>{this.setState({ stage: curStage })},1000);
-
-    setTimeout(() => {
-      this.setState({ showAni: false },
-        function () { if (curStage === ENDING) { this.upload(); } })
-    }, 2800);
+    this.setState({ diamonds: da, stage: curStage },
+      () => { if (curStage === ENDING) { this.upload(); } });
   }
 
   nextrun() {
@@ -286,7 +279,7 @@ class App extends Component {
       default:
     }
     return (
-      <div className={'app' + (this.state.showAni ? ' fade_ani' : '')}>
+      <div className={'app'}>
         <div className='header colorwhite'>
           <FontAwesomeIcon icon='coins' /> {this.extra.coins_saved + this.state.coins}
           <FontAwesomeIcon icon='gem' className='marginleft' /> {this.extra.diamonds_saved + this.state.diamonds}

@@ -40,10 +40,17 @@ button.btn_bkspc {
     background-color: rgb(225,225,225,0);
     color:rgb(228, 178, 182);
     border:none;
+    vertical-align: middle;
 }
 
 button.btn_bkspc:active {
     color:brown;
+}
+
+button.submit {
+    padding:0.5rem 1rem;
+    font-size: 1rem;
+    vertical-align: middle; /*默认是baseline*/
 }
 
 table {

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Pager from './pager.js'
+import ComposedBox from './composedbox.js'
 import {CSSTransition} from 'react-transition-group';
 import Keyboard from 'react-simple-keyboard';
 
@@ -164,22 +165,6 @@ class Dictation extends PureComponent {
   }
 
   render() {
-    let markcls = 'colorblack', markicon = 'genderless';
-    if (this.state.achieve === ACHIEVE.correct) {
-      if (this.extra.status === ACHIEVE.dictSuccess) {
-        markcls = 'colorgold';
-        markicon = 'star';
-      } else {
-        markcls = 'colorred';
-        markicon = 'check';
-      }
-    } else if (this.state.achieve === ACHIEVE.wrong) {
-      markcls = 'colorred';
-      markicon = 'times';
-    }
-
-    // markcls = 'marginleft mark ' + markcls;
-
     const task = this.props.taskData[this.state.pos]
     return (
       <div className='content bgpeace'>
@@ -188,10 +173,7 @@ class Dictation extends PureComponent {
         classNames='fade' onExited={this.next} onEntered={this.onNewTaskReady}>
           <div className={'min_page'}>
             <audio ref={this.player} src={audioPath + task.audio} />
-            <div className='composed_box'>
-              <div className='composed_text'>{this.state.composed}</div>
-              <div className='mark'><FontAwesomeIcon icon={markicon} className={markcls} /></div>
-            </div>
+            <ComposedBox composed={this.state.composed} achieve={this.state.achieve} status={this.extra.status} />
             <div className={'tip ' + (this.state.tipping ? 'elvisible' : 'elinvisible')}>
               {this.extra.tips}
             </div>

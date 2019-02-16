@@ -7,10 +7,20 @@ const ACHIEVE = {
     normal: -1,
     wrong: 0,
     correct: 1,
-    dictFalse: 1,
-    dictSuccess: 2,
-    puzzleFalse: 4,
-    puzzleSuccess: 8
+    // dictFalse: 1,
+    // dictSuccess: 2,
+    // puzzleFalse: 4,
+    // puzzleSuccess: 8
+}
+
+const PERF = {
+    dict: { no: 1, yes: 2 },
+    puzzle: { no: 4, yes: 8 }
+}
+
+const COINS = {
+    dict: { perf: 30, flawed: 15 },
+    puzzle: { perf: 15, flawed: 10 } 
 }
 
 const MESSAGE = {
@@ -41,5 +51,5 @@ const PATTERN = {
 }
 
 export {
-    audioPath, hostPath, ACHIEVE, MESSAGE, PATTERN, ULSTATUS
+    audioPath, hostPath, ACHIEVE, MESSAGE, PATTERN, ULSTATUS, PERF, COINS
 };

@@ -1,9 +1,16 @@
 import React, { PureComponent } from 'react';
-import { ACHIEVE } from '../common/consts.js'
+import { ACHIEVE, PERF } from '../common/consts.js'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 class ComposedBox extends PureComponent {
   // constructor(props) {
   //   super(props);
+  // }
+
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.reset) {
+  //     this.setState({ shuffled: shuffle(this.props.keys, 10) });
+  //   }
   // }
 
   render() {
@@ -11,7 +18,7 @@ class ComposedBox extends PureComponent {
     const {achieve, status}=this.props;
 
     if (achieve === ACHIEVE.correct) {
-      if (status === ACHIEVE.dictSuccess || status === ACHIEVE.puzzleSuccess) {
+      if (status === PERF[this.props.kind].yes) {
         markcls = 'colorgold';
         markicon = 'star';
       } else {
