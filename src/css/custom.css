@@ -186,6 +186,7 @@ input:-webkit-autofill {
 
 .monofont {
     font-family: Consolas,Monaco,monospace !important;
+    font-size:1.5rem;
 }
 
 .tip {

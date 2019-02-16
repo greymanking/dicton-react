@@ -9,7 +9,7 @@ import Ending from './ending.js'
 
 import { ajaxGet, ajaxPost } from '../common/ajaxPromise.js';
 import { countPerfect } from '../common/utils.js'
-import { hostPath, MESSAGE, ACHIEVE, ULSTATUS } from '../common/consts.js'
+import { hostPath, MESSAGE, ULSTATUS, PERF } from '../common/consts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -177,10 +177,10 @@ class App extends Component {
     let da = this.state.diamonds;
 
     if (curStage === PUZZLE &&
-      countPerfect(this.puzzleTasks, ACHIEVE.puzzleSuccess) === this.puzzleTasks.length) {
+      countPerfect(this.puzzleTasks, PERF.puzzle.yes) === this.puzzleTasks.length) {
       da += 1;
     } else if (curStage === DICTATION &&
-      countPerfect(this.dictationTasks, ACHIEVE.dictSuccess) === this.dictationTasks.length) {
+      countPerfect(this.dictationTasks, PERF.dict.yes) === this.dictationTasks.length) {
       da += 2;
     }
 

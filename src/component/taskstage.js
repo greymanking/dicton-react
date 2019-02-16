@@ -13,13 +13,15 @@ class TaskStage extends PureComponent {
       achieve: ACHIEVE.normal,
       composed: '',
       animStatus: true,
-      reset: false
+      reset: false,
+      tipping: false
     }
 
     this.extra = {
       status: PERF[props.kind].yes,
       animDur: 1000,
-      enabled: true
+      enabled: true,
+      tips:''
     }
 
     this.player = React.createRef();
@@ -27,6 +29,7 @@ class TaskStage extends PureComponent {
     this.onChange = this.onChange.bind(this);
     this.reflow = this.reflow.bind(this);
     this.checkComposed = this.checkComposed.bind(this);
+    this.tip = this.tip.bind(this);
     this.next = this.next.bind(this);
     this.onNewTaskReady = this.onNewTaskReady.bind(this);
     this.playSound = this.playSound.bind(this);
@@ -36,6 +39,31 @@ class TaskStage extends PureComponent {
   onChange(text) {
     if (!this.extra.enabled) { return; }
     this.setState({ achieve: ACHIEVE.normal, composed: text })
+  }
+
+  tip() {
+    if (!this.extra.enabled) { return; }
+    //看了提示，就不能算一次性成功
+    this.extra.status = PERF[this.props.kind].no;
+
+    const v = this.state.composed;
+    const r = this.props.tasks[this.state.pos].keys;
+
+    let i = 0;
+    const l = Math.min(v.length, r.length);
+
+    for (; i < l; i++) {
+      if (r[i] === v[i]) {
+        continue
+      } else {
+        break
+      }
+    }
+
+    this.extra.tips = r.substring(0, i + 1) + (i < r.length - 1 ? '~' : '');
+
+    this.setState({ tipping: true });
+    setTimeout(() => { this.setState({ tipping: false }) }, 1000);
   }
 
   playSound() {
@@ -68,6 +96,10 @@ class TaskStage extends PureComponent {
     if (acv === ACHIEVE.correct) {
       let s = this.props.tasks[this.state.pos].status;
       this.props.tasks[this.state.pos].status = s | this.extra.status;
+
+      let kind = this.props.kind;
+      this.props.addCoins(this.extra.status === PERF[kind].yes ? COINS[kind].perf : COINS[kind].flawed);
+      
       animStatus = false;
       this.extra.enabled = false;
     }
@@ -86,8 +118,6 @@ class TaskStage extends PureComponent {
   }
 
   next() {
-    let kind = this.props.kind;
-    this.props.addCoins(this.extra.status === PERF[kind].yes ? COINS[kind].perf : COINS[kind].flawed);
 
     const nextPos = this.state.pos + 1;
     if (nextPos < this.props.tasks.length) {
@@ -104,9 +134,18 @@ class TaskStage extends PureComponent {
 
   render() {
     const task = this.props.tasks[this.state.pos]
-    const info = React.cloneElement(this.props.info, { task: task, playSound: this.playSound });
-    const innerInput = React.cloneElement(this.props.innerInput,
-      { keys: task.keys, reset: this.state.reset, onChange: this.onChange, submit: this.submit })
+
+    const tip = this.props.tip && React.cloneElement(this.props.tip,
+      {tipping: this.state.tipping, tips: this.extra.tips});
+
+    const info = React.cloneElement(this.props.info, 
+      { task: task, playSound: this.playSound });
+
+    const innerInput = this.props.innerInput && React.cloneElement(this.props.innerInput,
+      { keys: task.keys, reset: this.state.reset, onChange: this.onChange, tip: this.tip, submit: this.submit });
+
+    const outerInput = this.props.outerInput && React.cloneElement(this.props.outerInput,
+      { keys: task.keys, reset: this.state.reset, onChange: this.onChange, tip: this.tip, submit: this.submit });
 
     return (
       <div className='content bgpeace'>
@@ -115,13 +154,14 @@ class TaskStage extends PureComponent {
         <CSSTransition timeout={this.extra.animDur} in={this.state.animStatus} appear
           classNames='fade' onExited={this.next} onEntered={this.onNewTaskReady}>
           <div className={'min_page'}>
-            <ComposedBox composed={this.state.composed} achieve={this.state.achieve} 
-            status={this.extra.status} kind={this.props.kind} />
+            <ComposedBox composed={this.state.composed} achieve={this.state.achieve}
+              status={this.extra.status} kind={this.props.kind} />
+            {tip}
             {info}
             {innerInput}
           </div>
         </CSSTransition>
-        {this.props.outerInput}
+        {outerInput}
       </div>
     );
   }

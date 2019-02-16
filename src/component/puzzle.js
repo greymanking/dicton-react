@@ -42,7 +42,7 @@ class PuzzleBox extends PureComponent {
 
     this.onChar = this.onChar.bind(this);
     this.backspace = this.backspace.bind(this);
-    this.submit = this.submit.bind(this);
+    // this.submit = this.submit.bind(this);
   }
 
   onChar(chr) {
@@ -57,10 +57,6 @@ class PuzzleBox extends PureComponent {
       this.composed = curComposed.slice(0, len - 1);
       this.props.onChange(this.composed);
     }
-  }
-
-  submit() {
-    this.props.submit(this.composed);
   }
 
   componentDidUpdate(prevProps) {
@@ -79,7 +75,7 @@ class PuzzleBox extends PureComponent {
         <button className='btn_bkspc' onClick={this.backspace}>
           <FontAwesomeIcon icon='backspace' />
         </button>
-        <button className='submit' onClick={this.submit}>提 交</button>
+        <button className='submit' onClick={this.props.submit}>提 交</button>
       </div>
     );
   }
