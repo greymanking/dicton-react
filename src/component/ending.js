@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { ACHIEVE, ULSTATUS } from '../common/consts.js'
+import {PERF, ULSTATUS } from '../common/consts.js'
 import { countPerfect } from "../common/utils.js"
 
 class Ending extends PureComponent {
@@ -15,8 +15,8 @@ class Ending extends PureComponent {
     let pl = this.props.puzzles.length;
     let dl = this.props.dictations.length;
 
-    let pg = countPerfect(this.props.puzzles, ACHIEVE.puzzleSuccess);
-    let dg = countPerfect(this.props.dictations, ACHIEVE.dictSuccess);;
+    let pg = countPerfect(this.props.puzzles, PERF.puzzle.yes);
+    let dg = countPerfect(this.props.dictations, PERF.dict.yes);
 
     let us = this.props.uploadStatus;
     let totalCoins = this.props.savedCoins + this.props.coins;
