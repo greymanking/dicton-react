@@ -328,9 +328,9 @@ input:-webkit-autofill {
 }
 
 .fade-exit-active {
-    /* transform:translateX(-100%);
-    transition:all 1000ms ease-out; */
-    animation:moveout 1s;
+    transform:translateX(-100%);
+    transition:all 500ms ease-out 500ms; 
+    /*animation:moveout 1s;*/
 }
 
 .fade-exit-done {
