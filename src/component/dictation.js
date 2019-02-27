@@ -96,14 +96,18 @@ class KeyboardInput extends PureComponent {
       <Keyboard ref={this.keyboard}
         layout={this.kblayout}
         theme={'hg-theme-default monofont'}
-        display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提 示', '{space}': '空格' }}
+        display={{ '{bksp}': '←', '{enter}': '提交', '{shift}': '大小写', '{tips}': '提　示'}}
         mergeDisplay={true} onChange={this.onChange}
         onKeyPress={this.onKeyPress}
         layoutName={this.state.layoutName}
         buttonTheme={[
           {
-            class: "hg-button hg-standardBtn submit_key",
+            class: "hg-button hg-standardBtn submit_key fontnormal",
             buttons: "{enter}"
+          },
+          {
+            class: "hg-button hg-standardBtn fontnormal",
+            buttons: "{shift} {tips} "
           },
         ]}
       />
