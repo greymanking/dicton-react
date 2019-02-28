@@ -298,18 +298,6 @@ input:-webkit-autofill {
     }
 }
 
-@keyframes moveout {
-    0% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
 .load_ani {
     animation:selfrotate 2s infinite;
 }
